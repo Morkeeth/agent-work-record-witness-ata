@@ -1,104 +1,100 @@
-# Build plan — the ambitious version
+# BUILD PLAN — three builders, nine days
 
-**Phase 2/3 material.** Follows `vault 01 Projects/Hackathons/hackathon.md`.
-Riskiest-first. Nothing runs ahead of the one thing that can fail the submission.
-
----
-
-## The wedge — one line, and six theses died for it
-
-> **GEAP governs the agents. Nothing governs the prompts.**
-
-Google's own platform ships the Agent Registry, identity, guardrails and observability.
-Every entry that "manages a fleet" is building a skin on it. **We measure the humans driving
-them** — what they typed, whether it worked, and who in the building is good at it.
-
-**Killed to get here:** claim verification · a measurement bench · a replication registry ·
-agent HR/headcount · survival-rate scoring · a governance dashboard. Each was correct.
-Each was a feature. See `hackathon.md` THE IDEATION LAW.
+**Supersedes the earlier version of this file** (pre-dated the compliance audit, the GEAP
+tailoring and the Gemini fit study). Written 2026-08-22. **Owner column is binding —
+`COLLAB-PROTOCOL.md`.**
 
 ---
 
-## The architecture — a real network, because the track is a network
+## THE RE-ORDERING THAT CUTS THE RISK — read this first
 
-*"Build a scalable network of institutional agents"* is the track's own sentence. One agent with
-tools is not a network. This is a fan-out, and the fan-out is the architecture story that plays
-for the 30% Architectural Discipline criterion.
+`PHASE-0.md` treats **one** Aug-26 gate. There are actually **two, and they are not the same gate.**
 
-```
-transcripto spine  ──►  INGEST          normalises any harness
-                          │              (Claude Code · Cursor · Copilot · Codex)
-                          ▼
-                    Pub/Sub topic
-                          │
-        ┌─────────┬───────┴───────┬─────────────┐
-        ▼         ▼               ▼             ▼
-    ANALYST   ANALYST         ANALYST       ANALYST      ← N ADK agents on Cloud Run,
-    prompt    outcome         failure       cost/tools     registered in GEAP Agent Registry,
-    quality   (did it land)   patterns                     scaled horizontally
-        └─────────┴───────┬───────┴─────────────┘
-                          ▼
-                   GEAP Memory Bank  +  BigQuery Vector Search
-                          │
-              ┌───────────┴───────────┐
-              ▼                       ▼
-        SYNTHESIS agent          COACH agent   ← THE WEDGE
-        the org's picture        "here is the better prompt,
-                                  taken from your own best operator"
-```
-
-**Every seam is replaceable and each is a defensible engineering choice:**
-harness-agnostic ingest · one analyst per dimension so a new dimension is a new worker, not a
-rewrite · GEAP for registry/memory rather than a bespoke store · the coach reads the corpus and
-never writes to it.
-
-## The stack ruling — GEAP, deliberately
-
-| Layer | Choice | Why not the obvious one |
+| Requirement | Needs | Blocked? |
 |---|---|---|
-| Model | **Gemini 3.5** | required |
-| Framework | **ADK** for the analysts | required; ADK wraps plain functions so the analysis is testable without it |
-| Platform | **GEAP** — Agent Registry, Memory Bank | a 600-entry field submits Gemini+ADK+Cloud Run. GEAP is the sponsor's newest strategic product and almost nobody will use it |
-| Compute | **Cloud Run**, deployed with `gcloud run deploy --source` | Cloud Build — no local Docker, no Colima, no ARM/amd64 trap |
-| Bus | **Pub/Sub** | the fan-out is the track |
-| Retrieval | **BigQuery Vector Search** | semantic retrieval over prompts is the coach's engine |
+| **1 · Gemini 3.5+** | an **AI Studio key** | **NO. No credit card. Billing disabled is the free tier — enabling billing DELETES it.** Unblocked today |
+| **2 · Google agent framework (ADK)** | `pip install google-adk` + a model to call | needs #1 only |
+| **3 · Google Cloud service** | GCP billing + `gcloud` | **YES — the real Aug 26 gate** |
 
-**GEAP is a bet and it is written down as one.** It is new, and new means thin docs. Slice 0
-buys the information before the schedule depends on it. See the Cursor ask.
+**Consequence: the classifier — the single highest-risk piece, the one that turns the control set
+green and makes the wedge work — can be built and proven BEFORE Aug 26**, on a free key, with no
+spend and no billing decision.
+
+**That means Aug 26 stops being the day everything starts.** It becomes the day the *deploy* starts,
+against a classifier already green. That is the difference between a swap and an integration written
+under deadline.
+
+**Ask Oscar for the Gemini key now. It costs nothing and it is not the GCP decision.**
 
 ---
 
-## Slices — riskiest first
+## VERIFIED STATE — probed 2026-08-22, not recalled
 
-| # | Slice | Proves | Risk |
-|---|---|---|---|
-| **0** | **`gcloud run deploy --source` a hello-world ADK+Gemini agent. Screenshot it.** Same day, probe GEAP: does the Agent Registry accept a registration in under an hour? | the submission can exist at all | **HIGHEST — everything downstream dies here.** If GEAP resists, fall back to Firestore and keep moving. Decide inside one hour, not one day |
-| **1** | Ingest at org scale on the transcripto spine. **The 95% gate must fire visibly** — show human turns separated from injected ones | the corpus is real and nobody else has it | medium |
-| **2** | Two analysts (prompt quality · outcome) fanned out over Pub/Sub | the network is a network | medium |
-| **3** | **The COACH.** Retrieve the org's best-performing prompt for an intent and adapt it | **the wedge** | the product dies without this |
-| **4** | Synthesis surface — the org's picture in one screen | the buyer's view | low |
-| **5** | Remaining analysts (failure patterns · cost) | depth | **first to cut** |
-| **6** | Architecture diagram **rendered and looked at** · stranger pass on a cold clone · README | required components | never cut |
-| **7** | The 4-min video, **one take, unedited** | 30% of the score | never cut |
-
-## The demo — one take, in order
-
-| t | Beat |
+| | |
 |---|---|
-| 0:00 | **The credibility beat.** Point it at a real corpus: *"~95% of the `user` turns in these transcripts are not the user."* Show the gate separating them. This is the beat that proves the data is ours |
-| 0:45 | Fan-out running live — N analysts on Cloud Run, visible in the console |
-| 1:30 | **"Who is best at this?"** → it names a person and prints their prompt |
-| 2:15 | **THE WEDGE. "Give me their version of what I am about to do."** → the coach rewrites your prompt from the org's own best pattern. Impossible without the corpus |
-| 3:00 | Cloud Run + GEAP registry visible in the browser |
-| 3:30 | Architecture diagram |
+| ✅ wedge loop runs end to end | `find → propagate → witness`, money line now prints `"operator": "a"` |
+| ✅ byte mismatch fixed | propagate and witness agree at 250 |
+| ❌ **classifier carries no signal** | `contract/task_class.py` → **3/8, identical to a stub that ignores its input** |
+| ❌ **`LANDED` uncomputable** | zero `tool_use` records in any fixture |
+| ❌ **0 of 3 mandatory requirements** at runtime | `docs/COMPLIANCE-AUDIT.md` |
+| ⚠️ Phase 3 design owner unnamed · direction unpicked · hours uncalibrated | Oscar |
 
-**Beat 4 is the entry.** Everything else is setup for it.
+---
 
-## What is honestly hard, stated before a judge finds it
-- **"Best operator" needs a defensible definition.** An unpinned denominator is the failure this
-  whole stack exists to catch. Define it before building: fewest retries to a landed change, on
-  comparable task classes — and print the denominator on screen.
-- **Privacy.** Reading a company's prompts is reading its people. The product must show what it
-  never stores, and that boundary should be architectural, not a policy sentence.
-- **The corpus is Oscar's today.** A judge cannot run this on their own org. Answer: the ingest is
-  harness-agnostic and slice 1 must demo on a second, non-Oscar source, even a small one.
+## LANE A — NOW → Aug 26. Nothing here needs GCP.
+
+| # | Slice | Owner | Unblocks |
+|---|---|---|---|
+| **A1** | **Gemini key + the classifier behind `contract/task_class.py`.** Enum-constrained structured output; `UNDECIDABLE` is one of exactly three schema values. **Watch it choose the refusal — do not assume it can.** | Oscar (key) → **Cursor** (`fleet/`) | requirement 1 · the wedge's only real defect · C1 goes green and the demo gets a comparison |
+| **A2** | **Cut fixtures from a REAL session.** Not an invented `tool_use` record — an inherited shape cannot be wrong about what a tool call looks like. `~/CODE/transcripto` is the corpus. | **Cursor** | `LANDED` becomes computable · the demo stops printing `UNMEASURED` for everyone |
+| **A3** | Episode-based scoring per `docs/SIGNAL-SPEC.md`. `CORRECTIVE_TURNS` · `LANDED` · `ABANDONED`, each naming its probe. **n<3 prints `UNMEASURED` and is watched printing it.** | **Cursor** | the denominator |
+| **A4** | **`docs/USER-JOURNEY.md`** — flagged missing in `CLOUD-HANDOFF.md`. Every step, ranked, three actors. | **Claude** | Phase 3 · the video script |
+| **A5** | Build the picked direction as the real surface, then run **all three probes** on it: render · metric-vs-data · adjacency. | **Claude** (needs the pick) | the exhibit |
+| **A6** | ADK supervisor wrapping the three existing plain functions. Runs locally on the Gemini key. | **Cursor** | requirement 2 |
+
+**A1 and A2 are the critical path. Everything else can slip.**
+
+## LANE B — Aug 26 onward. All of it needs GCP.
+
+| # | Slice | Owner |
+|---|---|---|
+| **B1** | `gcloud run deploy --source` a hello-world. **Cloud Build — no local Docker, no Colima, avoids the ARM/amd64 trap.** Screenshot it. | Cursor + Oscar |
+| **B2** | **GEAP console checks, one hour, timeboxed.** `ListEvents` callable on PAYG · events carry function calls · a user event is distinguishable from a tool result · Memory Bank read/write. **Fallback decided in advance: if it resists, Firestore + Cloud Run satisfies requirement 3 and the wedge is unaffected.** | Cursor |
+| **B3** | Deploy the supervisor + surface. Hosted URL. | Cursor |
+| **B4** | Pub/Sub fan-out — the analyst network. **First thing cut.** | Cursor |
+
+## LANE C — the gates. These are what get cut under pressure, so they are listed as slices.
+
+| # | Gate | Owner | Why it is here |
+|---|---|---|---|
+| **C1** | **Name a design owner + run `/design`** | **Oscar** | Phase 3. *"The exhibit was advice rather than a gate, so it got cut as polish — that is the entire Overturn loss."* |
+| **C2** | **EYES on the user journey end-to-end** | Cursor cloud | ⛔ never run |
+| **C3** | **EYES on the full submission package** | Cursor cloud | ⛔ never run |
+| **C4** | **Cold pass by a lane that has never seen these fixtures** | coordinator routes | a builder cannot see his own screen — proved four times today |
+| **C5** | Architecture diagram **rendered and looked at** | Claude | required component |
+| **C6** | Phase 6 — **Oscar** drives the degraded path himself, no keys, fresh browser | **Oscar, not delegable** | — |
+| **C7** | Record: **one take, unedited** | Oscar | *"undeniable proof of execution"* |
+| **C8** | Sealed prediction, then **submit** | Oscar alone | outward |
+
+---
+
+## THE ORDER, compressed
+
+```
+NOW      Gemini key (free) ──> A1 classifier ──> control set GREEN ──┐
+         A2 real fixtures  ──> A3 episodes    ──> LANDED computable ─┼─> A5 surface + 3 probes
+         A4 user journey   ─────────────────────────────────────────┘
+AUG 26   GCP ──> B1 hello-world ──> B2 GEAP (timeboxed) ──> B3 deploy ──> [B4 fan-out, cuttable]
+AUG 29   C4 cold pass ──> C5 diagram ──> C6 Oscar drives it degraded
+AUG 30   C7 record, one take
+AUG 31   C8 submit
+```
+
+**Cut order, decided now so it is not decided at 2am:** B4 → A6 → the surface's polish.
+**Never cut:** A1, A2, C4, C6, C7.
+
+## Standing rules for all three builders
+- **Never `git add -A`.** Explicit paths. It already misattributed `04b7e35` once.
+- Cross-column findings go in `CURSOR-LOG.md` as a request; the owner applies them.
+- **Outward acts are Oscar's alone** — remote, push, deploy, spend, submit.
+- **No Colima, no container build.** Disk is at 99%, and Colima was the 99 GiB hog last time.
