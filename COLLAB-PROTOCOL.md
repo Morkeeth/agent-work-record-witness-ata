@@ -7,7 +7,7 @@
 
 | Cursor owns | Claude owns | Shared, append-only |
 |---|---|---|
-| `fleet/**` · `fleet_cli.py` · `fixtures/**` · `README.md` · tests | `docs/**` · `PHASE-0.md` · `CONTEXT.md` · `LANE.md` · `FOR-CURSOR.md` · `SPEC-EXTRACT.md` | `CURSOR-LOG.md` · `COLLAB-PROTOCOL.md` |
+| `fleet/**` · `fleet_cli.py` · `fixtures/**` · `README.md` · `tests` · `cloud/**` | `docs/**` · `surface/**` · `contract/**` · `PITCH.md` · `CLOSE.md` · `PHASE-0.md` · `CONTEXT.md` · `LANE.md` · `FOR-CURSOR.md` · `PHASE-TRACKER.md` | `CURSOR-LOG.md` · `COLLAB-PROTOCOL.md` · `COLLAB-REVIEW.md` |
 
 To change a file you do not own: **write the finding into `CURSOR-LOG.md` and let the owner
 apply it.** Never edit it directly. Read-modify-write from two agents is last-writer-wins and

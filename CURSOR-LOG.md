@@ -311,3 +311,23 @@ Full ruling, the mapping table, the architecture change and the four things slic
 the console: `docs/GEMINI-STACK-TAILORING.md`. **Everything about GEAP is RELAYED from docs, nothing
 executed.** Fallback decided in advance: if Sessions resists, ingest stays local and Cloud Run +
 Firestore satisfies the GCP requirement. The wedge does not depend on GEAP.
+
+---
+
+## 2026-08-22 · Cursor · full collab review + unified build plan
+
+**Object:** `COLLAB-REVIEW.md` · `COLLAB-PROTOCOL.md` column update · live probes below.
+
+```
+$ git rev-parse --short HEAD  -> 8329110
+$ git remote -v               -> (empty)
+$ python3 contract/task_class.py | tail -3
+  VERDICT: shipping implementation 3/8, identical to negative control on count;
+           overlap heuristic FAILS C4 C5 C6 (false positives)
+$ python3 fleet_cli.py wedge --topic "refactor auth" | grep operator
+  "operator": "a"   verdict VERIFIED-BY-REPO
+```
+
+**Ruling:** Vision + BUILD-PLAN v2 aligned. Submission ineligible (0/3). Critical path = Oscar
+Gemini key tonight → Cursor A1 classifier + A2 real fixture ∥ Claude A4 USER-JOURNEY + A5 surface
+after design pick. See `COLLAB-REVIEW.md` for handoffs.
