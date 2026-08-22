@@ -70,6 +70,16 @@ def classify_always_different(prompt_a: str, prompt_b: str) -> str:
     return DIFFERENT
 
 
+def classify_always_same(prompt_a: str, prompt_b: str) -> str:
+    """Returns SAME unconditionally. The other half of the negative control.
+
+    Added 2026-08-22 after the first Gemini run answered SAME on every row. One
+    stub is not enough: a control set with only an always-DIFFERENT arm cannot tell
+    a classifier apart from one that defaults the OTHER way.
+    """
+    return SAME
+
+
 # ---------------------------------------------------------------- the control set
 # Every row: (id, prompt_a, prompt_b, expected, why this row exists)
 CONTROLS = [
@@ -122,23 +132,43 @@ CONTROLS = [
 ]
 
 
+UNMEASURED = "UNMEASURED"
+
+
 def run(impl, name):
-    rows, passed = [], 0
+    """Grade one implementation.
+
+    A row that could not be ASKED is UNMEASURED, never a failure. Scoring an
+    unreachable API as 0/8 renders 'we could not measure' as 'it got everything
+    wrong' -- an unmeasured thing dressed as a measured result, which is the exact
+    error this whole file exists to refuse. Found 2026-08-22 when a 429 printed 0/8.
+    """
+    rows, passed, unmeasured = [], 0, 0
     for cid, a, b, expected, why in CONTROLS:
         try:
             got = impl(a, b)
         except NotImplementedError:
             got = "NOT-IMPLEMENTED"
-        ok = got == expected
-        passed += ok
-        rows.append((cid, ok, expected, got, why))
+        if str(got).startswith(("API-ERROR", "NO-CANDIDATE", "NOT-IMPLEMENTED")):
+            mark, unmeasured = UNMEASURED, unmeasured + 1
+        elif got == expected:
+            mark, passed = "PASS", passed + 1
+        else:
+            mark = "FAIL"
+        rows.append((cid, mark, expected, got, why))
     print(f"\nCONTROL SET · implementation: {name}")
     print("=" * 78)
-    for cid, ok, expected, got, why in rows:
-        print(f"  {'PASS' if ok else 'FAIL'}  {cid}  expected {expected:<11} got {got}")
-        if not ok:
+    for cid, mark, expected, got, why in rows:
+        print(f"  {mark:<10} {cid}  expected {expected:<11} got {got}")
+        if mark == "FAIL":
             print(f"        why this row exists: {why}")
     print("-" * 78)
+    asked = len(CONTROLS) - unmeasured
+    if unmeasured:
+        print(f"  {passed}/{asked} of the rows that could be ASKED  ·  "
+              f"{unmeasured} UNMEASURED (never reached the implementation)")
+        print(f"  NO SCORE GIVEN. An unmeasured row is not a failed row.")
+        return None, len(CONTROLS)
     print(f"  {passed}/{len(CONTROLS)} pass")
     return passed, len(CONTROLS)
 
