@@ -83,10 +83,37 @@ mono, right-aligned, in the position a reader reads as machine-generated fact.
 Nobody would have caught it from the source. The string `refactor-a-module` is correct; it is the
 *position* that turns it into a claim.
 
-## The three probe classes, and none subsumes another
+## Three probe classes so far — and none subsumes another
 
 1. **Render and look** — caught the fabricated bar widths (D3). *Looked* fake.
 2. **Check the metric against the data** — caught `LANDED · 0 corrections`. *Looked* real.
 3. **Adjacency** — caught a header asserting a computation that does not exist. **Every element correct.**
 
-A Gate-2 pass runs only the first. That is now written down.
+**"Three" is a count of what has been found, not a claim that the set is closed.** Three were
+discovered in one day by three lanes that could not see each other; there is no reason to think a
+fourth does not exist. Written this way deliberately, because the earlier heading read as a
+taxonomy and would have been quoted as one — which is this document committing the very error the
+section describes.
+
+**And note where this section sits.** It is printed under the Gate 2 heading, which makes Gate 2
+look like the pass that caught these. **It is not.** Gate 2 rendered the screen and passed it. Every
+finding below was caught *after* Gate 2, by probes Gate 2 does not contain. A Gate-2 pass runs only
+probe 1.
+
+
+---
+
+# ADJACENCY PROBE, TURNED ON THIS DOCUMENT — 2026-08-22
+
+The coordinator asked for this file to be checked against its own rule, since it carries counts,
+verdicts and probe names beside each other and is the artifact most likely to be quoted furthest.
+
+| # | What this document's layout asserted | What holds | Fix |
+|---|---|---|---|
+| **S1** | *"The three probe classes"* as a heading → a closed taxonomy | Three were **found**, in one day. Nothing says a fourth does not exist | reworded to *"three so far"*, with the reason stated inline |
+| **S2** | The adjacency audit printed under the **Gate 2** heading → Gate 2 caught these | **Gate 2 passed the screen.** Every finding here was caught by probes Gate 2 does not contain | said out loud in the section, rather than left to position |
+| **S3** | *(found while fixing)* D1's header was corrected for A3 and **D2's was not** — the recommended direction still printed `Task class · refactor-a-module` as fact | Same defect, one file, fixed in one place | D2's eyebrow now carries *"declared by the fixture, not computed"* |
+
+**S3 is the one worth keeping.** A probe run once and not swept across every instance is a probe
+that leaves its own finding live in the surface it was invented to protect — and it survived in the
+direction being recommended, which is the copy a judge would have seen.
