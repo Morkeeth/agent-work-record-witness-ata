@@ -794,3 +794,86 @@ reading harder to argue with: the control encoded my assumption and the model ex
 
 `contract/variance.py` is quota-aware: it stops cleanly when rungs exhaust and reports the N it
 **achieved**, never the N it intended.
+
+---
+
+## 2026-08-22 · Claude · 🟢 GCP IS LIVE — and the VERTEX path removes the quota cliff entirely
+
+### Verified at the object, not relayed
+
+```
+ADC       ~/.config/gcloud/application_default_credentials.json   PRESENT (0600)
+account   omorke@gmail.com
+project   hack-fleet   (568004190078)
+enabled   aiplatform · generativelanguage · run · firestore
+BILLING   billingEnabled: true   account 01F426-A27898-83DB68
+```
+
+**Correction to the brief: billing IS attached.** It was reported as unconfirmed. Nothing will fail
+with a billing error — and it also means **calls now cost money**, ~$0.0001 per classification. The
+N=10 variance run would be about one cent. Real, tiny, and Oscar should know it is no longer free.
+
+### The finding: the same model, two paths, two different answers
+
+```
+Vertex, project-scoped, ADC   gemini-3.5-flash  ->  HTTP 200
+AI Studio key                 gemini-3.5-flash  ->  HTTP 429  (still)
+```
+
+**The 20/day-per-model ceiling was a property of that key, not of the model.** The rule reads
+*"Gemini 3.5 or newer accessed through Gemini API **or Vertex AI**"*, so the Vertex path is
+admissible — and it is better on three counts:
+
+1. **No quota cliff.** The ladder exists to route around a ceiling that does not apply here.
+2. **No key file.** ADC is picked up automatically. A judge clones, runs `gcloud auth`, and
+   nothing has to be placed on disk. That is a materially better first-run experience.
+3. **It exercises the project**, so a Google Cloud surface is actually called rather than a
+   standalone endpoint.
+
+`contract/gemini_impl.py` now carries `classify_gemini_vertex` beside the AI Studio implementation.
+**The ladder stays as the free fallback for anyone without a project.**
+
+### Control set on the Vertex path — and C8 resolved itself
+
+```
+FAIL C1  expected SAME        got DIFFERENT
+PASS C2 C3 C4 C5 C6 C7
+FAIL C8  expected SAME        got UNDECIDABLE      <- not SAME, not DIFFERENT
+6/8   ·   rungs {'vertex:gemini-3.5-flash': 8}
+```
+
+**C8 is the row that flickered 7-to-3 across ten runs on the smaller model. The stronger model
+answered `UNDECIDABLE`.** *"Bump the dependency"* vs *"update package.json to the new lockfile"* is
+genuinely ambiguous, and the better model **declined to guess** rather than picking a side.
+
+**That is the product's own thesis arriving unprompted.** A refusal is not a failure mode here — it
+is the correct answer to an ambiguous question, and the row scores as a FAIL only because my pinned
+expectation said SAME. **I am not changing it.** The disagreement is the evidence.
+
+### C1 is now DIFFERENT on both paths and both model tiers
+
+Ten out of ten on flash-lite, and again on `gemini-3.5-flash` through Vertex. **The control encoded
+my assumption and every model consulted disagrees with it, consistently.** That is as settled as
+this kind of thing gets.
+
+---
+
+## REQUEST TO CURSOR — the two smallest steps to 3 of 3, with everything you need
+
+Nothing here needs re-discovering. `gcloud` is at `~/google-cloud-sdk/bin`.
+
+1. **`FLEET_STORE=firestore`** — `cloud/store.py`'s `get_store()` defaults to `jsonl`, so on the
+   path a judge runs, Firestore is never called. **ADC covers auth; no key, no env var for
+   credentials.** Requires `pip install google-cloud-firestore`.
+2. **Call `build_agent()`** — `cloud/agent.py` imports `google.adk` only inside it, and nothing calls
+   it. Requires `pip install google-adk` and `GEMINI_MODEL`.
+
+**Both must fire on the DEFAULT path, not behind a flag.** The sibling lane reported 2 of 3 when both
+integrations were reachable but opt-in — on the path a judge runs, neither was called, so it was
+0 of 3. *The seam exists is not the service is called, and a judge checks the second.*
+
+**I will not update the eligibility line to 3 of 3 until I have run the wedge with no special
+environment and watched `google.adk` and `google.cloud.firestore` actually execute.**
+
+**No containers.** Disk is 13 GiB and Colima was the 99 GiB hog. `gcloud run deploy --source .`
+needs no local daemon.

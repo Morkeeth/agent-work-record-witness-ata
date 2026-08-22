@@ -25,6 +25,20 @@ import json, os, sys, time, urllib.request, urllib.error
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 KEY_PATH = os.path.expanduser("~/.config/keys/gemini.key")
+# VERTEX PATH -- added 2026-08-22 once Oscar's project went live.
+# The rule reads "Gemini 3.5 or newer accessed through Gemini API OR VERTEX AI", so this
+# is admissible, and it is strictly better on three counts:
+#   1. NO QUOTA CLIFF. gemini-3.5-flash returns 200 here while the AI Studio key is still
+#      429 on the same model -- the 20/day-per-model ceiling was a property of that key.
+#   2. NO KEY FILE. ADC is picked up automatically, so a judge clones and runs with their
+#      own gcloud login and nothing to place on disk.
+#   3. IT IS A CALL TO THE PROJECT, so the Google Cloud surface is exercised rather than
+#      a standalone API endpoint.
+# It BILLS. Tiny (~$0.0001/classification) but real, so the AI Studio ladder stays as the
+# free fallback for anyone without a project.
+VERTEX_PROJECT = os.environ.get("GOOGLE_CLOUD_PROJECT", "hack-fleet")
+VERTEX_URL = ("https://aiplatform.googleapis.com/v1/projects/{p}/locations/global"
+              "/publishers/google/models/{m}:generateContent")
 # THE LADDER. The free-tier cap is GenerateRequestsPerDayPerProjectPerModel-FreeTier,
 # value 20 -- twenty per DAY PER MODEL, not a rate limit. That is why 40-second backoffs
 # never rescued it. Every entry is "3.5 or newer" so admissibility holds whichever answers,
@@ -58,6 +72,51 @@ UNDECIDABLE - one prompt names no object you can place, so the comparison cannot
 Check UNDECIDABLE first. Then check DIFFERENT. Only answer SAME if neither applies.
 """
 
+
+
+def _adc_token():
+    """ADC access token, or None. No key file, no env var, no secret on disk."""
+    import subprocess
+    try:
+        sdk = os.path.expanduser("~/google-cloud-sdk/bin")
+        env = dict(os.environ, PATH=f"{sdk}:{os.environ.get('PATH','')}")
+        out = subprocess.run(["gcloud", "auth", "application-default", "print-access-token"],
+                             capture_output=True, text=True, timeout=30, env=env)
+        return out.stdout.strip() or None
+    except Exception:
+        return None
+
+
+def classify_gemini_vertex(prompt_a: str, prompt_b: str) -> str:
+    """Same contract, same schema, project-scoped path. No key file, no quota cliff."""
+    tok = _adc_token()
+    if not tok:
+        return "API-ERROR-NO-ADC"
+    model = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash")
+    body = {
+        "systemInstruction": {"parts": [{"text": INSTRUCTION}]},
+        "contents": [{"role": "user", "parts": [{"text":
+            f"{INSTRUCTION}\n\nPROMPT A:\n{prompt_a}\n\nPROMPT B:\n{prompt_b}"}]}],
+        "generationConfig": {"responseMimeType": "text/x.enum",
+                             "responseSchema": {"type": "STRING",
+                                                "enum": ["SAME", "DIFFERENT", "UNDECIDABLE"]},
+                             "temperature": 0},
+    }
+    req = urllib.request.Request(
+        VERTEX_URL.format(p=VERTEX_PROJECT, m=model), data=json.dumps(body).encode(),
+        headers={"Authorization": f"Bearer {tok}", "Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=60) as r:
+            out = json.load(r)
+    except urllib.error.HTTPError as e:
+        return f"API-ERROR-{e.code}"
+    except Exception as e:
+        return f"API-ERROR-{type(e).__name__}"
+    try:
+        LAST_MODEL.append(f"vertex:{model}")
+        return out["candidates"][0]["content"]["parts"][0]["text"].strip()
+    except (KeyError, IndexError):
+        return "NO-CANDIDATE"
 
 
 def _key():
