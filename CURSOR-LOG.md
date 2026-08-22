@@ -1012,3 +1012,62 @@ that would disqualify it is making an argument nothing in a README can make.
 **Kept explicitly, so a later reading cannot quietly re-merge them:** requirements 1 and 3 are
 separate slots and Vertex fills only the first. Requirement 1 names Vertex AI; every example under
 requirement 3 is infrastructure. Settled 2026-08-22.
+
+---
+
+## 2026-08-22 · Cursor · EYES — moonshot vision + build plan (for Claude column)
+
+**Request:** synthesize multi-model panel on ambitious product vision vs conservative
+`docs/BUILD-PLAN.md`. Claude to write **`docs/MOONSHOT-PLAN.md`** or BUILD-PLAN v3 from this.
+
+**Panel independence:** true multi-model (Grok Skeptic · Composer Pragmatist · GPT Red-team)
+
+### Panel
+| Reviewer | Slot | Overall |
+|----------|------|---------|
+| Grok 4.6 | Skeptic | **OVERREACH** (high) |
+| Composer 2.5 | Pragmatist | **SUBMIT-SAFE-ONLY** (med) |
+| GPT 5.6 Terra | Red-team | **SUBMIT-SAFE-ONLY** (high) |
+
+**Consensus:** full M1–M2 moonshot is overreach before eligibility; **reframe ambition** — the
+40% beat (A vs B corrective-turn delta on camera) was mislabeled "stretch" when it is the wedge proof.
+
+### Claims
+| # | Claim | Grok | Composer | GPT | Consensus |
+|---|-------|------|----------|-----|-----------|
+| 1 | M1–M2 wins 30% architecture vs Firestore-only | DIS | PARTIAL | PARTIAL | **PARTIAL** — GEAP only if 1h console proves it |
+| 2 | Cut B4 caps at valid submission not winner | DIS | PARTIAL | AGREE | **PARTIAL** — B4 cut loses fleet-network story, not wedge |
+| 3 | Propagation believable vs "LLM rewrite" | PARTIAL | AGREE | PARTIAL | **PARTIAL** — literal bytes help; need delta on camera |
+| 4 | 95% authorship gate is judge moat | PARTIAL | PARTIAL | PARTIAL | **PARTIAL** — real, must be *shown* not headline |
+| 5 | 9 days ships eligibility + full moonshot + video | DIS | PARTIAL | DIS | **DISAGREE** on full moonshot; **PARTIAL** on safe path |
+| 6 | Pairwise episode ranking correct abstraction | PARTIAL | AGREE | PARTIAL | **AGREE** with n≥3 / C1 caveats |
+| 7 | Sealed prediction on classifier helps | DIS | PARTIAL | PARTIAL | **PARTIAL** — seal C5/C6 traps, not "7/8" or C1 |
+
+### Strongest objections (ranked)
+1. **M2 (7-day GEAP async analysts) cannot be evidenced** before Aug 30 one-take — runtime longer than remaining window.
+2. **Eligibility still 1/3 on judge path** — `build_agent()` + Firestore/Cloud Run not default; prose ≠ proof (`contract/eligibility.py` if exists).
+3. **30-second falsifier:** if propagated prompt doesn't lower B's corrective turns on a fresh run, it's prompt copying not fleet improvement — **M3 is the proof layer**.
+
+### Moonshot tiering (panel merge — for Claude to adopt)
+| Tier | Items | Rationale |
+|------|-------|-----------|
+| **NEVER CUT** | M3 corrective-turn delta on camera · M6 hosted `POST /wedge` · eligibility 3/3 · one-take video | 40% + 30% demo |
+| **KEEP IF TIME** | M1 GEAP 1h box (Registry + one Memory Bank write) · M5 diagram (honest fallback labels) | Architecture prize angle |
+| **KILL** | M2 full Pub/Sub fan-out · M4 headline seal "≥6/8" if C1 red | Integration sink / backfire |
+| **REFRAME** | B4 → "diagram + narrative" not working fan-out | Network story without 7-day proof |
+
+### Revised take (delta vs pre-EYES conservative plan)
+Conservative plan was right to cut B4 first — panel agrees M2 is death before video. **Wrong to
+treat M3 (people/delta) and M6 (hosted stranger) as polish.** Those are the ambition layer that
+wins 40% without GEAP roulette. GEAP stays **1h falsification** → diagram gets two boxes
+(GEAP path | Firestore fallback), not a schedule dependency.
+
+**Product vision moonshot (Claude should write):** not "N async analysts for 7 days" but
+**"institutional prompt immune system"** — corpus compounds, supervisor propagates literal winners,
+refuses when n<3, shows corrective-turn cost as the transferable metric. Fleet *network* is
+**Memory Bank of ranked prompts + Registry of supervisors**, not Pub/Sub plumbing demo.
+
+### Next action (Cursor supports Claude)
+1. **Claude:** `docs/MOONSHOT-PLAN.md` — vision paragraph + tier table above + video beat sheet (M3 center).
+2. **Cursor:** wire default path → `build_agent()` + `FLEET_STORE=firestore` on deploy (moves 1→3/3).
+3. **Oscar:** pick surface direction · name design owner · hours one-liner.
