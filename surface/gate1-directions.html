@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gate 1 — three directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;900&family=IBM+Plex+Mono:wght@400;600&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,600;1,6..72,300&family=Archivo:wght@500;700&family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Source Sans 3',ui-sans-serif,sans-serif;background:#15171a;color:#e6e8ea}
+.bar{display:flex;gap:0;border-bottom:1px solid #2b2f34;background:#101215;position:sticky;top:0;z-index:9}
+.bar button{flex:1;background:none;border:0;border-right:1px solid #2b2f34;color:#7d858d;padding:14px 10px;font:600 12px/1 'Source Sans 3',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
+.bar button[aria-selected=true]{color:#e6e8ea;background:#1b1e22;box-shadow:inset 0 -2px 0 #e6e8ea}
+.pane{display:none}.pane.on{display:block}
+.note{font:400 13px/1.6 'Source Sans 3',sans-serif;color:#8d949b;padding:14px 32px;background:#101215;border-bottom:1px solid #2b2f34}
+.note b{color:#e6e8ea;font-weight:600}
+
+/* ---------- D1 LEDGER : ink on cool paper, figures in mono, the entry is a record ---------- */
+.d1{background:#eceef0;color:#14181d;padding:56px 48px;min-height:100vh;font-family:'Source Sans 3',sans-serif}
+.d1 .hd{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #14181d;padding-bottom:10px}
+.d1 .hd h1{font:900 13px/1 'Source Sans 3';letter-spacing:.22em;text-transform:uppercase}
+.d1 .hd time{font:400 12px/1 'IBM Plex Mono',monospace;color:#5b646d}
+.d1 .lede{font:300 30px/1.25 'Source Sans 3';max-width:44ch;margin:34px 0 6px;letter-spacing:-.015em}
+.d1 .lede em{font-style:normal;font-weight:900}
+.d1 .sub{font:400 14px/1.5 'Source Sans 3';color:#5b646d;max-width:56ch;margin-bottom:40px}
+.d1 .row{display:grid;grid-template-columns:112px 1fr 168px;gap:26px;padding:24px 0;border-top:1px solid #c3c9cf;align-items:start}
+.d1 .who{font:600 13px/1.3 'Source Sans 3';letter-spacing:.04em}
+.d1 .who span{display:block;font:400 11px/1.5 'IBM Plex Mono',monospace;color:#6e767e;margin-top:4px}
+.d1 .p{font:400 17px/1.45 'Source Sans 3';color:#14181d}
+.d1 .p code{font:400 16px/1 'IBM Plex Mono',monospace;background:#dde1e5;padding:1px 4px}
+.d1 .trail{margin-top:10px;padding-left:16px;border-left:2px solid #b9c0c7}
+.d1 .trail div{font:400 15px/1.5 'Source Sans 3';color:#79818a;padding:3px 0}
+.d1 .fig{text-align:right}
+.d1 .fig b{display:block;font:600 34px/1 'IBM Plex Mono',monospace;letter-spacing:-.03em}
+.d1 .fig small{display:block;font:400 11px/1.5 'IBM Plex Mono',monospace;color:#6e767e;margin-top:6px}
+.d1 .win b{color:#14181d}.d1 .lose b{color:#9aa2aa}
+.d1 .stamp{margin-top:44px;border-top:2px solid #14181d;padding-top:18px;display:flex;justify-content:space-between;align-items:flex-end}
+.d1 .stamp p{font:400 14px/1.5 'Source Sans 3';max-width:50ch;color:#3d454d}
+.d1 .stamp p b{font-weight:900;color:#14181d}
+.d1 .stamp .path{font:400 11px/1.6 'IBM Plex Mono',monospace;color:#6e767e;text-align:right}
+
+/* ---------- D2 MARGINALIA : prompts are writing; corrections are margin notes ---------- */
+.d2{background:#e9ebee;color:#191d26;padding:60px 56px;min-height:100vh;font-family:'Newsreader',Georgia,serif}
+.d2 .eyebrow{font:700 10px/1 'Archivo',sans-serif;letter-spacing:.26em;text-transform:uppercase;color:#6a7280}
+.d2 h1{font:300 46px/1.1 'Newsreader',serif;letter-spacing:-.02em;max-width:22ch;margin:16px 0 46px}
+.d2 h1 em{font-style:italic}
+.d2 .ms{display:grid;grid-template-columns:1fr 232px;gap:40px;padding:30px 0;border-top:1px solid #c8ccd3}
+.d2 .body{font:300 25px/1.5 'Newsreader',serif;color:#191d26}
+.d2 .body.faded{color:#8f96a1}
+.d2 .by{font:700 10px/1 'Archivo',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#6a7280;margin-bottom:12px}
+.d2 .marg{padding-top:4px;border-left:1px solid #c8ccd3;padding-left:18px}
+.d2 .marg div{font:300 15px/1.5 'Newsreader',serif;font-style:italic;color:#6a7280;padding:4px 0}
+.d2 .verdict{font:700 10px/1 'Archivo',sans-serif;letter-spacing:.2em;text-transform:uppercase;margin-top:14px;display:inline-block;padding:6px 10px;border:1px solid #191d26}
+.d2 .verdict.out{border-color:#a9b0ba;color:#8f96a1}
+.d2 .close{margin-top:52px;padding-top:22px;border-top:1px solid #c8ccd3;font:300 21px/1.5 'Newsreader',serif;max-width:52ch}
+.d2 .close b{font-weight:600}
+.d2 .close .p{font:700 10px/1.8 'Archivo',monospace;letter-spacing:.1em;color:#6a7280;margin-top:14px}
+
+/* ---------- D3 TRACK : an episode has length and cost; draw it ---------- */
+.d3{background:#0d1013;color:#dfe4e8;padding:56px 48px;min-height:100vh;font-family:'Bricolage Grotesque',sans-serif}
+.d3 .eyebrow{font:300 11px/1 'IBM Plex Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:#69737d}
+.d3 h1{font:800 52px/1.02 'Bricolage Grotesque',sans-serif;letter-spacing:-.035em;max-width:19ch;margin:14px 0 8px}
+.d3 .sub{font:300 16px/1.5 'Bricolage Grotesque',sans-serif;color:#8b949d;max-width:52ch;margin-bottom:50px}
+.d3 .ep{margin-bottom:38px}
+.d3 .epl{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:11px}
+.d3 .epl .n{font:800 15px/1 'Bricolage Grotesque';letter-spacing:.01em}
+.d3 .epl .c{font:400 12px/1 'IBM Plex Mono',monospace;color:#69737d}
+.d3 .line{height:3px;background:#242a30;position:relative;margin-bottom:13px}
+.d3 .fill{position:absolute;left:0;top:0;height:3px;background:#4ea3a8}
+.d3 .fill.dead{background:#6c757e}
+.d3 .tick{position:absolute;top:-5px;width:2px;height:13px;background:#c98b6b}
+.d3 .txt{font:300 19px/1.45 'Bricolage Grotesque',sans-serif;color:#dfe4e8}
+.d3 .txt code{font:400 17px/1 'IBM Plex Mono',monospace;color:#9fd4d7}
+.d3 .txt.dim{color:#7c858e}
+.d3 .corr{font:300 15px/1.5 'Bricolage Grotesque';color:#c98b6b;margin-top:7px}
+.d3 .out{margin-top:56px;border-top:1px solid #242a30;padding-top:22px;display:flex;justify-content:space-between;align-items:flex-end;gap:30px}
+.d3 .out p{font:300 19px/1.45 'Bricolage Grotesque';max-width:46ch;color:#dfe4e8}
+.d3 .out p b{font-weight:800}
+.d3 .out .path{font:400 11px/1.7 'IBM Plex Mono',monospace;color:#69737d;text-align:right;white-space:nowrap}
+@media(max-width:760px){.d1 .row{grid-template-columns:1fr}.d1 .fig{text-align:left}.d2 .ms{grid-template-columns:1fr}.d3 h1{font-size:34px}.d2 h1{font-size:32px}.d1 .lede{font-size:23px}}
+</style></head><body>
+
+<div class="bar" role="tablist">
+  <button role="tab" aria-selected="true" data-t="d1">1 · Ledger</button>
+  <button role="tab" aria-selected="false" data-t="d2">2 · Marginalia</button>
+  <button role="tab" aria-selected="false" data-t="d3">3 · Track</button>
+</div>
+<div class="note"><b>Gate 1 · three directions, one screen, real fixture data.</b> The signature device is the same in all three and it comes from the subject, not a library: <b>each prompt is set at its true length, with its outcome trail hanging beneath it.</b> The winner is physically longer than the loser. You see who prompts better by shape, before reading a word.</div>
+
+<!-- ============ D1 ============ -->
+<section class="pane on" id="d1"><div class="d1">
+  <div class="hd"><h1>Propagation record</h1><time>fixtures/operators · task class refactor-a-module</time></div>
+  <p class="lede">Two engineers opened the <em>same</em> task. One landed it cold.</p>
+  <p class="sub">The other needed a correction and then withdrew. The difference is a prompt, and a prompt is transferable.</p>
+
+  <div class="row win">
+    <div class="who">operator a<span>ep. 1</span></div>
+    <div><p class="p">Refactor the auth module: extract <code>validate_token</code> into <code>auth/validate.py</code>, keep tests green, show me the diff before applying.</p></div>
+    <div class="fig"><b>0</b><small>corrective turns<br>LANDED</small></div>
+  </div>
+
+  <div class="row lose">
+    <div class="who">operator b<span>ep. 1</span></div>
+    <div><p class="p">fix auth</p>
+      <div class="trail"><div>never mind</div></div></div>
+    <div class="fig"><b>1</b><small>corrective turn<br>ABANDONED</small></div>
+  </div>
+
+  <div class="stamp">
+    <p>Operator a's prompt was written to <b>the team skill file</b>. Nobody asked for it. The next session on this task class starts from it.</p>
+    <div class="path">fixtures/org-repo/.cursor/rules/<br>propagated-skill.md</div>
+  </div>
+</div></section>
+
+<!-- ============ D2 ============ -->
+<section class="pane" id="d2"><div class="d2">
+  <div class="eyebrow">Task class · refactor-a-module</div>
+  <h1>A prompt is <em>writing</em>. Someone in the building is better at it.</h1>
+
+  <div class="ms">
+    <div><div class="by">operator a</div>
+      <p class="body">Refactor the auth module: extract validate_token into auth/validate.py, keep tests green, show me the diff before applying.</p>
+      <span class="verdict">landed · 0 corrections</span></div>
+    <div class="marg"><div>names the file</div><div>names the symbol</div><div>states the exit condition</div><div>asks to see it first</div></div>
+  </div>
+
+  <div class="ms">
+    <div><div class="by">operator b</div>
+      <p class="body faded">fix auth</p>
+      <span class="verdict out">abandoned · 1 correction</span></div>
+    <div class="marg"><div>no file</div><div>no symbol</div><div>no exit condition</div><div>“never mind”</div></div>
+  </div>
+
+  <p class="close">The fleet took the sentence that worked and <b>wrote it into the team's skill file</b>, unasked. Operator b's next session opens with operator a's habits already in the room.
+    <span class="p">fixtures/org-repo/.cursor/rules/propagated-skill.md</span></p>
+</div></section>
+
+<!-- ============ D3 ============ -->
+<section class="pane" id="d3"><div class="d3">
+  <div class="eyebrow">refactor-a-module</div>
+  <h1>One landed cold. One never got there.</h1>
+  <p class="sub">An episode is one intent, opened and closed. Its length is what it cost. Every mark on the line is a turn the engineer had to type again.</p>
+
+  <div class="ep"><div class="epl"><span class="n">operator a</span><span class="c">LANDED · 0 corrective</span></div>
+    <div class="line"><div class="fill" style="width:34%"></div></div>
+    <p class="txt">Refactor the auth module: extract <code>validate_token</code> into <code>auth/validate.py</code>, keep tests green, show me the diff before applying.</p></div>
+
+  <div class="ep"><div class="epl"><span class="n">operator b</span><span class="c">ABANDONED · 1 corrective</span></div>
+    <div class="line"><div class="fill dead" style="width:72%"></div><div class="tick" style="left:38%"></div></div>
+    <p class="txt dim">fix auth</p><p class="corr">→ never mind</p></div>
+
+  <div class="out"><p>The shorter prompt cost <b>twice the line</b> and produced nothing. The fleet moved the one that worked into the team file <b>without being asked.</b></p>
+    <div class="path">fixtures/org-repo/.cursor/rules/<br>propagated-skill.md</div></div>
+</div></section>
+
+<script>
+document.querySelectorAll('.bar button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.bar button').forEach(x=>x.setAttribute('aria-selected',x===b));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.t));
+});
+</script></body></html>
