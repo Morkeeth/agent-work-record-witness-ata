@@ -2,9 +2,17 @@
 
 > # ⛔ READ THIS FIRST: THE ENTRY IS CURRENTLY INELIGIBLE.
 >
-> All Things Agentic requires **Gemini 3.5 · a Google Agent Framework · a Google Cloud service.**
-> This repo has **none of the three.** The runnable artifact is 199 lines of stdlib Python and a
-> static HTML page. That is a disqualification, not a lost point.
+> ## ⚠️ ELIGIBILITY: **ONE of three** mandatory technologies is met.
+> **✅ Gemini 3.5+ — MET AT RUNTIME.** `fleet/task_class.classify` → `contract/gemini_impl` makes a
+> live call to `generativelanguage.googleapis.com` on every wedge run.
+> **❌ Google agent framework —** `cloud/agent.py` imports `google.adk` only inside `build_agent()`,
+> and nothing calls `build_agent()`.
+> **❌ Google Cloud service —** `cloud/store.py`'s `get_store()` defaults to `FLEET_STORE=jsonl`;
+> `FirestoreStore`'s `google.cloud.firestore` import sits behind that env var and it is not set.
+>
+> `cloud/` is scaffolding with a real, swappable seam — one environment variable from live, which is
+> the right shape to be in. **But "the seam exists" is not "the service is called", and a judge
+> checks the second.**
 >
 > **Aug 26 is not a schedule risk. It is the line between entering and not entering.**
 >
