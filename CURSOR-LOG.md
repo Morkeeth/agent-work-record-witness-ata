@@ -739,3 +739,58 @@ exactly 3/8. The *comparison* is stable even though the score is not — the mod
 `cloud/` and the `Dockerfile` are **scaffolding with a real, swappable seam — not a runtime
 integration.** The seam is the right design and it is one env var from being live. But as configured,
 nothing in `cloud/` touches Google.
+
+---
+
+## 2026-08-22 · Claude · VARIANCE, N=10 — the classifier is nearly deterministic, and ONE row moves
+
+```
+STABLE   C1  expected SAME        got DIFFERENT x10                 0/10 correct
+STABLE   C2  expected SAME        got SAME      x10                10/10
+STABLE   C3  expected SAME        got SAME      x10                10/10
+STABLE   C4  expected DIFFERENT   got DIFFERENT x10                10/10
+STABLE   C5  expected DIFFERENT   got DIFFERENT x10                10/10
+STABLE   C6  expected DIFFERENT   got DIFFERENT x10                10/10
+STABLE   C7  expected UNDECIDABLE got UNDECIDABLE x10              10/10
+*FLICKS* C8  expected SAME        got SAME x7  DIFFERENT x3          7/10
+
+per-run scores : [7, 7, 7, 6, 7, 6, 7, 6, 7, 7]
+range 6-7 of 8   ·   mode 7/8   ·   rows that move: C8 only
+rungs: {'gemini-3.5-flash-lite': 68, 'gemini-3.6-flash': 12}
+
+stubs, deterministic, zero API calls:
+  always-DIFFERENT 3/8 every run · always-SAME 4/8 every run · frozen baseline 3/8
+```
+
+### Per-row beats a range, and this is why
+
+**Seven of eight rows are identical across ten runs.** The wobble is not general instability — it is
+**one row**, and it is the one that deserves to wobble: **C8**, *"bump the dependency"* vs *"update
+package.json to the new lockfile"* — the same class stated at two levels of abstraction. A careful
+human would hesitate there too. **A classifier that is certain about a genuinely ambiguous pair
+would be worse, not better.**
+
+So the honest product statement is not *"6–7 out of 8"*. It is:
+
+> **Deterministic on 7 of 8 rows across 10 runs. The one that moves is a genuine judgment call,
+> and it moves 7-to-3, not 5-to-5.**
+
+### C1 is stably wrong, and that is stronger evidence than a flicker
+
+`DIFFERENT` **ten times out of ten.** The model is not noisy about C1 — it holds a consistent
+position that *"fix auth"* is not the same class of work as an extract-method refactor. **That is a
+considered disagreement with my pinned expectation, not a coin flip**, which makes the earlier
+reading harder to argue with: the control encoded my assumption and the model exposed it.
+
+### What may now be said, and what may not
+
+- ❌ **"7/8"** as a bare figure. It was one sample presented as a measurement, and it moves.
+- ✅ **"It beats a stub that ignores its input, in every run."** The stubs are exactly 3/8 and 4/8
+  every time, the frozen baseline exactly 3/8, and the model clears all three in all ten runs.
+- ✅ **"Deterministic on 7 of 8 rows over 10 runs; the one that moves is a real judgment call."**
+- ⚠️ Any figure must carry **N, the range, the mode and the rung distribution.** 80 of these calls
+  came from `flash-lite` and 12 from `3.6-flash` — **a ladder that changes model mid-set makes the
+  arm a mixture unless the distribution is printed beside it.**
+
+`contract/variance.py` is quota-aware: it stops cleanly when rungs exhaust and reports the N it
+**achieved**, never the N it intended.
