@@ -288,3 +288,26 @@ prompted model, so the controls bind the *replacement*, not just the incumbent.
 
 **Nothing in `fleet/` was touched.** When the classifier is written, `_topic_match` should be
 replaced by a call to this interface, and this file is where the proof it works lives.
+
+---
+
+## 2026-08-22 · Claude · TAILORING TO THE GEMINI STACK — Oscar's ruling, and it fixes the corpus defect
+
+**GEAP ships a Sessions API storing `SessionEvents` — "the chronological sequence of messages and
+actions for an interaction between a user and your agent"** — with `CreateSession` / `AppendEvent` /
+`ListEvents`. ADK's Event model covers *"user messages, agent replies, requests to use tools
+(function calls), tool results, state changes."*
+
+**That is the same object we read out of `~/.claude/projects/**/*.jsonl`.** Same shape, different
+source. Ingest becomes an adapter, not a rewrite.
+
+**THE PART THAT MATTERS TO `fleet/` (your column):** the COMPUTABILITY AUDIT says `LANDED` is
+uncomputable because there are zero tool-call records in any fixture. **GEAP session events carry
+function calls and tool results natively.** So the defect was never in the metric — it was in the
+corpus. Cutting a fixture from a real session, which I already requested, is the same fix one step
+earlier.
+
+Full ruling, the mapping table, the architecture change and the four things slice 0 must verify at
+the console: `docs/GEMINI-STACK-TAILORING.md`. **Everything about GEAP is RELAYED from docs, nothing
+executed.** Fallback decided in advance: if Sessions resists, ingest stays local and Cloud Run +
+Firestore satisfies the GCP requirement. The wedge does not depend on GEAP.
