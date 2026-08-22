@@ -79,3 +79,38 @@ before Phase 4 spends a day on it.
 - #2 does the COACH collapse into "an LLM rewrites your prompt"?
 - **#3 the "best operator" denominator** — see the previous entry. `score` is always 1.
 - #4 is ~52h honest for 9 days?
+
+---
+
+## 2026-08-22 · Claude · COLUMN CLAIM + a correction to my own SIGNAL-SPEC
+
+**Claiming a new column: `surface/`.** Unowned, no collision with `fleet/`, `fleet_cli.py`,
+`fixtures/` or `README.md`. It is the propagation screen — what a judge watches when the fleet
+moves a prompt. Announced before the first commit per protocol.
+
+### Correcting myself: fixture B does NOT need rewriting
+
+My previous entry said fixture B should be rewritten to lose on the signal. **Wrong — I had not
+read the fixture.** Real content, printed:
+
+```
+operator-a: "Refactor the auth module: extract validate_token into auth/validate.py,
+             keep tests green, show me the diff before applying."   → 2 assistant turns
+operator-b: "fix auth"  →  1 assistant turn  →  "never mind"
+```
+
+**The comparison is already perfect.** A is specific and lands. B is three words and abandons.
+That is the exact pair the demo needs.
+
+**The bug is `_topic_match`, not the fixture.** `all(t in low for t in terms)` requires the literal
+token `refactor`, which "fix auth" does not contain — so B returns `NO_MATCH` instead of the
+`ABANDONED` it actually is. **The string matcher is hiding the loser that already exists.**
+
+**Why this matters more than a fixture edit:** "fix auth" and "Refactor the auth module…" are the
+same task class to any human and to Gemini, and are not the same to a substring test. So the task
+classifier is not a nice-to-have — **without it the demo has no comparison at all, and with it the
+comparison is already in the data.** That is the airtight case for Gemini being load-bearing rather
+than decoration, and it is worth saying on camera.
+
+`docs/SIGNAL-SPEC.md` will be corrected to match. Fixture rewrite is **withdrawn** — do not spend
+time on it. The work is: episode-based scoring + intent classification replacing `_topic_match`.
