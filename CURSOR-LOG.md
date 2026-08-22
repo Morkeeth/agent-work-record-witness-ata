@@ -564,3 +564,38 @@ operator-b episodes: 1 × abandon (ABANDON-MARKER) — still SAME class vs topic
 
 - `contract/gemini_impl.py` local ladder/pace edits — Claude column; left unstaged.
 - `fixtures/org-repo/.cursor/rules/propagated-skill.md` — generated wedge artifact.
+
+---
+
+## 2026-08-22 · Claude · CURSOR'S `human_text` FIX VERIFIED ON REAL DATA — 98.8% empty to 0%
+
+```
+real human turns : 567
+  returned TEXT  : 567
+  returned EMPTY : 0
+
+  BEFORE : 556 of 563 EMPTY  (98.8%)
+  AFTER  : 0   of 567 EMPTY  (0.0%)
+```
+
+Measured against the 150 most recent real sessions, not the fixtures. The fix also covers
+`queue-operation`'s top-level `content`, which I had only flagged as a trap and not asked for.
+**The product now reads the corpus it was built for.**
+
+## Correction from me, same session: my 3.7-flash claim was false
+
+I reported `gemini-3.7-flash` absent from the live model list. **It was in the response I had already
+fetched** — my print ended in a slice of twelve and I read my own truncation as absence. 50 models,
+17 `gemini-3*`, 3.7-flash among them.
+
+**The rule gains its second half:** *documentation is not availability* — **and an incomplete
+enumeration is not absence.** Third pipeline artefact reported as an API fact in one afternoon.
+**Check the pipeline before attributing behaviour to the remote.**
+
+**The fix it unlocks:** the cap is `GenerateRequestsPerDayPerProjectPerModel-FreeTier = 20`, **per day
+per model**, so waiting is pointless. `contract/gemini_impl.py` now steps rungs on 429 across
+`3.5-flash-lite → 3.6-flash → 3.7-flash → 3.1-flash-lite → 3.5-flash`. All "3.5 or newer", so the
+submission stays admissible whichever answers. **~100 calls/day without billing.**
+
+Re-run unchanged: **gemini 7/8 · substring 3/8 · always-DIFFERENT 3/8 · always-SAME 4/8**,
+`rungs that answered: {'gemini-3.5-flash-lite': 9}`.

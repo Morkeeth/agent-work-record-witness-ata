@@ -25,7 +25,13 @@ import json, os, sys, time, urllib.request, urllib.error
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 KEY_PATH = os.path.expanduser("~/.config/keys/gemini.key")
-DEFAULT_MODEL = "gemini-3.5-flash"      # verified live 2026-08-22, not guessed
+# THE LADDER. The free-tier cap is GenerateRequestsPerDayPerProjectPerModel-FreeTier,
+# value 20 -- twenty per DAY PER MODEL, not a rate limit. That is why 40-second backoffs
+# never rescued it. Every entry is "3.5 or newer" so admissibility holds whichever answers,
+# and each carries its own 20/day. Verified present in the live /v1beta/models list.
+LADDER = ["gemini-3.5-flash-lite", "gemini-3.6-flash", "gemini-3.7-flash",
+          "gemini-3.1-flash-lite", "gemini-3.5-flash"]
+DEFAULT_MODEL = LADDER[0]
 ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent"
 
 INSTRUCTION = """Two prompts written by software engineers. Decide whether they open the
@@ -59,7 +65,8 @@ def _key():
         return f.read().strip()
 
 
-_PACE = float(os.environ.get("GEMINI_PACE_SECONDS", "4"))
+_PACE = float(os.environ.get("GEMINI_PACE_SECONDS", "1"))
+LAST_MODEL = []          # which rung actually answered; printed, never hidden
 
 
 def classify_gemini(prompt_a: str, prompt_b: str) -> str:
@@ -76,27 +83,28 @@ def classify_gemini(prompt_a: str, prompt_b: str) -> str:
             "temperature": 0,
         },
     }
-    req = urllib.request.Request(
-        ENDPOINT.format(m=model),
-        data=json.dumps(body).encode(),
-        headers={"Content-Type": "application/json", "x-goog-api-key": _key()},
-    )
-    for attempt in range(5):                       # free tier is rate limited
+    # 429 here is a DAILY per-model cap, so waiting is pointless -- step to the next
+    # rung instead. Which model answered is printed, never hidden: a score that does not
+    # say which model produced it is not a measurement.
+    rungs = ([model] + [m for m in LADDER if m != model]) if os.environ.get("GEMINI_MODEL") \
+            else list(LADDER)
+    for rung in rungs:
+        req = urllib.request.Request(
+            ENDPOINT.format(m=rung), data=json.dumps(body).encode(),
+            headers={"Content-Type": "application/json", "x-goog-api-key": _key()})
         try:
             with urllib.request.urlopen(req, timeout=60) as r:
                 out = json.load(r)
+            LAST_MODEL.append(rung)
             break
         except urllib.error.HTTPError as e:
-            if e.code == 429 and attempt < 4:
-                # Free tier: generate_content_free_tier_requests, limit 20, and the
-                # server's own retryDelay came back at 37s. Measured, not guessed.
-                time.sleep(40)
-                continue
+            if e.code == 429:
+                continue                       # this rung is spent for today
             return f"API-ERROR-{e.code}"
         except Exception as e:
             return f"API-ERROR-{type(e).__name__}"
     else:
-        return "API-ERROR-RATE-LIMIT"
+        return "API-ERROR-ALL-RUNGS-EXHAUSTED"
     try:
         return out["candidates"][0]["content"]["parts"][0]["text"].strip()
     except (KeyError, IndexError):
@@ -114,7 +122,9 @@ if __name__ == "__main__":
         print("API unreachable. Refusing to grade — a control set that cannot call is not red, "
               "it is unmeasured.")
         sys.exit(2)
-    g, t = run(classify_gemini, f"classify_gemini ({os.environ.get('GEMINI_MODEL', DEFAULT_MODEL)})")
+    g, t = run(classify_gemini, "classify_gemini")
+    from collections import Counter
+    print(f"  rungs that answered: {dict(Counter(LAST_MODEL))}")
     s, _ = run(classify_substring, "classify_substring (what shipped)")
     n, _ = run(classify_always_different, "classify_always_different (NEGATIVE CONTROL)")
     print("\n" + "=" * 78)

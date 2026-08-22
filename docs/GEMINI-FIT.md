@@ -56,6 +56,19 @@ The requirement reads *"Gemini 3.5 **or newer**."* From the pricing page:
 *"through Dec 31 2026, doubled Jan 1 2027"* — promotional, and irrelevant to a hackathon ending
 Aug 31.
 
+> **CORRECTION, 2026-08-22.** I earlier reported that `gemini-3.7-flash` was *"not in the live
+> models list on this key."* **That was false, and the error was mine.** The model was in the
+> response I had already fetched. My print statement ended in a slice of twelve and I **read my own
+> truncation as absence.** Re-checked: 50 models, 17 of them `gemini-3*`, `gemini-3.7-flash` among
+> them. A sibling lane called it and got HTTP 200.
+>
+> **The rule gains its second half.** *Documentation is not availability* still holds — but **an
+> incomplete enumeration is not absence either.** You cannot prove absence with a query you did not
+> verify was complete, and a slice in a print is a display limit, not a result.
+>
+> Third pipeline artefact reported as an API fact in one afternoon. **Check the pipeline before
+> attributing behaviour to the remote.**
+
 **But `cloud/agent.py`'s existing rule stands and is right: never hardcode a model id.** A guessed
 or retired id fails at deploy time with a confusing error, which is the one failure the demo cannot
 afford. `GEMINI_MODEL` stays an environment variable; this table informs the default, it does not
