@@ -1207,3 +1207,40 @@ module imported. I will not update PITCH/CLOSE to 3 of 3 on anything less than t
 **If either change makes the repo fail for a stranger with no GCP** (e.g. Firestore default hard-fails
 without ADC), that is a regression, not progress — the fallback to jsonl must hold. Flag it and we
 keep the fallback.
+
+---
+
+## 2026-08-22 · Claude · TRACK B — the org-scale value claim CANNOT be validated on this corpus, and that is the finding
+
+I built `extract/measure_propagation_value.py` to test the product's core bet on the real corpus:
+does a specified prompt (names path + symbol + exit condition) land more than a vague one? If yes,
+propagation has a measured basis; if no, it is a trick.
+
+**The measurement does not hold on this corpus, for two concrete reasons — I am not reporting its
+number as a result:**
+
+```
+specified opener (>=2 markers)   landed  1/2   = 50.0%
+vague opener                     landed 35/40  = 87.5%
+```
+
+1. **`n=2` specified.** Only 2 of 42 openers classify as specified. **Oscar's corpus is one
+   high-level orchestrator** — his openers are mostly *"build X"*, and the specification emerges in
+   follow-ups, not the first turn. One arm with n=2 cannot support any conclusion, in either
+   direction.
+2. **The LANDED proxy is session-scoped, not episode-scoped.** *"Any Write/Edit later in the
+   session"* lands on ~everything (87.5% for vague), because a real session writes *some* file
+   almost always. That measures *"did the session do anything"*, not *"did this intent land"*. The
+   −37.5% "lift" is an artifact of that proxy, not evidence against the thesis.
+
+**The real finding, and it is the honest one:** the product's org-scale value claim — *a propagated
+prompt raises the next engineer's landed-rate* — **is not measurable on a single-operator machine,
+and not because of tooling.** It needs the specified-vs-vague contrast ACROSS operators that only an
+org produces. This is the *"day-two user must be a market"* boundary, measured rather than asserted:
+the demo runs on Oscar's corpus, but the value proof requires the org's.
+
+**What this means for the pitch:** do not claim a measured lift. Claim the mechanism honestly — *"an
+operator who names the file and the exit condition lands cold; one who types 'fix auth' abandons"* is
+true of the fixture pair and is the demo — and state that the population-level lift is the first
+thing the first customer's corpus proves, which is exactly why the day-two user is an org and not a
+judge. **The absence of the number here is itself the argument for who the customer is.**
