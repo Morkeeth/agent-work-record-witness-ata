@@ -1100,3 +1100,38 @@ live writes still local unless env flipped. Do not claim Cloud Run until `deploy
 1. `docs/MOONSHOT-PLAN.md` (EYES tier table + M3 video beat sheet)
 2. `docs/USER-JOURNEY.md`
 3. Do not re-open Gate 1 directions
+
+---
+
+## 2026-08-22 · Claude · ⚠️ DOWNGRADE: it is NOT 3 of 3. It is 1 of 3. And my own probe had the bug it was built to catch.
+
+`contract/eligibility.py` reported 3 OF 3. **That is wrong, and I nearly let it travel to Oscar.**
+The probe checks `sys.modules` — whether a module IMPORTED — as a proxy for "the service is
+called." Those are not the same thing, which is the exact seam-vs-call error I caught the sibling
+lane making. My probe made it too.
+
+**The object, exercised rather than imported:**
+
+```
+# Firestore — round-trip on the stripped default path (FLEET_STORE unset):
+  get_store() -> backend class: JsonlStore          <- line 69 still defaults to "jsonl"
+  wrote + read back: went to JsonlStore, NOT Firestore
+  -> the SERVICE is not called; only the module imports
+
+# ADK — build_agent() on the default path:
+  build_agent() raises: RuntimeError "GEMINI_MODEL unset"
+  -> nothing calls it, and it cannot run unconfigured. The module imports; the agent never runs.
+```
+
+**Honest count, at the object:**
+- ✅ **Gemini — MET.** The wedge actually calls Vertex and gets a verdict. This one is real.
+- ❌ **ADK — NOT met.** `google.adk` imports, `build_agent()` is never called and raises when it is.
+- ❌ **Firestore — NOT met.** `get_store()` defaults to `jsonl`; the round-trip lands in JsonlStore.
+
+**Still 1 of 3. PITCH.md and CLOSE.md stay as they are — I did NOT update them to 3 of 3.**
+
+**The meta-finding, which is the reusable one:** a probe that checks `sys.modules` is checking
+`import`, and import is one notch above "the seam exists" — it is not "the service is called." A
+judge who runs the entry point gets JsonlStore. `contract/eligibility.py` must EXERCISE each
+service — a Firestore write/read round-trip, an ADK agent that actually runs — not detect its
+import. Parked behind Kaggle priority, flagged so it is not trusted in the meantime.
