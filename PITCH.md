@@ -29,11 +29,28 @@ opening anything.
 **The corpus compounds.** Every week of sessions makes the next answer better, and a competitor
 starting in January has no history at all. This is the rare asset that cannot be bought.
 
-**The moat is already built and it was not obvious.** At fleet scale **~95% of the `user` turns in a
-transcript are not the user** — they are tool output, injected skill files, sub-agent prompts,
-messages from other terminals. Separating the human from that is the hard part of the whole
-category. Nobody found it because nobody ran a fleet big enough to hit it. *(A tool result even
-arrives as `type: "user"`. It looks like a person typing.)*
+**The moat is already built, it was not obvious, and it is measured.** **At fleet scale, 95.1% of
+the `type: user` records in a transcript were not written by the human** — 10,866 records against
+537 real prompts over one three-day window. On a single-terminal day the same gate reads ~46%.
+**The number is a function of fleet size**, because injected traffic scales and a person's typing
+does not — which is exactly why an org rolling out agents at scale is the customer and a solo
+developer is not.
+
+**And it is not one gate. It is three record shapes with a trap in both directions:**
+
+1. A **tool result arrives as `type: "user"` with `promptSource: null`.** It looks like a person
+   typing.
+2. Injected skill bodies, sub-agent prompts and cross-session peer messages arrive the same way,
+   separated only by `promptSource` and `isMeta`.
+3. **`type: "queue-operation"` carries its text in a top-level `content` field, not
+   `message.content`** — so a parser reading the obvious field **sees nothing at all**. Some of
+   those are genuinely the human. But there were **4,596 of them against 537 real prompts**, and
+   widening the gate to catch the real ones **inflates the corpus to 1,992 and fills it with the
+   fleet's own words.**
+
+**A competitor who does not know this ships a corpus of its own agents talking to themselves, and
+its report reads fine.** That is the defensibility claim, and it is the only one here that was
+measured rather than argued.
 
 **Second question, same corpus:** *which of our skills, rules and CLAUDE.md files actually change
 behaviour?* Every team writing them is guessing.
