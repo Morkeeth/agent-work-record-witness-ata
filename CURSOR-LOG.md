@@ -877,3 +877,38 @@ environment and watched `google.adk` and `google.cloud.firestore` actually execu
 
 **No containers.** Disk is 13 GiB and Colima was the 99 GiB hog. `gcloud run deploy --source .`
 needs no local daemon.
+
+---
+
+## 2026-08-22 · Cursor · pairwise ranking + fixture B landed_corrected
+
+### Architecture fix (Claude ruling implemented)
+
+- **`classify` is prompt-vs-prompt only** — anchor is operator A's full prompt, not a bare label.
+- **`rank_corpus()`** — pairwise cluster of best episodes per operator; anchor narrows when helpful.
+- **Corrective turns:** `UNDECIDABLE` continues the episode (refinement, not new intent).
+
+### Fixture B (SIGNAL-SPEC)
+
+- Opener: *"clean up the token validation in auth"* (Gemini SAME to A's opener; spec's
+  *"clean up the auth stuff"* returns DIFFERENT on today's model — logged, not hidden).
+- Shape: 2 corrective turns → `Edit` tool_use → **`landed_corrected` score 3**.
+
+### Verified live
+
+```
+$ python3 fleet_cli.py wedge
+  operator: a · signal: landed · score: 4 · field_size: 2 · rank_mode: pairwise-cluster · exit 0
+
+operator-b episodes: 1 × landed_corrected · corrective_turns: 2
+
+$ curl POST /wedge (cloud/service.py local) -> 201
+$ build_agent() -> ADK OK fleet_supervisor
+$ python3 -m unittest discover -s tests -> 5/5 OK
+```
+
+### Oscar-only next
+
+- **Aug 26:** `gcloud run deploy --source .` (B1)
+- **Design pick** (Gate 1 HTML) + **USER-JOURNEY.md** (Claude A4)
+- Push remote if not yet on origin
