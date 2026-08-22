@@ -85,6 +85,14 @@ behaviour?* Every team writing them is guessing.
 would rather ship the prompt their own best engineer already wrote.
 **Priced per engineer**, against a budget that exists: developer productivity and enablement.
 
+**Why the customer is an org and not a judge — measured, not asserted.** The product's value claim is
+that a propagated prompt raises the next engineer's landed-rate. That lift is a contrast *across
+operators*, and a single machine cannot produce it: on one operator's real corpus the specified-vs-
+vague split collapses (this builder is one high-level orchestrator, so almost every opener is
+high-level and specification emerges downstream). **The population lift is literally the first thing
+the first customer's corpus proves** — the absence of it on a single machine is the argument for who
+buys this, not a gap in it. The demo runs on one corpus; the value runs on an org's.
+
 ## 3 · THE PROOF — runnable, not asserted
 
 **`python3 contract/task_class.py`** — exits **1**.
