@@ -129,7 +129,24 @@ LAST_MODEL = []          # which rung actually answered; printed, never hidden
 
 
 def classify_gemini(prompt_a: str, prompt_b: str) -> str:
-    time.sleep(_PACE)          # stay under the free tier's 20/min rather than react to it
+    """VERTEX FIRST, AI Studio key as fallback.
+
+    Vertex is primary because it has no per-model daily ceiling, needs no key on disk
+    (ADC is picked up automatically), and exercises the project rather than a standalone
+    consumer endpoint. The key ladder remains so the repo still runs for someone with no
+    GCP project at all -- a stranger should not need a billing account to see it work.
+
+    LOCATION NOTE, measured: only `global` publishes these models. Every regional endpoint
+    404s (us-central1, europe-west1, v1 and v1beta1 alike). A 404 from a regional endpoint
+    is a LOCATION ARTEFACT, not absence -- the same shape as reading a truncated list as
+    absence. Do not conclude the model is missing from a query you have not verified is
+    complete.
+    """
+    if os.environ.get("GEMINI_FORCE_KEY") != "1":
+        v = classify_gemini_vertex(prompt_a, prompt_b)
+        if not str(v).startswith(("API-ERROR", "NO-CANDIDATE")):
+            return v
+    time.sleep(_PACE)          # key path only: free tier is 20/min
     model = os.environ.get("GEMINI_MODEL", DEFAULT_MODEL)
     body = {
         "systemInstruction": {"parts": [{"text": INSTRUCTION}]},

@@ -912,3 +912,52 @@ $ python3 -m unittest discover -s tests -> 5/5 OK
 - **Aug 26:** `gcloud run deploy --source .` (B1)
 - **Design pick** (Gate 1 HTML) + **USER-JOURNEY.md** (Claude A4)
 - Push remote if not yet on origin
+
+---
+
+## 2026-08-22 · Claude · VERTEX IS NOW PRIMARY — proven with no environment. But this is still 1 of 3.
+
+```
+$ env -u GEMINI_MODEL -u GEMINI_FORCE_KEY -u FLEET_STORE -u GOOGLE_CLOUD_PROJECT python3 ...
+  classify("fix auth", "clean up the token validation in auth")  ->  DIFFERENT
+  answering path: ['vertex:gemini-3.5-flash']
+```
+
+No flag, no env var, no key file. `contract/gemini_impl.classify_gemini` tries Vertex first and only
+falls back to the AI Studio ladder if ADC is absent — **so a stranger with no GCP project still gets
+a working repo, and anyone with `gcloud auth` gets the uncapped path automatically.**
+
+The answering path is recorded beside the answering model, for the reason already established:
+**a number that does not say which model produced it is not a measurement, and the same is now true
+of which credential path produced it** — they are different quota pools.
+
+**Location artefact recorded so nobody re-derives it:** only `global` publishes these models. Every
+regional endpoint 404s — `us-central1`, `europe-west1`, v1 and v1beta1 alike. **A 404 from a regional
+endpoint is a location artefact, not absence** — the same shape as reading a truncated list as
+absence.
+
+### ⚠️ I DO NOT ACCEPT THAT THIS MAKES IT 2 OF 3, AND I THINK THE ARITHMETIC IS WRONG
+
+The relay says routing through Vertex *"converts one of your three eligibility items from a seam into
+a call."* **Which item?** Read the two requirements against each other:
+
+> **1.** *"Gemini 3.5 or newer accessed through Gemini API **or Vertex AI**"*
+> **3.** *"at least one Google Cloud **infrastructure** service (such as Cloud Run, Cloud SQL,
+> Firestore, GKE, Pub/Sub)"*
+
+**Requirement 1 explicitly names Vertex AI as a way to satisfy requirement 1.** Every example under
+requirement 3 is infrastructure — compute, database, messaging. Counting one `aiplatform` call for
+both slots is **double-counting the same call**, and the rule's own wording is the evidence against
+it: if Vertex satisfied requirement 3, requirement 1 would not need to name it.
+
+**Requirement 1 was already met** — the AI Studio key was calling `generativelanguage` at runtime
+before any of this. Vertex makes that satisfaction *better* (project-scoped, no key on disk, no
+ceiling). **It does not add a second item.**
+
+**Ruling: still 1 of 3.** `PITCH.md` and `CLOSE.md` stay as they are. **`FLEET_STORE=firestore` or a
+live `build_agent()` is what moves the number, and both are Cursor's column.**
+
+If the coordinator or the sibling lane still reads it as 2 of 3, that is a legitimate disagreement
+about rule interpretation and it should go to Oscar — **but the conservative reading is the one to
+carry into a submission**, because the cost of being wrong is asymmetric: overclaiming is caught by
+a judge, underclaiming is caught by us.
