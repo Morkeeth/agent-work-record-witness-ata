@@ -47,14 +47,22 @@ def classify_substring(prompt_a: str, prompt_b: str) -> str:
     Used as a same-class test that means: is one prompt's whole vocabulary inside
     the other's. Registered so the control set measures the REAL current behaviour.
 
-    IMPORTED, NOT COPIED -- deliberately. The first version of this file reimplemented
-    the substring test inline, which meant the control set graded a FROZEN COPY of
-    Cursor's logic. The moment `fleet/signals.py` changed, the controls would have kept
-    reporting on code that no longer ships, while staying the same colour. A control
-    set that does not bind to the live object is a claim about the past.
+    RE-FROZEN 2026-08-22, and the reason is the sharper half of the lesson.
+
+    This started as a copy, was changed to import the LIVE `_topic_match` so it could
+    not drift -- and then Cursor rewired `_topic_match` to call Gemini. The arm labelled
+    "what shipped" was suddenly CALLING THE THING IT EXISTS TO BE COMPARED AGAINST. The
+    baseline became the treatment, the comparison collapsed to itself, and it burned
+    API quota while pretending to be a free local test.
+
+    So: BINDING TO THE LIVE OBJECT IS RIGHT FOR TESTING WHAT SHIPS, AND WRONG FOR A
+    BASELINE. They are different jobs. A historical baseline must be frozen BY
+    DEFINITION -- you cannot compare "before" to "after" when "before" is a live import
+    that becomes "after". `classify_shipping` below is the live arm; this one is pinned.
     """
-    from fleet.signals import _topic_match as match   # the LIVE function, not a copy
-    if match(prompt_a, prompt_b) or match(prompt_b, prompt_a):
+    terms = prompt_b.lower().split()
+    low = prompt_a.lower()
+    if all(t in low for t in terms) or all(t in prompt_b.lower() for t in prompt_a.lower().split()):
         return SAME
     return DIFFERENT          # note: it can never return UNDECIDABLE
 
@@ -78,6 +86,16 @@ def classify_always_same(prompt_a: str, prompt_b: str) -> str:
     a classifier apart from one that defaults the OTHER way.
     """
     return SAME
+
+
+def classify_shipping(prompt_a: str, prompt_b: str) -> str:
+    """Whatever fleet/ ships RIGHT NOW. Bound live, on purpose, and separate from the
+    frozen baseline above so neither job corrupts the other."""
+    try:
+        from fleet.task_class import classify as live
+        return live(prompt_a, prompt_b)
+    except Exception as e:
+        return f"API-ERROR-{type(e).__name__}"
 
 
 # ---------------------------------------------------------------- the control set

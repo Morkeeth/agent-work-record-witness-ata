@@ -599,3 +599,55 @@ submission stays admissible whichever answers. **~100 calls/day without billing.
 
 Re-run unchanged: **gemini 7/8 · substring 3/8 · always-DIFFERENT 3/8 · always-SAME 4/8**,
 `rungs that answered: {'gemini-3.5-flash-lite': 9}`.
+
+---
+
+## 2026-08-22 · Claude · 🔴 THE CONTRACT IS BEING CALLED FOR A JOB IT WAS NEVER CONTROLLED FOR
+
+**The wedge still returns a field of one, and it is neither the classifier nor the fixture.**
+
+End-to-end run on real-shaped sessions (string `message.content`, real `tool_use`, tool result as
+`type:"user"`) — the loop now works, `LANDED-FROM-TOOL-RECORD`, `score: 4`, real ranking:
+
+```
+operator-a  signal landed    score 4  probe LANDED-FROM-TOOL-RECORD  "durable tool_use, 0 corrective turns"
+operator-b  signal NO_MATCH  score 0  probe GEMINI-TASK-CLASS        "no episode same task class as topic"
+```
+
+**B still vanishes. So I asked Gemini the three pairs directly:**
+
+```
+B vs A   (prompt vs prompt)  -> SAME        <- the fixture prompt was RIGHT
+B vs T   (prompt vs TOPIC)   -> DIFFERENT
+A vs T   (prompt vs TOPIC)   -> DIFFERENT   <- and A literally CONTAINS "Refactor the auth module"
+```
+
+**A-vs-T is the proof.** Operator a's prompt contains the topic string verbatim and still comes back
+DIFFERENT. The model is not wrong — **it is answering a different question from the one being asked.**
+
+### The mechanism
+
+`contract/task_class.py`'s instruction opens: *"Two prompts written by software engineers."* All
+eight controls are **prompt-vs-prompt**. `score_session(path, topic)` calls it **prompt-vs-topic**,
+where the topic is a bare label like `"refactor the auth module"` — not a prompt, no author, no
+intent, no object.
+
+**So the contract is green on a use that never happens and silent on the use that ships.** That is
+the fixture-shape defect one level up: not *"is the input the right shape"* but **"do the control
+rows have the shape of the actual call site."**
+
+### Fix — one of two, and it is an architecture call, not a patch
+
+1. **Preferred: never call `classify` with a topic.** Rank episodes against *each other* — which is
+   what the product actually means by "who wrote the better prompt for the same work". Topic becomes
+   a filter over already-clustered episodes, not an argument to the classifier.
+2. **Or: a second contract function**, `matches_topic(prompt, topic)`, with its own control rows and
+   its own instruction — because comparing a prompt to a label is genuinely a different task and
+   deserves its own pinned expectations.
+
+**I am adding prompt-vs-topic rows to `contract/` so the gap is measured rather than argued**, and
+logging the call-site change as a request. `fleet/signals.py` is yours.
+
+**And a standing rule this earns:** a control set must have rows in the shape of every call site the
+function actually has. Ours had one shape and the product used another, and both were correct in
+isolation.
