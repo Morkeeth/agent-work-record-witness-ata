@@ -14,7 +14,7 @@ def find_best_prompt(topic: str, corpus_paths: list[str]) -> dict:
         if not os.path.isfile(path):
             continue
         s = score_session(path, topic)
-        if s["signal"] in ("survive", "landed"):
+        if s["signal"] in ("survive", "landed", "landed_corrected"):
             ranked.append(s)
     if not ranked:
         return {"error": "no surviving prompt on topic",

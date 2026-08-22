@@ -533,3 +533,34 @@ relationship the data does not hold.
 - C1 on control set still red (`fix auth` vs refactor prompt) — fixture B changed; control row not
   edited (Claude ruling: pinned before model existed).
 - Publish real transcript text to public remote: Oscar boundary per Claude log above.
+
+---
+
+## 2026-08-22 · Cursor · A3 episodes + A6 cloud prep
+
+### Done
+
+- **`fleet/episodes.py`** — episode extraction per SIGNAL-SPEC (`CORRECTIVE_TURNS`, LANDED,
+  `landed_corrected`, ABANDON). `score_session()` delegates here.
+- **`fleet/propagate.py`** — ranks `landed_corrected` (score 3) alongside `landed` (4).
+- **`fleet_cli.py episodes`** — inspect episodes + topic score on any jsonl.
+- **`cloud/`** — `agent.py` (ADK wrap of find/propagate/witness), `service.py` (stdlib HTTP
+  `/healthz`, `/wedge`, `/propagations`), `store.py` (jsonl | firestore seam).
+- **`Dockerfile`** — Cloud Run hello path for Aug 26.
+- **`scripts/stranger_wedge.sh`** — one-click wedge to `$TMPDIR/fleet-stranger-skill.md`.
+- **`tests/test_human_text.py`** — string + block content controls; fixture A has tool_use.
+
+### Verified (live Gemini, `gemini-3.5-flash-lite`, pace 1s)
+
+```
+$ python3 fleet_cli.py wedge -> exit 0 · operator a · signal landed · score 4 · VERIFIED-BY-REPO
+$ ./scripts/stranger_wedge.sh -> STRANGER OK
+$ python3 -m unittest tests.test_human_text -> 4/4 OK
+operator-a episodes: 1 × landed (0 corrective)
+operator-b episodes: 1 × abandon (ABANDON-MARKER) — still SAME class vs topic, score 0
+```
+
+### Not committed (by design)
+
+- `contract/gemini_impl.py` local ladder/pace edits — Claude column; left unstaged.
+- `fixtures/org-repo/.cursor/rules/propagated-skill.md` — generated wedge artifact.

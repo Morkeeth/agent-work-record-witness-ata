@@ -8,6 +8,8 @@ import os
 import sys
 
 from fleet.propagate import find_best_prompt, propagate_prompt, witness_propagation
+from fleet.episodes import extract_episodes, score_session_episodes
+from fleet.human import load_transcript
 
 
 def cmd_wedge(args):
@@ -25,6 +27,17 @@ def cmd_wedge(args):
     return 0 if wit.get("verdict") == "VERIFIED-BY-REPO" else 1
 
 
+def cmd_episodes(args):
+    rows = load_transcript(args.path)
+    eps = extract_episodes(rows)
+    if args.topic:
+        scored = score_session_episodes(args.path, args.topic)
+        print(json.dumps({"episodes": eps, "score": scored}, indent=2))
+    else:
+        print(json.dumps({"episodes": eps}, indent=2))
+    return 0
+
+
 def main():
     p = argparse.ArgumentParser(description="hack-fleet-ata wedge loop")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -35,6 +48,10 @@ def main():
     w.add_argument("--target", default="fixtures/org-repo/.cursor/rules/propagated-skill.md")
     w.add_argument("--corpus", nargs="*", help="transcript jsonl paths")
     w.set_defaults(func=cmd_wedge)
+    e = sub.add_parser("episodes", help="extract episodes from a transcript jsonl")
+    e.add_argument("path", help="transcript jsonl path")
+    e.add_argument("--topic", help="score episodes against this task class")
+    e.set_defaults(func=cmd_episodes)
     args = p.parse_args()
     sys.exit(args.func(args))
 
