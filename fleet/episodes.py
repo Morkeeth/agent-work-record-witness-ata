@@ -1,10 +1,14 @@
 """Episode extraction — one human intent opened and closed (SIGNAL-SPEC unit)."""
 
 from fleet.human import human_text, is_human_turn, load_transcript
-from fleet.task_class import UNMEASURED, classify
+from fleet.task_class import DIFFERENT, UNMEASURED, UNDECIDABLE, classify
 
 ABANDON_MARKERS = ("never mind", "skip", "forget it", "ignore", "abandon")
 _DURABLE_TOOLS = {"Write", "Edit", "Bash"}
+SCORE_MAP = {
+    "landed": 4, "landed_corrected": 3, "survive": 1, "abandon": 0, "UNMEASURED": 0,
+}
+RANKABLE = frozenset({"survive", "landed", "landed_corrected"})
 
 
 def _tool_use_names(record: dict) -> list[str]:
@@ -62,7 +66,9 @@ def extract_episodes(rows: list[dict]) -> list[dict]:
                     i = j
                     j = -1
                     break
-                if verdict == "SAME":
+                if verdict == DIFFERENT:
+                    break
+                if verdict in ("SAME", UNDECIDABLE):
                     corrective += 1
                     j += 1
                     continue
@@ -106,29 +112,37 @@ def extract_episodes(rows: list[dict]) -> list[dict]:
     return episodes
 
 
-def score_episodes_for_topic(episodes: list[dict], topic: str) -> dict:
-    """Pick best episode matching task class of topic."""
+def _episode_score(ep: dict) -> int:
+    return SCORE_MAP.get(ep["signal"], 0)
+
+
+def _best_rankable_episode(episodes: list[dict]) -> dict | None:
+    ranked = [e for e in episodes if e["signal"] in RANKABLE]
+    if not ranked:
+        return None
+    return max(ranked, key=_episode_score)
+
+
+def score_episodes_for_anchor(episodes: list[dict], anchor_prompt: str) -> dict:
+    """Pick best episode in SAME task class as anchor — prompt-vs-prompt only."""
     matched = []
     for ep in episodes:
         if ep["signal"] == "UNMEASURED" and ep.get("probe") == "GEMINI-TASK-CLASS":
             continue
-        v = classify(ep["opener"], topic)
+        v = classify(ep["opener"], anchor_prompt)
         if v == UNMEASURED:
             return {"signal": "UNMEASURED", "score": 0, "probe": "GEMINI-TASK-CLASS",
-                    "why": "classifier unreachable for topic match"}
+                    "why": "classifier unreachable for anchor match"}
         if v == "SAME":
             matched.append(ep)
     if not matched:
         return {"signal": "NO_MATCH", "score": 0, "probe": "GEMINI-TASK-CLASS",
-                "why": "no episode same task class as topic"}
+                "why": "no episode same task class as anchor prompt"}
 
-    score_map = {
-        "landed": 4, "landed_corrected": 3, "survive": 1, "abandon": 0, "UNMEASURED": 0,
-    }
-    best = max(matched, key=lambda e: score_map.get(e["signal"], 0))
+    best = max(matched, key=_episode_score)
     return {
         "signal": best["signal"],
-        "score": score_map.get(best["signal"], 0),
+        "score": _episode_score(best),
         "probe": best["probe"],
         "prompt": best["opener"],
         "why": best["why"],
@@ -138,9 +152,78 @@ def score_episodes_for_topic(episodes: list[dict], topic: str) -> dict:
     }
 
 
-def score_session_episodes(path: str, topic: str) -> dict:
+def rank_sessions_pairwise(corpus_paths: list[str]) -> list[dict]:
+    """Best rankable episode per path, filtered to largest SAME cluster (no anchor)."""
+    bests = []
+    for path in corpus_paths:
+        eps = extract_episodes(load_transcript(path))
+        best_ep = _best_rankable_episode(eps)
+        if not best_ep:
+            continue
+        bests.append({
+            "signal": best_ep["signal"],
+            "score": _episode_score(best_ep),
+            "probe": best_ep["probe"],
+            "prompt": best_ep["opener"],
+            "why": best_ep["why"],
+            "corrective_turns": best_ep["corrective_turns"],
+            "episodes_matched": 1,
+            "episodes_total": len(eps),
+            "path": path,
+        })
+
+    if len(bests) < 2:
+        return bests
+
+    # Largest connected component under pairwise SAME
+    clusters: list[list[dict]] = [[bests[0]]]
+    for item in bests[1:]:
+        placed = False
+        for cluster in clusters:
+            if classify(item["prompt"], cluster[0]["prompt"]) == "SAME":
+                cluster.append(item)
+                placed = True
+                break
+        if not placed:
+            clusters.append([item])
+    return max(clusters, key=len)
+
+
+def score_session_episodes(path: str, anchor_prompt: str) -> dict:
     rows = load_transcript(path)
     eps = extract_episodes(rows)
-    out = score_episodes_for_topic(eps, topic)
+    out = score_episodes_for_anchor(eps, anchor_prompt)
     out["path"] = path
     return out
+
+
+def rank_corpus(anchor_prompt: str, corpus_paths: list[str]) -> dict:
+    """Rank operators: pairwise cluster first, anchor narrows when it helps."""
+    cluster = rank_sessions_pairwise(corpus_paths)
+    if len(cluster) >= 2:
+        ranked = cluster
+        mode = "pairwise-cluster"
+    else:
+        anchor_hits = []
+        for path in corpus_paths:
+            s = score_session_episodes(path, anchor_prompt)
+            if s["signal"] in RANKABLE:
+                anchor_hits.append(s)
+        ranked = anchor_hits
+        mode = "anchor-cluster" if len(anchor_hits) >= 2 else "anchor-single"
+
+    if not ranked:
+        return {
+            "error": "no rankable prompt in corpus",
+            "probe": "GEMINI-TASK-CLASS+EPISODE-SIGNAL",
+            "anchor": anchor_prompt,
+            "mode": "none",
+        }
+
+    best = max(ranked, key=lambda x: x["score"])
+    return {
+        "best": best,
+        "mode": mode,
+        "field_size": len(ranked),
+        "operators": [b["path"] for b in ranked],
+    }

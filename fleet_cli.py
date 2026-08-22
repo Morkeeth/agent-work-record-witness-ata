@@ -42,7 +42,7 @@ def main():
     p = argparse.ArgumentParser(description="hack-fleet-ata wedge loop")
     sub = p.add_subparsers(dest="cmd", required=True)
     w = sub.add_parser("wedge", help="run find → propagate → witness")
-    w.add_argument("--topic", default=(
+    w.add_argument("--topic", "--anchor", dest="topic", default=(
         "Refactor the auth module: extract validate_token into auth/validate.py, "
         "keep tests green, show me the diff before applying."))
     w.add_argument("--target", default="fixtures/org-repo/.cursor/rules/propagated-skill.md")
@@ -50,7 +50,8 @@ def main():
     w.set_defaults(func=cmd_wedge)
     e = sub.add_parser("episodes", help="extract episodes from a transcript jsonl")
     e.add_argument("path", help="transcript jsonl path")
-    e.add_argument("--topic", help="score episodes against this task class")
+    e.add_argument("--topic", "--anchor", dest="topic",
+                   help="anchor prompt (full human prompt, not a bare label)")
     e.set_defaults(func=cmd_episodes)
     args = p.parse_args()
     sys.exit(args.func(args))

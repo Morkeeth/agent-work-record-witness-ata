@@ -4,27 +4,36 @@ import hashlib
 import os
 from pathlib import Path
 
-from fleet.signals import score_session
+from fleet.episodes import rank_corpus
 
 
-def find_best_prompt(topic: str, corpus_paths: list[str]) -> dict:
-    """Rank human prompts on topic by score (landed > survive > abandon)."""
-    ranked = []
-    for path in corpus_paths:
-        if not os.path.isfile(path):
-            continue
-        s = score_session(path, topic)
-        if s["signal"] in ("survive", "landed", "landed_corrected"):
-            ranked.append(s)
-    if not ranked:
-        return {"error": "no surviving prompt on topic",
-                "probe": "GEMINI-TASK-CLASS+SURVIVE-VS-ABANDON", "topic": topic}
-    best = max(ranked, key=lambda x: x["score"])
-    parts = Path(best["path"]).stem.split("-")
-    operator = parts[1] if len(parts) > 1 and parts[0] == "operator" else parts[0]
-    return {"operator": operator, "prompt_text": best["prompt"],
-            "signal": best["signal"], "probe": best["probe"],
-            "source": best["path"], "why": best["why"], "score": best["score"]}
+def _operator_id(path: str) -> str:
+    parts = Path(path).stem.split("-")
+    if len(parts) > 1 and parts[0] == "operator":
+        return parts[1]
+    return parts[0]
+
+
+def find_best_prompt(anchor_prompt: str, corpus_paths: list[str]) -> dict:
+    """Rank human prompts by episode signal within the anchor's task class."""
+    ranked = rank_corpus(anchor_prompt, corpus_paths)
+    if "error" in ranked:
+        return ranked
+
+    best = ranked["best"]
+    operator = _operator_id(best["path"])
+    return {
+        "operator": operator,
+        "prompt_text": best["prompt"],
+        "signal": best["signal"],
+        "probe": best["probe"],
+        "source": best["path"],
+        "why": best["why"],
+        "score": best["score"],
+        "field_size": ranked["field_size"],
+        "rank_mode": ranked["mode"],
+        "anchor": anchor_prompt,
+    }
 
 
 def propagate_prompt(prompt_text: str, target_skill_path: str,
@@ -36,7 +45,7 @@ def propagate_prompt(prompt_text: str, target_skill_path: str,
         f"# Org prompt — propagated from operator {operator}"
         + (f" ({topic})" if topic else "")
         + f"\n\n{prompt_text.strip()}\n\n"
-        f"_Probe: best operator on task class {topic!r} · propagated by fleet supervisor_\n"
+        f"_Probe: best operator on task class · propagated by fleet supervisor_\n"
     )
     path.write_text(body)
     sha = hashlib.sha256(body.encode()).hexdigest()[:12]
