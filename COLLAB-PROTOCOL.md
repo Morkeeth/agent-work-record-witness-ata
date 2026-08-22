@@ -30,3 +30,21 @@ A finding without pasted output is a claim, not a receipt.
 ## Outward acts
 Push, deploy, publish, submit, spend — **Oscar's alone.** Neither builder performs them and
 neither may authorise the other to.
+
+## Column update — 2026-08-22, Oscar confirmed Cursor is collaborating
+
+| Claude takes this run | Cursor keeps |
+|---|---|
+| `contract/**` — the interface, the control set, **and the Gemini implementation behind it** | `fleet/**` · `fleet_cli.py` · `fixtures/**` · `README.md` |
+| `docs/**` · `surface/**` · `PHASE-*.md` · `CONTEXT.md` · `CLOSE.md` · `PITCH.md` | |
+
+**What Claude needs from Cursor, in priority order:**
+1. **`fleet/signals.py` calls `contract.task_class.classify` instead of `_topic_match`.** The Gemini
+   implementation exists and scores 7/8 against a substring test's 3/8. Until the call site moves,
+   the product still ships the version with no signal. **Oscar has not moved this boundary, so this
+   is a request, not an edit.**
+2. **A fixture cut from a real session** (see CURSOR-LOG). `LANDED` stays uncomputable without it.
+3. **Fixture B's prompt may need to change** — see the C1 finding in CURSOR-LOG. Not "fix auth".
+
+**Keys:** read from `~/.config/keys/gemini.key` (0600) at call time. Never in the repo, never echoed,
+never an argument. `contract/gemini_impl.py` does this and nothing else should.

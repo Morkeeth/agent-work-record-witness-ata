@@ -331,3 +331,63 @@ $ python3 fleet_cli.py wedge --topic "refactor auth" | grep operator
 **Ruling:** Vision + BUILD-PLAN v2 aligned. Submission ineligible (0/3). Critical path = Oscar
 Gemini key tonight → Cursor A1 classifier + A2 real fixture ∥ Claude A4 USER-JOURNEY + A5 surface
 after design pick. See `COLLAB-REVIEW.md` for handoffs.
+
+---
+
+## 2026-08-22 · Claude · GEMINI CLASSIFIER LANDED — 7/8 vs 3/8, and C1 is a real disagreement
+
+**Claiming `contract/gemini_impl.py`** (my column, `contract/`). Key read from
+`~/.config/keys/gemini.key` at call time, never in the repo. stdlib `urllib` only — no pip install,
+because the disk is at 99% and a control set that cannot run is not a control set.
+
+### The headline, measured live
+
+```
+gemini-3.5-flash-lite      7 / 8
+classify_substring         3 / 8      <- what fleet/signals.py ships today
+stub: always-DIFFERENT     3 / 8      <- never reads its input
+stub: always-SAME          4 / 8      <- never reads its input
+```
+
+**C7 passes: `"fix it"` vs `"fix auth"` returns `UNDECIDABLE`.** The refusal is enforced by the
+response schema (`responseMimeType: text/x.enum`, three values), not by prompt discipline. It cannot
+return prose, invent a fourth value, or omit the refusal.
+
+### Three things found on the way, each worth more than the score
+
+**1 · The first Gemini run scored 4/8 and it was worthless.** It answered `SAME` on every row. I had
+only an always-DIFFERENT negative control, so 4/8 looked like an improvement on 3/8. **I added an
+always-SAME stub: it also scores 4/8, row for row.** One negative control is not enough — it cannot
+tell a classifier from one that defaults the other way. Both arms are now in `task_class.py`.
+
+**2 · The harness scored an unreachable API as `0/8`.** A 429 printed as eight failures, which reads
+as *"the model got everything wrong"* when the truth is *"we could not ask."* `run()` now marks those
+`UNMEASURED` and **refuses to print a score at all** if any row went unasked. An unmeasured row is
+not a failed row.
+
+**3 · Free-tier quota is a real build constraint.** `gemini-3.5-flash` returns
+`429 RESOURCE_EXHAUSTED`, `metric: generate_content_free_tier_requests, limit: 20`. Exhausted after
+~20 calls. **`gemini-3.5-flash-lite` has separate quota, works, and still satisfies "Gemini 3.5 or
+newer."** Also: the pricing page advertises a `gemini-3.7-flash` that is **not in the live
+`/v1beta/models` list on this key** — documentation is not availability, which is why the
+never-hardcode-a-model-id rule earns its place.
+
+### C1 FAILED, AND I AM NOT EDITING THE CONTROL
+
+C1 is the demo pair: `"fix auth"` vs *"Refactor the auth module: extract `validate_token`…"*.
+Expected `SAME`. Gemini says `DIFFERENT`.
+
+**The control was pinned before the model existed, precisely so this moment could not be resolved by
+moving the expectation.** Changing C1 now because the model disagrees would defeat the whole
+mechanism. So it stands, red, and here is the honest reading:
+
+**The model is probably right and my control encoded an assumption.** "fix auth" could be a bug fix,
+a credential rotation, or a config change — it is not obviously the same class as an extract-method
+refactor. A careful human might well say DIFFERENT, or UNDECIDABLE.
+
+**Which makes this a FIXTURE problem, and it is Cursor's column.** The demo needs operator b to write
+a prompt that is **bad without being unplaceable** — same task class, worse execution. Something like
+*"clean up the token validation in auth"*: names the area, names nothing else, no exit condition.
+Then B loses on the signal rather than on being unclassifiable, and C1 becomes a fair row.
+
+**Request to Cursor: fixture B's prompt, not just its tool records.** Both changes are the same edit.

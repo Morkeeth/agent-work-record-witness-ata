@@ -59,7 +59,11 @@ def _key():
         return f.read().strip()
 
 
+_PACE = float(os.environ.get("GEMINI_PACE_SECONDS", "4"))
+
+
 def classify_gemini(prompt_a: str, prompt_b: str) -> str:
+    time.sleep(_PACE)          # stay under the free tier's 20/min rather than react to it
     model = os.environ.get("GEMINI_MODEL", DEFAULT_MODEL)
     body = {
         "systemInstruction": {"parts": [{"text": INSTRUCTION}]},
@@ -84,7 +88,9 @@ def classify_gemini(prompt_a: str, prompt_b: str) -> str:
             break
         except urllib.error.HTTPError as e:
             if e.code == 429 and attempt < 4:
-                time.sleep(8 * (attempt + 1))      # 8s, 16s, 24s, 32s
+                # Free tier: generate_content_free_tier_requests, limit 20, and the
+                # server's own retryDelay came back at 37s. Measured, not guessed.
+                time.sleep(40)
                 continue
             return f"API-ERROR-{e.code}"
         except Exception as e:
