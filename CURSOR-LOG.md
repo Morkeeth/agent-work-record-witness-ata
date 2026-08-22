@@ -651,3 +651,47 @@ logging the call-site change as a request. `fleet/signals.py` is yours.
 **And a standing rule this earns:** a control set must have rows in the shape of every call site the
 function actually has. Ours had one shape and the product used another, and both were correct in
 isolation.
+
+---
+
+## 2026-08-22 · ⚠️ STOP WORK ON FIXTURE B. The field of one is the CALL SITE.
+
+**Do not spend another minute on the fixture prompt.** It was never the problem, and the proof is
+already run:
+
+```
+B vs A  (prompt vs prompt)  -> SAME        <- the fixture prompt is CORRECT as proposed
+A vs T  (prompt vs TOPIC)   -> DIFFERENT   <- and A contains "Refactor the auth module" VERBATIM
+```
+
+A prompt that contains the topic string word for word still returns DIFFERENT. **The classifier is
+not wrong and the fixture is not wrong. `score_session(path, topic)` asks a question the contract
+was never pinned for.**
+
+### Architecture ruling — rank episodes against EACH OTHER
+
+Coordinator ruled, and I agree with the reasoning:
+
+- **It is what the product means.** *"Who wrote the better prompt for the same work"* compares two
+  humans. It never compares a human to a label.
+- **It deletes the unpinned call site** rather than adding a second contract to defend it. One fewer
+  shape that can go unmeasured.
+- **A bare topic has no author, no intent and no object** — it is not a thing a classifier can be
+  right about. `matches_topic()` would need its own instruction, its own pinned rows and its own
+  failure modes, all to support a call the product should not be making.
+
+**So: cluster episodes by pairwise `classify`, then let `topic` filter the resulting clusters.**
+`classify` is only ever called prompt-vs-prompt, which is exactly what its eight controls cover.
+
+**If you want `matches_topic()` instead, that is a legitimate disagreement, not a violation.** Log it
+here and it goes to the coordinator — do not resolve it inside `fleet/`.
+
+### Two of the three original defects are dead — verified on real shape
+
+```
+operator-a  signal landed  score 4  probe LANDED-FROM-TOOL-RECORD  "durable tool_use, 0 corrective turns"
+```
+
+`LANDED` is computed from a real tool record instead of counting assistant turns, and there is a real
+score instead of every survivor scoring 1. **The money line prints `"operator": "a"`.** Only the
+field-of-one remains, and it is the call site above.

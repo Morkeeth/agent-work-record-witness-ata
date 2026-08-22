@@ -36,7 +36,8 @@ the `type: user` records in a transcript were not written by the human** — 10,
 does not — which is exactly why an org rolling out agents at scale is the customer and a solo
 developer is not.
 
-**And it is not one gate. It is three record shapes with a trap in both directions:**
+**And it is not one gate. It is at least THIRTEEN record shapes, measured on this machine today
+(16,078 `type: user` records, 1,138 written by the human), with a trap in both directions:**
 
 1. A **tool result arrives as `type: "user"` with `promptSource: null`.** It looks like a person
    typing.
@@ -47,6 +48,16 @@ developer is not.
    those are genuinely the human. But there were **4,596 of them against 537 real prompts**, and
    widening the gate to catch the real ones **inflates the corpus to 1,992 and fills it with the
    fleet's own words.**
+
+Plus `system`, `last-prompt`, `mode`, `ai-title`, `permission-mode`, `file-history-snapshot`,
+`file-history-delta`, `bridge-session`, `atis-latch`, `pr-link`, `frame-link`. **`queue-operation`
+alone is 6,636 records.**
+
+**And the deepest one is not a record type at all — it is a field that changes type.** On real
+sessions a human turn's `message.content` is a plain **string**; hand-written fixtures use a list of
+blocks. A parser written against the fixture form returns **empty for 98.8% of real human turns**,
+with no exception and no warning, and every test stays green. *(Found and fixed here today: 556 of
+563 empty before, 0 of 567 after.)*
 
 **A competitor who does not know this ships a corpus of its own agents talking to themselves, and
 its report reads fine.** That is the defensibility claim, and it is the only one here that was
@@ -67,8 +78,12 @@ classify_substring         3 / 8      the component that ships today
 classify_always_different  3 / 8      a stub that never reads its input
 ```
 
-**Indistinguishable. Not partial credit — no signal.** That is the runnable answer to *"why is a
-model here at all?"*, and it beats any architecture slide: without task classification the product
+```
+gemini-3.5-flash-lite      7 / 8      <- the same eight rows, live
+```
+
+**Indistinguishable stubs, and a model that beats them by four rows.** That is the runnable answer
+to *"why is a model here at all?"*, and it beats any architecture slide: without task classification the product
 cannot tell that `"fix auth"` and `"Refactor the auth module: extract validate_token…"` open the
 same work — so the demo has no comparison and the submission has no Gemini.
 
@@ -81,6 +96,9 @@ same work — so the demo has no comparison and the submission has no Gemini.
 | Three probe classes | `surface/GATE-2-SELF-REVIEW.md` | `69b24cc` |
 
 Branch `main`. **No remote — the push is Oscar's.** `fsck` clean through a full-disk outage.
+
+**Live on real-shaped sessions:** `LANDED` is computed from a real `tool_use` record rather than by
+counting assistant turns, and episodes carry a real score instead of every survivor scoring 1.
 
 **The screen's own discipline is the product's argument:** it prints `UNMEASURED` rather than
 crediting the winner, because no tool record in that session can prove anything landed. **A metric
