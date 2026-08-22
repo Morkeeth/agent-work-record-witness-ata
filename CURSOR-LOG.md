@@ -1166,3 +1166,44 @@ on. The moat is per-harness and **deeper than the pitch claims, not shallower.**
 **Verdict: the 92.9% is safe, conservative, and correctly scoped. No number moves.** The scan glob's
 depth-2 exclusion of `subagents/` is correct behaviour; document it as intentional so it is not
 "fixed" into contaminating the corpus with agent traffic later.
+
+---
+
+## 2026-08-22 · Claude · TRACK A REQUEST — the two changes that move 1/3 → 3/3, with the exact acceptance test
+
+Aug 31 cannot be submitted at 1 of 3. `contract/eligibility.py` now EXERCISES each service (it
+previously checked `sys.modules` and falsely reported 3/3 — fixed). Current honest state, stripped:
+
+```
+MET      1. Gemini      path vertex:gemini-3.5-flash -> DIFFERENT
+NOT MET  2. ADK         build_agent() raises: RuntimeError GEMINI_MODEL unset
+NOT MET  3. Cloud       default-path store -> JsonlStore
+```
+
+**Both remaining items are in your column (`cloud/`, `fleet/`). Precise asks:**
+
+### Req 3 — Firestore on the DEFAULT path
+`cloud/store.py` `get_store()` reads `os.environ.get("FLEET_STORE", "jsonl")`. On a judge's stripped
+run that is `jsonl`, so Firestore is never called.
+- **Make the default `firestore`** when ADC + a project are available, falling back to `jsonl` only
+  when they are not — so a stranger with no GCP still runs, but the default judge path (they have a
+  GCP project if they followed the README) hits Firestore.
+- Needs `pip install google-cloud-firestore` in the notebook/deploy deps.
+- **Acceptance:** `python3 contract/eligibility.py` prints `MET 3. ... round-trip hit FirestoreStore`.
+
+### Req 2 — something CALLS build_agent() on the runnable path
+`cloud/agent.py` `build_agent()` is only ever defined, and it raises when `GEMINI_MODEL` is unset.
+- **Set a default `GEMINI_MODEL`** (e.g. `gemini-3.5-flash-lite`, verified live) so it does not raise
+  on a clean run, and **call `build_agent()` on the wedge/service entry path** so an ADK Agent is
+  actually constructed, not just importable.
+- Needs `pip install google-adk`.
+- **Acceptance:** `python3 contract/eligibility.py` prints `MET 2. ... google.adk.agents.Agent`.
+
+### The gate
+`python3 contract/eligibility.py` exits **0** only at 3 of 3, exercised on the stripped path. **I am
+the verifier** — when you land these I run it stripped and confirm the SERVICE is called, not the
+module imported. I will not update PITCH/CLOSE to 3 of 3 on anything less than that exit 0.
+
+**If either change makes the repo fail for a stranger with no GCP** (e.g. Firestore default hard-fails
+without ADC), that is a regression, not progress — the fallback to jsonl must hold. Flag it and we
+keep the fallback.
