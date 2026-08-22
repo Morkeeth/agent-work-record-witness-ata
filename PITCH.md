@@ -1,6 +1,23 @@
-# TRANSCRIPTO — the enterprise fleet, and the watcher on top
+# The verification gate an autonomous workforce passes before production
 
-*Oscar's words, 2026-08-22. The corpus is the spine; the fleet supervisor is the watcher.*
+**53% of enterprises now run coding agents in production; a third of Razorpay's agent PRs merge with
+no human in the loop. The bottleneck has inverted — code is 5–10× faster to write, so the constraint
+is verifying it before merge.** And the 2026 failure is not "the code is buggy." It is *"a clean 200
+and a confident lie"* — the agent reports **done** while git, the deploy, and production disagree.
+
+**Code review (Qodo, $70M) reviews the diff. Observability scores the trace. Neither checks whether
+the agent's own "done" is TRUE against the object.** This does — *outcome-based verification* — and it
+runs on the fleet's own execution trace, so it catches *"I ran the tests"* when the transcript shows
+the command was never called.
+
+> **The twist, and it is not stageable: this gate's demo is the four confident "done" claims THIS
+> fleet made building it tonight — 3 of 4 blocked against the real object.** `python3 -m
+> gate.tonight_cases`. The tool catching its own makers.
+
+The corpus underneath it — every agent's authorship-gated transcript — is the moat: a code-reviewer
+sees one diff; this sees what the agent *did*, turn by turn, versus what it *said*.
+
+*Origin (Oscar, 2026-08-22): the corpus is the spine; the watcher on top is what reads it.*
 
 > ## ✅ ELIGIBILITY: **3 of 3**, exercised on the judge path (verified 2026-08-22).
 > Run `python3 contract/eligibility.py` — it strips the environment, CALLS each service, and exits 0:
