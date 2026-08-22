@@ -68,6 +68,13 @@ blocks. A parser written against the fixture form returns **empty for 98.8% of r
 with no exception and no warning, and every test stays green. *(Found and fixed here today: 556 of
 563 empty before, 0 of 567 after.)*
 
+**And it is worse for a competitor than even that, because it is per-harness.** Measured on this
+machine: Cursor's transcript jsonl has **no `promptSource` key at all** — its records are
+`{message, role, status, type}` with types like `turn_ended`. The Claude Code authorship gate cannot
+run on it. So *"a field that changes type within one tool"* becomes *"a different authorship schema
+per tool"* across them: multi-harness coverage needs a separate human-vs-agent model for each, and
+Cursor gives you nothing to gate on. A single-harness limitation is actually a per-harness barrier.
+
 **A competitor who does not know this ships a corpus of its own agents talking to themselves, and
 its report reads fine.** That is the defensibility claim, and it is the only one here that was
 measured rather than argued.
