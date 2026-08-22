@@ -1,212 +1,342 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Gate 1 — three directions</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;900&family=IBM+Plex+Mono:wght@400;600&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,600;1,6..72,300&family=Archivo:wght@500;700&family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,800&display=swap" rel="stylesheet">
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Source Sans 3',ui-sans-serif,sans-serif;background:#15171a;color:#e6e8ea}
-.bar{display:flex;gap:0;border-bottom:1px solid #2b2f34;background:#101215;position:sticky;top:0;z-index:9}
-.bar button{flex:1;background:none;border:0;border-right:1px solid #2b2f34;color:#7d858d;padding:14px 10px;font:600 12px/1 'Source Sans 3',sans-serif;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
-.bar button[aria-selected=true]{color:#e6e8ea;background:#1b1e22;box-shadow:inset 0 -2px 0 #e6e8ea}
-.pane{display:none}.pane.on{display:block}
-.note{font:400 13px/1.6 'Source Sans 3',sans-serif;color:#8d949b;padding:14px 32px;background:#101215;border-bottom:1px solid #2b2f34}
-.note b{color:#e6e8ea;font-weight:600}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prompt performance — three directions</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { max-width: 100%; overflow-x: hidden; }
+    :root {
+      color-scheme: light;
+      --ink: #121416;
+      --paper: #f2f0ea;
+      --quiet: #656864;
+      --rule: #c9c7bf;
+      --refuse: #ff5a36;
+      --refuse-soft: #ffe2d9;
+      --land: #12664f;
+      --land-soft: #dcece5;
+      --dark: #111716;
+      --dark-rule: #38413f;
+      --dark-quiet: #a6b0ad;
+      --lime: #dfff53;
+      --blue: #3158d5;
+      --blue-soft: #e1e7ff;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --serif: Iowan Old Style, Baskerville, "Times New Roman", serif;
+    }
+    body { margin: 0; background: #0e1112; color: #e9edeb; font-family: var(--sans); }
+    button { font: inherit; }
+    .chooser {
+      position: relative; z-index: 20; display: grid; grid-template-columns: repeat(3, 1fr);
+      background: #0e1112; border-bottom: 1px solid #303536;
+    }
+    .chooser button {
+      appearance: none; border: 0; border-right: 1px solid #303536; background: transparent;
+      color: #8e9996; padding: 15px 18px; cursor: pointer; text-transform: uppercase;
+      letter-spacing: .12em; font-size: 11px; font-weight: 700;
+    }
+    .chooser button[aria-selected="true"] { color: #fff; box-shadow: inset 0 -3px 0 currentColor; }
+    .direction { display: none; min-height: 100vh; }
+    .direction.active { display: block; }
+    .probe { font-family: var(--mono); font-size: 10px; line-height: 1.45; letter-spacing: .04em; text-transform: uppercase; }
+    .prompt { margin: 0; overflow-wrap: anywhere; }
+    .metric { display: grid; gap: 5px; }
+    .metric strong { font-family: var(--mono); font-size: 28px; line-height: 1; letter-spacing: -.04em; }
+    .metric .probe { max-width: 38ch; }
+    .file-copy { font-family: var(--mono); font-size: 12px; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
 
-/* ---------- D1 LEDGER : ink on cool paper, figures in mono, the entry is a record ---------- */
-.d1{background:#eceef0;color:#14181d;padding:56px 48px;min-height:100vh;font-family:'Source Sans 3',sans-serif}
-.d1 .hd{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #14181d;padding-bottom:10px}
-.d1 .hd h1{font:900 13px/1 'Source Sans 3';letter-spacing:.22em;text-transform:uppercase}
-.d1 .hd time{font:400 12px/1 'IBM Plex Mono',monospace;color:#5b646d}
-.d1 .lede{font:300 30px/1.25 'Source Sans 3';max-width:44ch;margin:34px 0 6px;letter-spacing:-.015em}
-.d1 .lede em{font-style:normal;font-weight:900}
-.d1 .sub{font:400 14px/1.5 'Source Sans 3';color:#5b646d;max-width:56ch;margin-bottom:40px}
-.d1 .row{display:grid;grid-template-columns:112px 1fr 168px;gap:26px;padding:24px 0;border-top:1px solid #c3c9cf;align-items:start}
-.d1 .who{font:600 13px/1.3 'Source Sans 3';letter-spacing:.04em}
-.d1 .who span{display:block;font:400 11px/1.5 'IBM Plex Mono',monospace;color:#6e767e;margin-top:4px}
-.d1 .p{font:400 17px/1.45 'Source Sans 3';color:#14181d}
-.d1 .p code{font:400 16px/1 'IBM Plex Mono',monospace;background:#dde1e5;padding:1px 4px}
-.d1 .trail{margin-top:10px;padding-left:16px;border-left:2px solid #b9c0c7}
-.d1 .trail div{font:400 15px/1.5 'Source Sans 3';color:#79818a;padding:3px 0}
-.d1 .fig{text-align:right}
-.d1 .fig b{display:block;font:600 34px/1 'IBM Plex Mono',monospace;letter-spacing:-.03em}
-.d1 .fig small{display:block;font:400 11px/1.5 'IBM Plex Mono',monospace;color:#6e767e;margin-top:6px}
-.d1 .win b{color:#14181d}.d1 .lose b{color:#9aa2aa}
-.d1 .stamp{margin-top:44px;border-top:2px solid #14181d;padding-top:18px;display:flex;justify-content:space-between;align-items:flex-end}
-.d1 .stamp p{font:400 14px/1.5 'Source Sans 3';max-width:50ch;color:#3d454d}
-.d1 .stamp p b{font-weight:900;color:#14181d}
-.d1 .stamp .path{font:400 11px/1.6 'IBM Plex Mono',monospace;color:#6e767e;text-align:right}
+    /* Direction A: the verdict is the page structure. */
+    .a { background: var(--paper); color: var(--ink); padding: 34px 42px 52px; }
+    .a .top { display: flex; justify-content: space-between; gap: 24px; align-items: end; padding-bottom: 16px; border-bottom: 2px solid var(--ink); }
+    .a h1 { max-width: 19ch; margin: 0; font-size: clamp(30px, 4vw, 62px); line-height: .98; letter-spacing: -.055em; font-weight: 650; }
+    .a .context { max-width: 42ch; margin: 0; color: var(--quiet); font-size: 13px; line-height: 1.55; }
+    .a .verdict-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border-bottom: 2px solid var(--ink); }
+    .a .case { padding: 28px 28px 30px 0; min-width: 0; }
+    .a .case + .case { border-left: 1px solid var(--rule); padding-left: 28px; padding-right: 0; }
+    .a .operator { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 24px; color: var(--quiet); font-size: 12px; font-weight: 750; text-transform: uppercase; letter-spacing: .13em; }
+    .a .verdict { margin: 0 0 18px; font-size: clamp(38px, 5.3vw, 78px); line-height: .82; letter-spacing: -.065em; font-weight: 800; }
+    .a .unmeasured .verdict { color: var(--refuse); }
+    .a .abandoned .verdict { color: var(--ink); }
+    .a .reason { min-height: 48px; margin: 0 0 24px; max-width: 46ch; font-size: 15px; line-height: 1.48; font-weight: 580; }
+    .a .prompt { font-family: var(--serif); font-size: 20px; line-height: 1.42; max-width: 49ch; }
+    .a .evidence { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 26px; }
+    .a .evidence .metric { padding-top: 13px; border-top: 1px solid var(--rule); }
+    .a .metric .probe { color: var(--quiet); }
+    .a .flip-rule { margin-top: 20px; padding: 12px 0 0; border-top: 1px solid var(--rule); color: var(--quiet); font-size: 12px; line-height: 1.5; }
+    .a .receipt { display: grid; grid-template-columns: .72fr 1.28fr; gap: 30px; padding-top: 26px; }
+    .a .receipt h2 { margin: 0 0 10px; font-size: 12px; text-transform: uppercase; letter-spacing: .13em; }
+    .a .receipt .status { display: inline-block; background: var(--land); color: #fff; padding: 6px 9px; font: 700 11px/1 var(--mono); letter-spacing: .05em; }
+    .a .receipt p { margin: 12px 0 0; color: var(--quiet); font-size: 13px; line-height: 1.55; }
+    .a .change { display: grid; grid-template-columns: 1fr 1.2fr; gap: 18px; }
+    .a .before, .a .after { padding-top: 10px; border-top: 1px solid var(--rule); }
+    .a .before .file-copy { color: var(--quiet); }
+    .a .after .file-copy { color: var(--ink); }
+    .a .change-label { margin-bottom: 10px; font-size: 10px; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
 
-/* ---------- D2 MARGINALIA : prompts are writing; corrections are margin notes ---------- */
-.d2{background:#e9ebee;color:#191d26;padding:60px 56px;min-height:100vh;font-family:'Newsreader',Georgia,serif}
-.d2 .eyebrow{font:700 10px/1 'Archivo',sans-serif;letter-spacing:.26em;text-transform:uppercase;color:#6a7280}
-.d2 h1{font:300 46px/1.1 'Newsreader',serif;letter-spacing:-.02em;max-width:22ch;margin:16px 0 46px}
-.d2 h1 em{font-style:italic}
-.d2 .ms{display:grid;grid-template-columns:1fr 232px;gap:40px;padding:30px 0;border-top:1px solid #c8ccd3}
-.d2 .body{font:300 25px/1.5 'Newsreader',serif;color:#191d26}
-.d2 .body.faded{color:#8f96a1}
-.d2 .by{font:700 10px/1 'Archivo',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:#6a7280;margin-bottom:12px}
-.d2 .marg{padding-top:4px;border-left:1px solid #c8ccd3;padding-left:18px}
-.d2 .marg div{font:300 15px/1.5 'Newsreader',serif;font-style:italic;color:#6a7280;padding:4px 0}
-.d2 .verdict{font:700 10px/1 'Archivo',sans-serif;letter-spacing:.2em;text-transform:uppercase;margin-top:14px;display:inline-block;padding:6px 10px;border:1px solid #191d26}
-.d2 .verdict.out{border-color:#a9b0ba;color:#8f96a1}
-.d2 .close{margin-top:52px;padding-top:22px;border-top:1px solid #c8ccd3;font:300 21px/1.5 'Newsreader',serif;max-width:52ch}
-.d2 .close b{font-weight:600}
-.d2 .close .p{font:700 10px/1.8 'Archivo',monospace;letter-spacing:.1em;color:#6a7280;margin-top:14px}
+    /* Direction B: source, probe, verdict are three adjacent columns. */
+    .b { background: var(--dark); color: #eff3f0; padding: 30px 38px 50px; }
+    .b header { display: flex; justify-content: space-between; gap: 28px; align-items: start; padding-bottom: 26px; }
+    .b .kicker { color: var(--lime); font: 700 11px/1.3 var(--mono); text-transform: uppercase; letter-spacing: .12em; }
+    .b h1 { margin: 9px 0 0; max-width: 16ch; font-size: clamp(34px, 4.8vw, 66px); line-height: .95; letter-spacing: -.055em; font-weight: 620; }
+    .b header p { max-width: 39ch; margin: 3px 0 0; color: var(--dark-quiet); font-size: 14px; line-height: 1.55; }
+    .b .column-heads, .b .case-row { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(210px, .65fr) minmax(220px, .72fr); }
+    .b .column-heads { border-top: 1px solid var(--dark-rule); color: var(--dark-quiet); }
+    .b .column-heads div { padding: 10px 16px 10px 0; font: 700 10px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+    .b .column-heads div + div { border-left: 1px solid var(--dark-rule); padding-left: 16px; }
+    .b .case-row { border-top: 1px solid var(--dark-rule); min-height: 232px; }
+    .b .case-row > div { padding: 23px 18px 23px 0; min-width: 0; }
+    .b .case-row > div + div { border-left: 1px solid var(--dark-rule); padding-left: 18px; }
+    .b .who { margin-bottom: 16px; color: var(--dark-quiet); font: 700 10px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+    .b .prompt { font-size: 19px; line-height: 1.46; max-width: 45ch; }
+    .b .transcript-note { margin-top: 17px; color: var(--dark-quiet); font-size: 12px; line-height: 1.5; }
+    .b .measure { display: flex; flex-direction: column; justify-content: space-between; }
+    .b .measure strong { color: #fff; font: 500 clamp(26px, 3vw, 42px)/.95 var(--mono); letter-spacing: -.06em; }
+    .b .measure .probe { margin-top: 14px; color: var(--dark-quiet); overflow-wrap: anywhere; }
+    .b .decision { display: flex; flex-direction: column; justify-content: space-between; }
+    .b .decision strong { font-size: clamp(29px, 3.6vw, 48px); line-height: .9; letter-spacing: -.06em; }
+    .b .case-row.refusal .decision strong { color: var(--lime); }
+    .b .decision p { margin: 15px 0 0; color: var(--dark-quiet); font-size: 13px; line-height: 1.52; }
+    .b .decision .rule { padding-top: 14px; border-top: 1px solid var(--dark-rule); color: #fff; font-size: 11px; line-height: 1.45; }
+    .b .write-row { display: grid; grid-template-columns: .78fr 1.22fr; border-top: 1px solid var(--dark-rule); border-bottom: 1px solid var(--dark-rule); }
+    .b .write-row > div { padding: 22px 18px 24px 0; }
+    .b .write-row > div + div { border-left: 1px solid var(--dark-rule); padding-left: 18px; }
+    .b .write-title { color: var(--lime); font-size: 27px; line-height: 1; letter-spacing: -.04em; font-weight: 650; }
+    .b .write-row p { margin: 12px 0 0; color: var(--dark-quiet); font-size: 12px; line-height: 1.5; }
+    .b .diff { display: grid; grid-template-columns: .55fr 1.45fr; gap: 20px; }
+    .b .diff .file-copy { color: #eff3f0; }
+    .b .diff .old { color: var(--dark-quiet); }
 
-/* ---------- D3 TRACK : an episode has length and cost; draw it ---------- */
-.d3{background:#0d1013;color:#dfe4e8;padding:56px 48px;min-height:100vh;font-family:'Bricolage Grotesque',sans-serif}
-.d3 .eyebrow{font:300 11px/1 'IBM Plex Mono',monospace;letter-spacing:.2em;text-transform:uppercase;color:#69737d}
-.d3 h1{font:800 52px/1.02 'Bricolage Grotesque',sans-serif;letter-spacing:-.035em;max-width:19ch;margin:14px 0 8px}
-.d3 .sub{font:300 16px/1.5 'Bricolage Grotesque',sans-serif;color:#8b949d;max-width:52ch;margin-bottom:50px}
-.d3 .ep{margin-bottom:38px}
-.d3 .epl{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:11px}
-.d3 .epl .n{font:800 15px/1 'Bricolage Grotesque';letter-spacing:.01em}
-.d3 .epl .c{font:400 12px/1 'IBM Plex Mono',monospace;color:#69737d}
-.d3 .line{height:3px;background:#242a30;position:relative;margin-bottom:13px}
-.d3 .fill{position:absolute;left:0;top:0;height:3px;background:#4ea3a8}
-.d3 .fill.dead{background:#6c757e}
-.d3 .tick{position:absolute;top:-5px;width:2px;height:13px;background:#c98b6b}
-.d3 .txt{font:300 19px/1.45 'Bricolage Grotesque',sans-serif;color:#dfe4e8}
-.d3 .txt code{font:400 17px/1 'IBM Plex Mono',monospace;color:#9fd4d7}
-.d3 .txt.dim{color:#7c858e}
-.d3 .corr{font:300 15px/1.5 'Bricolage Grotesque';color:#c98b6b;margin-top:7px}
-.d3 .out{margin-top:56px;border-top:1px solid #242a30;padding-top:22px;display:flex;justify-content:space-between;align-items:flex-end;gap:30px}
-.d3 .out p{font:300 19px/1.45 'Bricolage Grotesque';max-width:46ch;color:#dfe4e8}
-.d3 .out p b{font-weight:800}
-.d3 .out .path{font:400 11px/1.7 'IBM Plex Mono',monospace;color:#69737d;text-align:right;white-space:nowrap}
+    /* Direction C: the changed team file is the hero; the comparison explains it. */
+    .c { background: #eef1f9; color: #11172a; padding: 32px 42px 52px; }
+    .c header { display: grid; grid-template-columns: .75fr 1.25fr; gap: 32px; align-items: end; padding-bottom: 20px; border-bottom: 4px solid var(--blue); }
+    .c .eyebrow { color: var(--blue); font: 750 11px/1 var(--mono); text-transform: uppercase; letter-spacing: .13em; }
+    .c h1 { margin: 9px 0 0; font-size: clamp(34px, 4.8vw, 68px); line-height: .93; letter-spacing: -.06em; font-weight: 720; }
+    .c header p { margin: 0; max-width: 48ch; font-size: 15px; line-height: 1.55; color: #515a76; }
+    .c .hero-file { display: grid; grid-template-columns: .55fr 1.45fr; gap: 28px; padding: 27px 0 30px; border-bottom: 1px solid #b7bfd7; }
+    .c .file-status { align-self: start; }
+    .c .file-status strong { display: block; color: var(--blue); font-size: clamp(32px, 4.2vw, 56px); line-height: .9; letter-spacing: -.055em; }
+    .c .file-status p { margin: 13px 0 0; max-width: 31ch; color: #515a76; font-size: 12px; line-height: 1.5; }
+    .c .file-panel { background: #fff; border: 1px solid #aeb7d3; box-shadow: 8px 8px 0 var(--blue-soft); }
+    .c .file-path { padding: 10px 14px; border-bottom: 1px solid #cbd1e2; color: #515a76; font: 700 10px/1.4 var(--mono); overflow-wrap: anywhere; }
+    .c .file-body { display: grid; grid-template-columns: .48fr 1.52fr; }
+    .c .file-body > div { padding: 16px; min-width: 0; }
+    .c .file-body > div + div { border-left: 1px solid #cbd1e2; }
+    .c .old { color: #747c95; }
+    .c .after .file-copy { color: #11172a; }
+    .c .compare-title { display: flex; justify-content: space-between; gap: 20px; padding: 25px 0 12px; }
+    .c .compare-title h2 { margin: 0; font-size: 12px; text-transform: uppercase; letter-spacing: .13em; }
+    .c .compare-title p { margin: 0; color: #515a76; font-size: 11px; }
+    .c .compare { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #b7bfd7; border-bottom: 1px solid #b7bfd7; }
+    .c .operator-card { padding: 22px 24px 24px 0; min-width: 0; }
+    .c .operator-card + .operator-card { border-left: 1px solid #b7bfd7; padding-left: 24px; padding-right: 0; }
+    .c .card-top { display: flex; justify-content: space-between; gap: 14px; align-items: start; }
+    .c .who { font: 750 10px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: #515a76; }
+    .c .verdict { font-size: clamp(28px, 3.6vw, 50px); line-height: .88; letter-spacing: -.055em; font-weight: 750; text-align: right; }
+    .c .operator-card:first-child .verdict { color: var(--blue); }
+    .c .operator-card .prompt { margin-top: 23px; font-size: 17px; line-height: 1.48; max-width: 49ch; }
+    .c .operator-card .metric { grid-template-columns: auto 1fr; align-items: end; gap: 13px; margin-top: 20px; padding-top: 13px; border-top: 1px solid #cbd1e2; }
+    .c .operator-card .metric strong { color: #11172a; }
+    .c .operator-card .probe { color: #515a76; }
+    .c .bottom-rule { display: grid; grid-template-columns: .58fr 1.42fr; gap: 24px; padding-top: 17px; color: #515a76; font-size: 12px; line-height: 1.5; }
+    .c .bottom-rule strong { color: #11172a; }
 
-.d1 .evid{margin-top:42px;border-top:1px solid #c3c9cf;padding-top:22px;display:grid;grid-template-columns:1fr 300px;gap:34px;align-items:start}
-.d1 .evid h2{grid-column:1/-1;font:900 12px/1 'Source Sans 3';letter-spacing:.2em;text-transform:uppercase;margin-bottom:4px}
-.d1 .evid p{font:400 15px/1.55 'Source Sans 3';color:#3d454d}
-.d1 .evid p b{color:#14181d;font-weight:700}
-.d1 .evid code{font:400 13px/1 'IBM Plex Mono',monospace;background:#dde1e5;padding:1px 4px}
-.d1 .evid table{border-collapse:collapse;width:100%}
-.d1 .evid td{border-bottom:1px solid #c3c9cf;padding:9px 0;font:400 13px/1.4 'Source Sans 3'}
-.d1 .evid td span{display:block;font:400 11px/1.4 'IBM Plex Mono',monospace;color:#6e767e}
-.d1 .evid td:last-child{text-align:right}
-.d1 .evid td b{font:600 21px/1 'IBM Plex Mono',monospace}
-.d1 .evid .pin{grid-column:1/-1;margin-top:14px;font-size:15px}
-.d2 .eyebrow .decl{color:#8a2f2f;letter-spacing:.1em}
-.d2 .evid2{margin-top:44px;border-top:1px solid #c8ccd3;padding-top:24px}
-.d2 .evid2 p{font:300 19px/1.5 'Newsreader',serif;max-width:56ch;color:#191d26}
-.d2 .evid2 .m{font:700 11px/1 'Archivo',monospace;letter-spacing:.04em;background:#dcdfe4;padding:2px 5px}
-.d2 .evid2 .scores{display:flex;gap:52px;margin:24px 0}
-.d2 .evid2 .scores b{display:block;font:300 44px/1 'Newsreader',serif;letter-spacing:-.02em}
-.d2 .evid2 .scores span{display:block;font:700 10px/1.5 'Archivo',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#6a7280;margin-top:8px}
-.d2 .evid2 .pin{margin-top:6px}
-.d1 .fig b.v{font:900 19px/1.2 'Source Sans 3',sans-serif;letter-spacing:.06em}
-.d1 .fig.lose b.v{color:#5b646d}
-.d1 .hd time b{font-weight:700;color:#14181d}
-.d1 .warnline{display:block;color:#8a2f2f;font-size:10px;letter-spacing:.02em;margin-top:3px}
-.d2 .marg .sep{border-top:1px solid #c8ccd3;margin-top:9px;padding-top:9px}
-.d1 .fig.um b{color:#14181d}
-.d1 .fig.um small{color:#14181d;font-weight:600}
-.d2 .verdict.um{border-width:2px;border-color:#191d26;color:#191d26}
-.d2 .marg .warn{font-style:normal;font-family:'Archivo',sans-serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#191d26;font-weight:700;padding-top:10px}
-.bar button.dead{color:#5a6068;text-decoration:line-through}
-.killbar{background:#2a1c1c;color:#e8cfcf;font:400 13px/1.6 'Source Sans 3',sans-serif;padding:14px 48px;border-bottom:1px solid #4a3030}
-@media(max-width:760px){.d1 .row{grid-template-columns:1fr}.d1 .fig{text-align:left}.d2 .ms{grid-template-columns:1fr}.d3 h1{font-size:34px}.d2 h1{font-size:32px}.d1 .lede{font-size:23px}}
-</style></head><body>
+    @media (max-width: 760px) {
+      .chooser { display: none; }
+      .direction { inline-size: 390px; max-inline-size: 100vw; }
+      .a, .b, .c { padding: 25px 18px 38px; }
+      .a .top, .b header { display: grid; }
+      .a h1, .b h1, .c h1, .context, .reason, .prompt, .probe, .file-copy,
+      .transcript-note, .file-path, .decision, .metric, .write-title { max-width: 100%; overflow-wrap: anywhere; word-break: break-word; }
+      .a .operator { flex-direction: column; align-items: flex-start; }
+      .a .verdict-grid, .a .receipt, .a .change, .b .column-heads, .b .case-row,
+      .b .write-row, .b .diff, .c header, .c .hero-file, .c .file-body, .c .compare,
+      .c .bottom-rule { grid-template-columns: 1fr; }
+      .a .case { padding: 24px 0; }
+      .a .case + .case { border-left: 0; border-top: 1px solid var(--rule); padding: 24px 0; }
+      .a .reason { min-height: 0; }
+      .a .evidence { grid-template-columns: 1fr; }
+      .a .change .after { margin-top: 6px; }
+      .b .column-heads { display: none; }
+      .b .case-row > div, .c .operator-card, .c .file-panel { inline-size: 100%; max-inline-size: 100%; }
+      .c h1 { font-size: 30px; letter-spacing: -.04em; }
+      .b .case-row > div { padding: 18px 0; }
+      .b .case-row > div + div { border-left: 0; border-top: 1px solid var(--dark-rule); padding-left: 0; }
+      .b .case-row { padding: 0 0 22px; }
+      .b .case-row + .case-row { border-top-width: 3px; }
+      .b .decision .rule { margin-top: 18px; }
+      .b .write-row > div { padding: 20px 0; }
+      .b .write-row > div + div { border-left: 0; border-top: 1px solid var(--dark-rule); padding-left: 0; }
+      .c .hero-file { gap: 20px; }
+      .c .file-panel { max-width: 100%; overflow: hidden; }
+      .c .file-body > div + div { border-left: 0; border-top: 1px solid #cbd1e2; }
+      .c .compare-title { display: block; }
+      .c .compare-title p { margin-top: 8px; }
+      .c .operator-card { padding: 22px 0; }
+      .c .operator-card + .operator-card { border-left: 0; border-top: 1px solid #b7bfd7; padding: 22px 0; }
+      .c .card-top { display: grid; }
+      .c .verdict { text-align: left; }
+    }
+  
+.evidence-footer{border-top:3px solid currentColor;margin-top:0;padding:34px 48px 44px;background:#101215;color:#e6e8ea;font-family:'Source Sans 3',ui-sans-serif,sans-serif}
+.evidence-footer .ef-head{font:900 12px/1 'Source Sans 3';letter-spacing:.2em;text-transform:uppercase;margin-bottom:16px}
+.evidence-footer p{font:400 15px/1.55 'Source Sans 3';color:#b8bec4;max-width:70ch;margin-bottom:14px}
+.evidence-footer p b,.evidence-footer p em{color:#e6e8ea;font-style:normal;font-weight:700}
+.evidence-footer .ef-table{border-collapse:collapse;margin:6px 0 4px}
+.evidence-footer .ef-table td{border-bottom:1px solid #2b2f34;padding:8px 40px 8px 0;font:400 14px/1.3 'Source Sans 3';color:#e6e8ea}
+.evidence-footer .ef-table td span{color:#7d858d;font-size:12px}
+.evidence-footer .ef-table td:last-child{text-align:right;padding-right:0}
+.evidence-footer .ef-table td b{font:600 18px/1 'IBM Plex Mono',monospace}
+.evidence-footer .ef-pin{margin-top:14px}
+.evidence-footer .ef-cmd{display:inline-block;font:600 15px/1 'IBM Plex Mono',monospace;background:#1b1e22;color:#9fd4d7;padding:9px 13px;border:1px solid #2b2f34;margin-top:4px}
+.evidence-footer .ef-note{display:block;font:400 12px/1.6 'IBM Plex Mono',monospace;color:#69737d;margin-top:9px}
+.evidence-footer .ef-note code{background:#1b1e22;padding:1px 5px}
+</style>
+</head>
+<body>
+  <nav class="chooser" aria-label="Design directions" role="tablist">
+    <button type="button" role="tab" aria-selected="true" data-target="refusal-first">Refusal first</button>
+    <button type="button" role="tab" aria-selected="false" data-target="evidence-chain">Evidence chain</button>
+    <button type="button" role="tab" aria-selected="false" data-target="file-first">File first</button>
+  </nav>
 
-<div class="bar" role="tablist">
-  <button role="tab" aria-selected="true" data-t="d1">1 · Ledger</button>
-  <button role="tab" aria-selected="false" data-t="d2">2 · Marginalia</button>
-  <button role="tab" aria-selected="false" data-t="d3" class="dead">3 · Track — KILLED</button>
-</div>
-<div class="note"><b>Gate 1 · three directions, one screen, real fixture data.</b> The signature device is the same in all three and it comes from the subject, not a library: <b>each prompt is set at its true length, with its outcome trail hanging beneath it.</b> The winner is physically longer than the loser. You see who prompts better by shape, before reading a word.</div>
+  <main>
+    <section class="direction a active" id="refusal-first" role="tabpanel">
+      <div class="top">
+        <h1>The verdict is allowed to refuse.</h1>
+        <p class="context">Paired operators in a declared auth comparison. Only a durable tool record after the opener can earn credit.</p>
+      </div>
+      <div class="verdict-grid">
+        <article class="case unmeasured">
+          <div class="operator"><span>Operator A</span><span>no later evidence</span></div>
+          <h2 class="verdict">UNMEASURED</h2>
+          <p class="reason">Refusal: this episode has no tool-call record after the opener. Earlier records cannot prove that this work landed.</p>
+          <p class="prompt">“Refactor the auth module: extract <code>validate_token</code> into <code>auth/validate.py</code>, keep tests green, show me the diff before applying.”</p>
+          <div class="evidence">
+            <div class="metric"><strong>0</strong><span>later tool-call records</span><span class="probe">Probe · EVENT-TIME · tool_use, tool_result, toolUseResult after opener</span></div>
+          </div>
+          <p class="flip-rule"><strong>Credit rule:</strong> a durable tool record changes this verdict to LANDED. Until then, the refusal holds.</p>
+        </article>
+        <article class="case abandoned">
+          <div class="operator"><span>Operator B</span><span>human closed the attempt</span></div>
+          <h2 class="verdict">ABANDONED</h2>
+          <p class="reason">Decision: the trailing human turn contains the explicit abandon phrase “never mind.”</p>
+          <p class="prompt">“fix auth”</p>
+          <div class="evidence">
+            <div class="metric"><strong>1</strong><span>abandon marker</span><span class="probe">Probe · ABANDON-MARKER phrase match · “never mind”</span></div>
+          </div>
+        </article>
+      </div>
+      <section class="receipt" aria-label="Propagation receipt">
+        <div>
+          <h2>Autonomous propagation</h2>
+          <span class="status">VERIFIED-BY-REPO</span>
+          <p><span class="probe">Probe · FILE-EXISTS</span><br>The team file exists. This proves the fleet write happened; it does not retroactively prove Operator A’s source work landed.</p>
+        </div>
+        <div class="change">
+          <div class="before"><div class="change-label">Before · git first-add diff</div><div class="file-copy">/dev/null
+No team rule at this path.</div></div>
+          <div class="after"><div class="change-label">After · FILE-WRITE</div><div class="file-copy"># Org prompt — propagated from a (refactor auth)
 
-<!-- ============ D1 ============ -->
-<section class="pane on" id="d1"><div class="d1">
-  <div class="hd"><h1>Propagation record</h1><time>fixtures/operators · task class <b>declared by the fixture</b>, not computed<br><span class="warnline">nothing in this repo can classify task class yet — contract/task_class.py is RED</span></time></div>
-  <p class="lede">Two engineers opened the <em>same</em> task. This tool will not tell you who won.</p>
-  <p class="sub">One abandoned it, and that is in the transcript. The other may have landed it, and <b>nothing in this session proves that</b> — so the verdict is UNMEASURED, not a guess dressed as a result.</p>
+Refactor the auth module: extract validate_token into auth/validate.py, keep tests green, show me the diff before applying.</div></div>
+        </div>
+      </section>
+    </section>
 
-  <div class="row win">
-    <div class="who">operator a</div>
-    <div><p class="p">Refactor the auth module: extract <code>validate_token</code> into <code>auth/validate.py</code>, keep tests green, show me the diff before applying.</p></div>
-    <div class="fig um"><b class="v">UNMEASURED</b><small>0 corrective turns · no tool record,<br>so nothing here can confirm it landed</small></div>
-  </div>
+    <section class="direction b" id="evidence-chain" role="tabpanel">
+      <header>
+        <div><div class="kicker">Source → probe → verdict</div><h1>No probe, no credit.</h1></div>
+        <p>Every decision sits beside the record and the probe that produced it. A number has no independent place to render.</p>
+      </header>
+      <div class="column-heads" aria-hidden="true"><div>Source record</div><div>Measured by</div><div>Decision</div></div>
+      <article class="case-row refusal">
+        <div><div class="who">Operator A · opening prompt</div><p class="prompt">Refactor the auth module: extract <code>validate_token</code> into <code>auth/validate.py</code>, keep tests green, show me the diff before applying.</p><p class="transcript-note">Every appended tool event predates this opener. Earlier work stays outside this episode.</p></div>
+        <div class="measure"><div><strong>0</strong><div>later tool-call records</div></div><span class="probe">EVENT-TIME probe<br>tool events after opener</span></div>
+        <div class="decision"><div><strong>UNMEASURED</strong><p>The record cannot support LANDED. Refusal is the decision.</p></div><div class="rule">FLIP CONDITION · durable tool record observed</div></div>
+      </article>
+      <article class="case-row">
+        <div><div class="who">Operator B · opening prompt</div><p class="prompt">fix auth</p><p class="transcript-note">Trailing human turn: “never mind”</p></div>
+        <div class="measure"><div><strong>1</strong><div>abandon marker</div></div><span class="probe">ABANDON-MARKER probe<br>exact phrase match</span></div>
+        <div class="decision"><div><strong>ABANDONED</strong><p>The human explicitly closed the attempt.</p></div><div class="rule">SOURCE · operator-b-refactor.jsonl</div></div>
+      </article>
+      <section class="write-row" aria-label="Autonomous team file change">
+        <div><div class="kicker">Propagation state</div><div class="write-title">AUTO-PROPAGATED</div><p><span class="probe">FILE-EXISTS → VERIFIED-BY-REPO</span><br>The fleet wrote the team rule without opening a coaching surface.</p></div>
+        <div class="diff">
+          <div><div class="who">Replaced</div><div class="file-copy old">/dev/null
+No prior file.</div><div class="probe">git first-add diff</div></div>
+          <div><div class="who">Team file now</div><div class="file-copy">Refactor the auth module: extract validate_token into auth/validate.py, keep tests green, show me the diff before applying.</div><div class="probe">fixtures/org-repo/.cursor/rules/propagated-skill.md</div></div>
+        </div>
+      </section>
+    </section>
 
-  <div class="row lose">
-    <div class="who">operator b</div>
-    <div><p class="p">fix auth</p>
-      <div class="trail"><div>never mind</div></div></div>
-    <div class="fig lose"><b class="v">ABANDONED</b><small>1 corrective turn · “never mind”,<br>read from the transcript</small></div>
-  </div>
+    <section class="direction c" id="file-first" role="tabpanel">
+      <header>
+        <div><div class="eyebrow">The side effect is the hero</div><h1>The team file changed itself.</h1></div>
+        <p>The screen opens on the exact organisational consequence, then works backward to the prompt comparison and the refusal that protects it.</p>
+      </header>
+      <section class="hero-file" aria-label="Team file propagation">
+        <div class="file-status"><strong>WRITTEN</strong><p><span class="probe">Probe · FILE-EXISTS → VERIFIED-BY-REPO</span><br>The write is proven separately from prompt performance.</p></div>
+        <div class="file-panel">
+          <div class="file-path">fixtures/org-repo/.cursor/rules/propagated-skill.md</div>
+          <div class="file-body">
+            <div class="old"><div class="change-label">Replaced</div><div class="file-copy">/dev/null
+No prior team rule.</div><div class="probe">git first-add diff</div></div>
+            <div class="after"><div class="change-label">Now shared with the team</div><div class="file-copy"># Org prompt — propagated from a (refactor auth)
 
-  <div class="evid">
-    <h2>Why is a model here at all?</h2>
-    <p>Because the version without one carries no signal, and that is measured, not argued.
-    <code>contract/task_class.py</code> asks eight times whether two prompts open the same class of
-    work. The shipping substring test answers three correctly. <b>A stub that ignores its input
-    entirely and always answers DIFFERENT also answers three correctly.</b></p>
-    <table><tr><td>classify_substring <span>what ships today</span></td><td><b>3 / 8</b></td></tr>
-    <tr><td>classify_always_different <span>never reads its input</span></td><td><b>3 / 8</b></td></tr></table>
-    <p class="pin">Indistinguishable. The three it gets right are accidents of always saying no.
-    <b>Run it: <code>python3 contract/task_class.py</code> — it exits 1.</b></p>
-  </div>
-  <div class="stamp">
-    <p>Nothing was propagated. A prompt is only worth spreading once the repo confirms it produced something, and <b>this session carries no tool record to confirm it with.</b></p>
-    <div class="path">fixtures/org-repo/.cursor/rules/<br>propagated-skill.md</div>
-  </div>
-</div></section>
+Refactor the auth module: extract validate_token into auth/validate.py, keep tests green, show me the diff before applying.</div><div class="probe">FILE-WRITE · fleet supervisor</div></div>
+          </div>
+        </div>
+      </section>
+      <div class="compare-title"><h2>Why the source prompt still receives no credit</h2><p>Declared auth comparison · task-class integration is outside this screen</p></div>
+      <section class="compare" aria-label="Operator prompt comparison">
+        <article class="operator-card">
+          <div class="card-top"><span class="who">Operator A</span><span class="verdict">UNMEASURED</span></div>
+          <p class="prompt">Refactor the auth module: extract <code>validate_token</code> into <code>auth/validate.py</code>, keep tests green, show me the diff before applying.</p>
+          <div class="metric"><strong>0</strong><div><div>later tool-call records</div><div class="probe">EVENT-TIME · tool events after opener</div></div></div>
+        </article>
+        <article class="operator-card">
+          <div class="card-top"><span class="who">Operator B</span><span class="verdict">ABANDONED</span></div>
+          <p class="prompt">fix auth → never mind</p>
+          <div class="metric"><strong>1</strong><div><div>abandon marker</div><div class="probe">ABANDON-MARKER · exact phrase match</div></div></div>
+        </article>
+      </section>
+      <div class="bottom-rule"><div class="probe">Decision rule</div><div><strong>A file write proves propagation. It does not prove the source task landed.</strong> Operator A changes to LANDED only when a durable tool record arrives.</div></div>
+    </section>
+  </main>
 
-<!-- ============ D2 ============ -->
-<section class="pane" id="d2"><div class="d2">
-  <div class="eyebrow">Task class · refactor-a-module — <span class="decl">declared by the fixture, not computed</span></div>
-  <h1>A prompt is <em>writing</em>. Someone in the building is better at it.</h1>
+  <script>
+    const tabs = Array.from(document.querySelectorAll('.chooser button'));
+    const directions = Array.from(document.querySelectorAll('.direction'));
+    function selectDirection(id) {
+      tabs.forEach((tab) => tab.setAttribute('aria-selected', String(tab.dataset.target === id)));
+      directions.forEach((direction) => direction.classList.toggle('active', direction.id === id));
+      history.replaceState(null, '', '#' + id);
+    }
+    tabs.forEach((tab) => tab.addEventListener('click', () => selectDirection(tab.dataset.target)));
+    const initial = location.hash.slice(1);
+    if (directions.some((direction) => direction.id === initial)) selectDirection(initial);
+  </script>
 
-  <div class="ms">
-    <div><div class="by">operator a</div>
-      <p class="body">Refactor the auth module: extract validate_token into auth/validate.py, keep tests green, show me the diff before applying.</p>
-      <span class="verdict um">unmeasured · no tool record</span></div>
-    <div class="marg"><div>names the file</div><div>names the symbol</div><div>states the exit condition</div><div>asks to see it first</div><div class="warn">— but nothing here proves it landed</div></div>
-  </div>
-
-  <div class="ms">
-    <div><div class="by">operator b</div>
-      <p class="body faded">fix auth</p>
-      <span class="verdict out">abandoned · “never mind”</span></div>
-    <div class="marg"><div>no file</div><div>no symbol</div><div>no exit condition</div><div class="sep">then abandoned it — <em>not</em> the opposite of the line above, a different kind of event</div></div>
-  </div>
-
-  <div class="evid2">
-    <div class="eyebrow">the answer to “why is a model here at all?”</div>
-    <p>Eight times, <span class="m">contract/task_class.py</span> asks whether two prompts open the
-    same class of work. Today's substring test answers three correctly — and <em>a stub that never
-    reads its input</em> also answers three correctly.</p>
-    <div class="scores"><div><b>3 / 8</b><span>the code that ships today</span></div>
-    <div><b>3 / 8</b><span>a stub that ignores its input</span></div></div>
-    <p class="pin">Indistinguishable. Not partial credit — <b>no signal.</b> The three it gets right
-    are accidents of always answering no. <span class="m">python3 contract/task_class.py</span> exits 1.</p>
-  </div>
-  <p class="close">The fleet <b>declined to propagate anything.</b> Operator a's prompt reads better and that is not evidence. Until a tool record shows work landing, the honest verdict is UNMEASURED — and a metric that refuses is the only kind worth trusting.
-    <span class="p">fixtures/org-repo/.cursor/rules/propagated-skill.md</span></p>
-</div></section>
-
-<!-- ============ D3 ============ -->
-<section class="pane" id="d3"><div class="killbar">KILLED at Gate 2 — the bar widths below (34% / 72%) were hardcoded. No measured duration exists in the data, and the closing line claims “twice the line” from an invented number. Left visible as the receipt, not as a candidate.</div><div class="d3">
-  <div class="eyebrow">refactor-a-module</div>
-  <h1>One landed cold. One never got there.</h1>
-  <p class="sub">An episode is one intent, opened and closed. Its length is what it cost. Every mark on the line is a turn the engineer had to type again.</p>
-
-  <div class="ep"><div class="epl"><span class="n">operator a</span><span class="c">LANDED · 0 corrective</span></div>
-    <div class="line"><div class="fill" style="width:34%"></div></div>
-    <p class="txt">Refactor the auth module: extract <code>validate_token</code> into <code>auth/validate.py</code>, keep tests green, show me the diff before applying.</p></div>
-
-  <div class="ep"><div class="epl"><span class="n">operator b</span><span class="c">ABANDONED · 1 corrective</span></div>
-    <div class="line"><div class="fill dead" style="width:72%"></div><div class="tick" style="left:38%"></div></div>
-    <p class="txt dim">fix auth</p><p class="corr">→ never mind</p></div>
-
-  <div class="out"><p>The shorter prompt cost <b>twice the line</b> and produced nothing. The fleet moved the one that worked into the team file <b>without being asked.</b></p>
-    <div class="path">fixtures/org-repo/.cursor/rules/<br>propagated-skill.md</div></div>
-</div></section>
-
-<script>
-document.querySelectorAll('.bar button').forEach(b=>b.onclick=()=>{
-  document.querySelectorAll('.bar button').forEach(x=>x.setAttribute('aria-selected',x===b));
-  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('on',p.id===b.dataset.t));
-});
-</script></body></html>
+<section class="evidence-footer">
+  <div class="ef-head">Why a model is here at all — reproduce it in one command</div>
+  <p>The component that decides "same task class" is the whole reason Gemini is in this stack.
+  Here is what it scores against two stubs that <em>never read their input</em>, on a control set of
+  eight pairs pinned before the model existed:</p>
+  <table class="ef-table">
+    <tr><td>shipping classifier <span>(what fleet/ calls)</span></td><td>beats both stubs, every run</td></tr>
+    <tr><td>substring baseline <span>(frozen)</span></td><td><b>3&#8202;/&#8202;8</b></td></tr>
+    <tr><td>stub: always&#8202;&ldquo;different&rdquo; <span>(ignores input)</span></td><td><b>3&#8202;/&#8202;8</b></td></tr>
+    <tr><td>stub: always&#8202;&ldquo;same&rdquo; <span>(ignores input)</span></td><td><b>4&#8202;/&#8202;8</b></td></tr>
+  </table>
+  <p class="ef-pin">The substring test that ships by default is <b>indistinguishable from a stub that
+  never looks at the prompt</b> &mdash; both score 3&#8202;/&#8202;8, and their three &ldquo;passes&rdquo; are
+  accidents of always answering one way. The model clears all three by 2&ndash;3 rows in every run;
+  the comparison is stable even though a single run&rsquo;s score is not, so it is stated as a
+  comparison, not a figure. Run it yourself:</p>
+  <code class="ef-cmd">python3 contract/task_class.py</code>
+  <span class="ef-note">exits 1, prints all four arms &middot; add the live model with <code>python3 -m contract.gemini_impl</code></span>
+</section>
+</body>
+</html>

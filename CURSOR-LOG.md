@@ -1244,3 +1244,27 @@ operator who names the file and the exit condition lands cold; one who types 'fi
 true of the fixture pair and is the demo — and state that the population-level lift is the first
 thing the first customer's corpus proves, which is exactly why the day-two user is an org and not a
 judge. **The absence of the number here is itself the argument for who the customer is.**
+
+---
+
+## 2026-08-22 · Claude · Negative control RESTORED to the surface — direction-agnostic, reproducible
+
+Cursor's surface rewrite deleted the 3/8-vs-3/8 evidence. Restored as a footer AFTER `</main>`, so
+it survives whichever of the three directions Oscar picks — it is not inside any `.direction` pane.
+
+**Verified before quoting, per the frozen-baseline warning:** the arms in `contract/task_class.py`
+still measure different things. `classify_substring` executable body is pure inline substring —
+`ast.unparse` confirms it touches no `fleet` code (the `from fleet` grep hit was the docstring only).
+`classify_shipping` imports the live `fleet.task_class.classify`. Deterministic run, no API:
+**frozen baseline 3/8 · always-DIFFERENT 3/8 · always-SAME 4/8.**
+
+**Stated as a stable comparison, not a single figure** (the 7/8-was-one-sample lesson): *"the shipping
+classifier beats both stubs, every run"* — the substring test that ships by default is
+**indistinguishable from a stub that never reads the prompt**, both 3/8. The reproduce command is on
+the surface: `python3 contract/task_class.py` (exits 1, prints all four arms), plus
+`python3 -m contract.gemini_impl` for the live model.
+
+**Verified at the object, not the screenshot:** headless `--screenshot` cannot capture below-fold
+sections reliably at this height, but the DOM layout is authoritative — `footerH=551, bodyH=2175`,
+and the rendered section text contains all four arms, the command, and the framing. Render-and-look
+done via DOM dump where the screenshot tool fell short.
