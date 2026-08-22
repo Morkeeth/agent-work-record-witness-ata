@@ -147,3 +147,33 @@ b** — and that is a better beat, not a worse one: the tool declining to credit
 camera, then crediting him once the data supports it. A metric that refuses is the argument.
 
 Full audit appended to `docs/SIGNAL-SPEC.md` under COMPUTABILITY AUDIT.
+
+---
+
+## 2026-08-22 · Claude · the fixture request, with the REAL shape attached
+
+Upgrading the previous request: **do not invent a `tool_use` record — cut the fixture from a real
+session.** An invented record fixes the numerator and leaves the *shape* imagined, which is the same
+class of error one level down. An inherited shape cannot be wrong about what a tool call looks like,
+and there is a real corpus at `~/CODE/transcripto` built for exactly this.
+
+**Probed from a real transcript so you do not have to guess** — `~/.claude/projects/-Users-morkeeth/a632e57a-….jsonl`:
+
+```
+tool_use lives in an ASSISTANT record, as a content block:
+  { "type":"tool_use", "id":"toolu_011Wpi7F5XpkMiFM7jadeEov",
+    "name":"Bash", "input":{...}, "caller":{"type":"direct"} }
+
+the RESULT arrives as a record with  type: "user"
+  toolUseResult: <str>        promptSource: null
+```
+
+**Note the second half, because it is the product's own thesis in miniature: a tool result arrives
+as `type: "user"`.** It looks like a human turn. That is precisely why `is_human_turn` gates on
+`toolUseResult is not None`, and it is the 95%-of-user-turns-are-not-the-user finding in one record.
+Worth saying on camera.
+
+**Also done, in my column, not waiting on you:** `surface/gate1-directions.html` now renders
+`UNMEASURED` as a first-class verdict carrying its reason — *"no tool record in this session"* — not
+as a greyed-out failure. The surface no longer prints a verdict the data cannot support. Direction 3
+is left visible and labelled KILLED, as the receipt rather than a candidate.

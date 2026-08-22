@@ -76,37 +76,44 @@ body{font-family:'Source Sans 3',ui-sans-serif,sans-serif;background:#15171a;col
 .d3 .out p{font:300 19px/1.45 'Bricolage Grotesque';max-width:46ch;color:#dfe4e8}
 .d3 .out p b{font-weight:800}
 .d3 .out .path{font:400 11px/1.7 'IBM Plex Mono',monospace;color:#69737d;text-align:right;white-space:nowrap}
+
+.d1 .fig.um b{color:#14181d}
+.d1 .fig.um small{color:#14181d;font-weight:600}
+.d2 .verdict.um{border-width:2px;border-color:#191d26;color:#191d26}
+.d2 .marg .warn{font-style:normal;font-family:'Archivo',sans-serif;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#191d26;font-weight:700;padding-top:10px}
+.bar button.dead{color:#5a6068;text-decoration:line-through}
+.killbar{background:#2a1c1c;color:#e8cfcf;font:400 13px/1.6 'Source Sans 3',sans-serif;padding:14px 48px;border-bottom:1px solid #4a3030}
 @media(max-width:760px){.d1 .row{grid-template-columns:1fr}.d1 .fig{text-align:left}.d2 .ms{grid-template-columns:1fr}.d3 h1{font-size:34px}.d2 h1{font-size:32px}.d1 .lede{font-size:23px}}
 </style></head><body>
 
 <div class="bar" role="tablist">
   <button role="tab" aria-selected="true" data-t="d1">1 · Ledger</button>
   <button role="tab" aria-selected="false" data-t="d2">2 · Marginalia</button>
-  <button role="tab" aria-selected="false" data-t="d3">3 · Track</button>
+  <button role="tab" aria-selected="false" data-t="d3" class="dead">3 · Track — KILLED</button>
 </div>
 <div class="note"><b>Gate 1 · three directions, one screen, real fixture data.</b> The signature device is the same in all three and it comes from the subject, not a library: <b>each prompt is set at its true length, with its outcome trail hanging beneath it.</b> The winner is physically longer than the loser. You see who prompts better by shape, before reading a word.</div>
 
 <!-- ============ D1 ============ -->
 <section class="pane on" id="d1"><div class="d1">
   <div class="hd"><h1>Propagation record</h1><time>fixtures/operators · task class refactor-a-module</time></div>
-  <p class="lede">Two engineers opened the <em>same</em> task. One landed it cold.</p>
-  <p class="sub">The other needed a correction and then withdrew. The difference is a prompt, and a prompt is transferable.</p>
+  <p class="lede">Two engineers opened the <em>same</em> task. This tool will not tell you who won.</p>
+  <p class="sub">One abandoned it, and that is in the transcript. The other may have landed it, and <b>nothing in this session proves that</b> — so the verdict is UNMEASURED, not a guess dressed as a result.</p>
 
   <div class="row win">
     <div class="who">operator a<span>ep. 1</span></div>
     <div><p class="p">Refactor the auth module: extract <code>validate_token</code> into <code>auth/validate.py</code>, keep tests green, show me the diff before applying.</p></div>
-    <div class="fig"><b>0</b><small>corrective turns<br>LANDED</small></div>
+    <div class="fig um"><b>?</b><small>UNMEASURED<br>no tool record in<br>this session</small></div>
   </div>
 
   <div class="row lose">
     <div class="who">operator b<span>ep. 1</span></div>
     <div><p class="p">fix auth</p>
       <div class="trail"><div>never mind</div></div></div>
-    <div class="fig"><b>1</b><small>corrective turn<br>ABANDONED</small></div>
+    <div class="fig"><b>1</b><small>ABANDONED<br>"never mind",<br>read from the transcript</small></div>
   </div>
 
   <div class="stamp">
-    <p>Operator a's prompt was written to <b>the team skill file</b>. Nobody asked for it. The next session on this task class starts from it.</p>
+    <p>Nothing was propagated. A prompt is only worth spreading once the repo confirms it produced something, and <b>this session carries no tool record to confirm it with.</b></p>
     <div class="path">fixtures/org-repo/.cursor/rules/<br>propagated-skill.md</div>
   </div>
 </div></section>
@@ -119,23 +126,23 @@ body{font-family:'Source Sans 3',ui-sans-serif,sans-serif;background:#15171a;col
   <div class="ms">
     <div><div class="by">operator a</div>
       <p class="body">Refactor the auth module: extract validate_token into auth/validate.py, keep tests green, show me the diff before applying.</p>
-      <span class="verdict">landed · 0 corrections</span></div>
-    <div class="marg"><div>names the file</div><div>names the symbol</div><div>states the exit condition</div><div>asks to see it first</div></div>
+      <span class="verdict um">unmeasured · no tool record</span></div>
+    <div class="marg"><div>names the file</div><div>names the symbol</div><div>states the exit condition</div><div>asks to see it first</div><div class="warn">— but nothing here proves it landed</div></div>
   </div>
 
   <div class="ms">
     <div><div class="by">operator b</div>
       <p class="body faded">fix auth</p>
-      <span class="verdict out">abandoned · 1 correction</span></div>
+      <span class="verdict out">abandoned · “never mind”</span></div>
     <div class="marg"><div>no file</div><div>no symbol</div><div>no exit condition</div><div>“never mind”</div></div>
   </div>
 
-  <p class="close">The fleet took the sentence that worked and <b>wrote it into the team's skill file</b>, unasked. Operator b's next session opens with operator a's habits already in the room.
+  <p class="close">The fleet <b>declined to propagate anything.</b> Operator a's prompt reads better and that is not evidence. Until a tool record shows work landing, the honest verdict is UNMEASURED — and a metric that refuses is the only kind worth trusting.
     <span class="p">fixtures/org-repo/.cursor/rules/propagated-skill.md</span></p>
 </div></section>
 
 <!-- ============ D3 ============ -->
-<section class="pane" id="d3"><div class="d3">
+<section class="pane" id="d3"><div class="killbar">KILLED at Gate 2 — the bar widths below (34% / 72%) were hardcoded. No measured duration exists in the data, and the closing line claims “twice the line” from an invented number. Left visible as the receipt, not as a candidate.</div><div class="d3">
   <div class="eyebrow">refactor-a-module</div>
   <h1>One landed cold. One never got there.</h1>
   <p class="sub">An episode is one intent, opened and closed. Its length is what it cost. Every mark on the line is a turn the engineer had to type again.</p>
