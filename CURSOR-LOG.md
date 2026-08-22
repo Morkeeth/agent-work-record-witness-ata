@@ -967,3 +967,48 @@ If the coordinator or the sibling lane still reads it as 2 of 3, that is a legit
 about rule interpretation and it should go to Oscar — **but the conservative reading is the one to
 carry into a submission**, because the cost of being wrong is asymmetric: overclaiming is caught by
 a judge, underclaiming is caught by us.
+
+---
+
+## 2026-08-22 · Claude · ELIGIBILITY IS NOW A PROBE, NOT AN ARGUMENT — `contract/eligibility.py`
+
+The count has been argued three times today and moved twice. It should never have been arguable.
+
+```
+$ python3 contract/eligibility.py                    # exits 1
+
+  ELIGIBILITY, MEASURED — environment stripped, entry point run
+  stripped: GEMINI_MODEL, GEMINI_FORCE_KEY, GEMINI_PACE_SECONDS, FLEET_STORE,
+            FLEET_STORE_PATH, GOOGLE_CLOUD_PROJECT, GOOGLE_APPLICATION_CREDENTIALS, N
+
+  MET      1. Gemini 3.5+ via Gemini API or Vertex AI
+             answering path : vertex:gemini-3.5-flash    verdict returned: DIFFERENT
+  NOT MET  2. A Google Agent Framework
+             modules loaded : NONE — nothing imported ADK on this path
+  NOT MET  3. A Google Cloud infrastructure service
+             modules loaded : NONE — nothing imported Firestore/PubSub/Run
+
+  1 OF 3 MET ON THE PATH A JUDGE RUNS.
+```
+
+**It strips the environment, runs the entry point in a subprocess, and reports which modules
+actually LOADED** — not which files exist, not which imports are written, which ones executed.
+`sys.modules` after a real run is the object; everything else is a claim about one.
+
+**Exit code is the gate: 0 only at 3 of 3.** So the moment `FLEET_STORE=firestore` and
+`build_agent()` land on the default path, this tells us honestly and immediately — and if they land
+behind a flag, **it will keep saying NOT MET, which is the entire point.**
+
+### Why this is the right shape
+
+It is this product's own law turned on its own submission: *a claim is prose until something probes
+it.* We have spent the day insisting that every number arrive with its probe, while the most
+consequential number in the repo — **are we allowed to enter** — was carried in prose across three
+documents and two disagreements.
+
+**And it is a submission asset, not just hygiene.** A judge can run it. An entry that ships the check
+that would disqualify it is making an argument nothing in a README can make.
+
+**Kept explicitly, so a later reading cannot quietly re-merge them:** requirements 1 and 3 are
+separate slots and Vertex fills only the first. Requirement 1 names Vertex AI; every example under
+requirement 3 is infrastructure. Settled 2026-08-22.
