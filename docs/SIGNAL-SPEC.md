@@ -104,3 +104,78 @@ symbol, and asks for the diff first. **The pitch writes itself off the fixture.*
 - [ ] n<3 prints `UNMEASURED` and gives no verdict — **watch it print, do not assume it does**
 - [ ] fixture B rewritten to lose on the signal
 - [ ] the filename split fixed so the money line prints `a`, not `operator`
+
+---
+
+# COMPUTABILITY AUDIT — added 2026-08-22, and it invalidates part of the spec above
+
+**A spec that pins a number nobody can compute is the same error as a fabricated one.** So every
+observable above was checked against the data that actually exists, rather than against its own
+description.
+
+## Probe
+
+```
+$ python3 - (walk every record in fixtures/operators/*.jsonl, print keys + content block types)
+  operator-a: [user text] [assistant text] [assistant text]
+  operator-b: [user text] [assistant text] [user text]
+$ grep -rlo "tool_use|tool_result|toolUseResult" fixtures/
+  NONE
+```
+
+**Zero tool-call records exist in any fixture. Every record is text-only.**
+
+## What that does to the four observables
+
+| Observable | Definition above | Computable on the data that exists? |
+|---|---|---|
+| `ABANDONED` | explicit marker, or closes with no durable artifact | ✅ **yes** — the marker half. The "no durable artifact" half is not |
+| `CORRECTIVE_TURNS` | human turns restating the SAME intent | ⚠️ **only with the classifier.** Not deterministic. Fine — that is its declared job |
+| `LANDED` | *"a durable artifact appeared… ground truth from tool calls, **never from the agent's prose**"* | ❌ **NO. There are no tool calls.** Nothing to read |
+| `REOPENED` | same file touched again within 48h | ❌ **NO.** Single-session fixtures, no second episode, no file identity |
+
+**Therefore the headline score above — `landed-first-try rate` — has an uncomputable numerator.**
+
+## The failure this actually is, stated plainly
+
+`surface/gate1-directions.html` prints **"LANDED · 0 corrections"** for operator a in both surviving
+directions. **That verdict is invented.** It is the same class of error as the `34%` / `72%` track
+widths killed in `surface/GATE-2-SELF-REVIEW.md` — one commit earlier, by the same hand, in the same
+surface. Killing the visible one did not catch the one wearing a real-looking label.
+
+**The rule the spec broke is its own:** *ground truth from tool calls, never from the agent's prose.*
+With no tool calls, "LANDED" was read from two assistant text turns — which is prose.
+
+## The ruling
+
+**The metric is sound on real data and wrong on this data.** Real Claude Code transcripts carry
+`tool_use` / `toolUseResult` records; these hand-written fixtures do not. So the defect is in the
+fixtures, not the measure.
+
+Two branches, and the first is not mine to do:
+
+1. **REQUEST TO CURSOR (owner of `fixtures/`):** the fixtures need to be shaped like real
+   transcripts, including at least one `tool_use` writing a file in operator a's session. Without it
+   the product cannot demonstrate the one signal it says it reads. **Better still: cut a fixture
+   from a real session** so the shape is inherited rather than imagined.
+2. **UNTIL THEN, the honest output is `UNMEASURED`, and the surface must say so.** Not "LANDED".
+   The house law is that `UNMEASURED` is printed and never guessed, and this is exactly the case it
+   was written for.
+
+## And the honest version is a better demo beat, not a worse one
+
+| operator | honest verdict on today's data |
+|---|---|
+| a | **`UNMEASURED`** — no tool record in this session, so the repo cannot confirm anything landed |
+| b | **`ABANDONED`** — "never mind", read from the transcript |
+
+That is still a real comparison, and it is a **stronger** 15 seconds: the tool declines to credit
+operator a rather than flattering him, on camera, and then credits him once the data supports it.
+**A metric that refuses is a metric a buyer can trust** — which is the argument this whole product
+is making.
+
+## Definition of done, corrected
+- [ ] fixtures carry real `tool_use` records, or are cut from a real session — **Cursor's column**
+- [ ] `LANDED` returns `UNMEASURED` when no tool record exists, and is watched printing it
+- [ ] the surface renders `UNMEASURED` as a first-class verdict, not as a greyed-out failure
+- [ ] no screen prints a verdict the data cannot support — **checked by rendering, not by reading**
