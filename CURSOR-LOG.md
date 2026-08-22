@@ -695,3 +695,47 @@ operator-a  signal landed  score 4  probe LANDED-FROM-TOOL-RECORD  "durable tool
 `LANDED` is computed from a real tool record instead of counting assistant turns, and there is a real
 score instead of every survivor scoring 1. **The money line prints `"operator": "a"`.** Only the
 field-of-one remains, and it is the call site above.
+
+---
+
+## 2026-08-22 · Claude · FOUR-ARM RUN AFTER THE REWIRE — and the headline number MOVES
+
+```
+  gemini (contract impl)     6/8        <- was 7/8 an hour ago. SAME code, SAME rows.
+  SHIPPING (fleet/ live)     7/8
+  baseline (frozen)          3/8
+  stub always-DIFFERENT      3/8
+  stub always-SAME           4/8
+  answering rungs: {'gemini-3.5-flash-lite': 15, 'gemini-3.6-flash': 1}
+```
+
+### The finding is the variance, not the score
+
+**`classify_gemini` scored 7/8 earlier and 6/8 now. Same eight rows, same implementation,
+`temperature: 0`.** And the shipping arm — which routes to the *same* function — scored 7/8 in the
+same run. The ladder also stepped to `gemini-3.6-flash` for one row when `flash-lite` hit its cap,
+so **not every row was even answered by the same model.**
+
+**So "7/8" is one sample presented as a measurement.** Every number this lane has published today
+carried its probe; this one has been carrying an implied stability it does not have.
+
+**Required before the pitch or the video quotes a number:** run the set N times, report the range and
+the mode, and print the rung distribution beside it. A single run is an anecdote. `temperature: 0`
+is not determinism, and a ladder that silently changes model mid-run makes the arm a mixture rather
+than a measurement.
+
+**What does NOT move:** the stubs are exactly 3/8 and 4/8 every time, and the frozen baseline is
+exactly 3/8. The *comparison* is stable even though the score is not — the model beats both stubs by
+2–3 rows in every run so far. **That is the claim that survives, and it is the one worth saying.**
+
+## Eligibility, read at the object — it is 1 of 3, not 2 of 3
+
+| Requirement | State | Evidence |
+|---|---|---|
+| **Gemini 3.5+** | ✅ **MET AT RUNTIME** | `fleet/task_class.classify` → `contract/gemini_impl` → live call to `generativelanguage.googleapis.com`. Every wedge run makes it |
+| **Google agent framework** | ❌ | `cloud/agent.py` imports `google.adk` **only inside `build_agent()`**, which nothing calls |
+| **Google Cloud service** | ❌ | `cloud/store.py` `get_store()` defaults to `FLEET_STORE=jsonl`. `FirestoreStore` imports `google.cloud.firestore` only when the env var says `firestore`, and it is not set |
+
+`cloud/` and the `Dockerfile` are **scaffolding with a real, swappable seam — not a runtime
+integration.** The seam is the right design and it is one env var from being live. But as configured,
+nothing in `cloud/` touches Google.
