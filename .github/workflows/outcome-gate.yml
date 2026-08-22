@@ -1,0 +1,24 @@
+name: Outcome Gate
+# Blocks auto-merge when an agent's PR description makes a claim the repo disproves.
+# The buyer's install: agent-authored PRs pass through this before merge.
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  verify-claims:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0          # a shallow checkout cannot resolve a claimed SHA — would
+                                  # report a TRUE commit as disproved. Pinned deliberately.
+      - name: Check the PR's claims against the repo
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          # Production scoping (documented, not silent): gate agent-authored PRs only.
+          # A human "fix typo" PR has nothing checkable and should not be blocked.
+          # As shipped here it runs on every PR — that is the DEMO config; the buyer adds:
+          #   if: github.event.pull_request.user.login == '<agent-bot>'
+          printf '%s' "$PR_BODY" | python3 gate/outcome_gate.py
