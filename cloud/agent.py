@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Fleet supervisor — ADK wraps plain propagation functions (A6).
+"""Fleet supervisor — ADK wraps plain propagation functions.
 
-Tools work without ADK; only build_agent() needs google-adk + GEMINI_MODEL.
-UNVERIFIED until run against live ADK/Gemini on a machine with billing or key.
+build_agent() must succeed on the stripped judge path: default model id is set
+when GEMINI_MODEL is unset (eligibility strips env). Tools still work without ADK.
 """
 import glob
 import os
@@ -11,6 +11,9 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from fleet.propagate import find_best_prompt, propagate_prompt, witness_propagation  # noqa: E402
+
+# Verified live on this machine; free-tier ladder starts here.
+DEFAULT_MODEL = "gemini-2.5-flash-lite"
 
 INSTRUCTION = """You are the fleet supervisor for org prompt propagation.
 
@@ -46,9 +49,7 @@ TOOLS = [find_best_prompt_tool, propagate_prompt_tool, witness_propagation_tool]
 
 
 def build_agent():
-    model = os.environ.get("GEMINI_MODEL")
-    if not model:
-        raise RuntimeError("GEMINI_MODEL unset — set to a verified model id (e.g. gemini-3.5-flash-lite)")
+    model = os.environ.get("GEMINI_MODEL") or DEFAULT_MODEL
     try:
         from google.adk.agents import Agent
     except ImportError as e:

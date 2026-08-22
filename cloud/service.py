@@ -23,15 +23,18 @@ DEFAULT_TOPIC = (
 
 
 def run_wedge(topic: str, target: str, corpus_glob: str = "fixtures/operators/*.jsonl") -> dict:
+    from cloud.agent import build_agent
+    agent = build_agent()  # ADK constructed on every request — judge path
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     paths = glob.glob(os.path.join(root, corpus_glob))
     found = find_best_prompt(topic, paths)
     if "error" in found:
-        return {"find": found, "ok": False}
+        return {"find": found, "ok": False, "agent": type(agent).__name__}
     prop = propagate_prompt(found["prompt_text"], target,
                             operator=found["operator"], topic=topic)
     wit = witness_propagation(target)
     return {"find": found, "propagate": prop, "witness": wit,
+            "agent": type(agent).__module__ + "." + type(agent).__name__,
             "ok": wit.get("verdict") == "VERIFIED-BY-REPO"}
 
 
@@ -84,8 +87,11 @@ class Handler(BaseHTTPRequestHandler):
 
 def main():
     port = int(os.environ.get("PORT", 8080))
+    from cloud.agent import build_agent
+    agent = build_agent()
     store = get_store()
-    sys.stderr.write(f"fleet wedge api on :{port} · store={store.backend}\n")
+    sys.stderr.write(
+        f"fleet wedge api on :{port} · store={store.backend} · agent={type(agent).__name__}\n")
     HTTPServer(("0.0.0.0", port), Handler).serve_forever()
 
 

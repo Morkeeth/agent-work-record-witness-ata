@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Org lift — mechanism proof</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,560;9..144,650&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:#14171a; --paper:#f3efe6; --quiet:#5a5e59; --land:#0d6a4f; --refuse:#b83314;
+    --rule:#d2cec4; --mono:"IBM Plex Mono", ui-monospace, monospace;
+    --sans:"IBM Plex Sans", system-ui, sans-serif; --display:"Fraunces", Georgia, serif;
+  }
+  * { box-sizing:border-box; }
+  body {
+    margin:0; color:var(--ink); font:16px/1.5 var(--sans);
+    background:
+      radial-gradient(1100px 520px at 8% -8%, #e4ede6 0%, transparent 55%),
+      radial-gradient(900px 480px at 100% 0%, #ebe2d4 0%, transparent 50%),
+      var(--paper);
+  }
+  main { max-width:940px; margin:0 auto; padding:52px 28px 88px; }
+  .brand { font:700 12px/1 var(--mono); letter-spacing:.16em; text-transform:uppercase; color:var(--quiet); }
+  h1 {
+    font-family:var(--display); font-weight:650; font-size:clamp(2.1rem, 5vw, 3.35rem);
+    line-height:1.02; letter-spacing:-.03em; margin:14px 0 12px; max-width:16ch;
+  }
+  .lede { font-size:1.12rem; color:var(--quiet); max-width:54ch; margin:0 0 40px; }
+  .delta { display:grid; grid-template-columns:1fr auto 1fr; gap:18px; margin:0 0 40px; }
+  .card { padding:24px 22px; border-top:3px solid var(--ink); background:rgba(255,255,255,.62); }
+  .card.win { border-color:var(--land); }
+  .card.lose { border-color:var(--refuse); }
+  .who { font:700 11px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--quiet); }
+  .num { font-family:var(--display); font-size:4.2rem; line-height:1; letter-spacing:-.04em; margin:12px 0 6px; }
+  .card.win .num { color:var(--land); }
+  .card.lose .num { color:var(--refuse); }
+  .vs { align-self:center; font:700 11px/1 var(--mono); letter-spacing:.18em; color:var(--quiet); }
+  .prompt { font-family:var(--display); font-size:1.05rem; line-height:1.35; margin-top:14px; }
+  table { width:100%; border-collapse:collapse; font-size:14px; margin:8px 0 28px; }
+  th, td { text-align:left; padding:11px 8px; border-bottom:1px solid var(--rule); vertical-align:top; }
+  th { font:700 11px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; color:var(--quiet); }
+  td.prompt { font-family:var(--display); font-size:15px; }
+  .witness { padding:20px 22px; border:1px solid var(--rule); background:#fff; }
+  .tag { font:700 11px/1 var(--mono); letter-spacing:.1em; }
+  .ok { color:var(--land); margin-top:10px; font:600 13px/1.4 var(--mono); }
+  .limit { margin-top:28px; font-size:13px; color:var(--quiet); max-width:64ch; }
+  code { font-family:var(--mono); font-size:12px; }
+  @media (max-width:720px) {
+    .delta { grid-template-columns:1fr; }
+    .vs { display:none; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="brand">Transcripto · org lift proof</div>
+  <h1>Same work. Different cost. Propagate the cheaper prompt.</h1>
+  <p class="lede">Operator a lands cold (landed, 0 corrective turns). Operator b needs 2 (landed_corrected) — 2 more. We propagate a&#x27;s literal prompt — not an LLM rewrite.</p>
+
+  <div class="delta">
+    <div class="card win">
+      <div class="who">Operator a · winner</div>
+      <div class="num">0</div>
+      <div class="who">corrective turns · landed</div>
+      <p class="prompt">Refactor the auth module: extract validate_token into auth/validate.py, keep tests green, show me the diff before applying.</p>
+    </div>
+    <div class="vs">VS</div>
+    <div class="card lose">
+      <div class="who">Operator b · same class</div>
+      <div class="num">2</div>
+      <div class="who">corrective turns · landed_corrected</div>
+      <p class="prompt">clean up the token validation in auth</p>
+    </div>
+  </div>
+
+  <table>
+    <thead><tr><th>Op</th><th>Signal</th><th>Corrective</th><th>vs winner</th><th>Opener</th></tr></thead>
+    <tbody><tr><td>a</td><td>landed</td><td>0</td><td>SAME</td><td class='prompt'>Refactor the auth module: extract validate_token into auth/validate.py, keep tests green, show me the diff before applying.</td></tr><tr><td>b</td><td>landed_corrected</td><td>2</td><td>SAME</td><td class='prompt'>clean up the token validation in auth</td></tr></tbody>
+  </table>
+
+  <div class="witness">
+    <div class="tag">PROPAGATED · operator <code>a</code>
+      · score 4</div>
+    <p class="prompt">Refactor the auth module: extract validate_token into auth/validate.py, keep tests green, show me the diff before applying.</p>
+    <div class="ok">Witness VERIFIED-BY-REPO
+      · 367 bytes
+      · fixtures/org-repo/.cursor/rules/propagated-skill.md</div>
+  </div>
+
+  <p class="limit"><strong>Honest limit.</strong> This proves the mechanism on a two-operator fixture. Population lift across an org&#x27;s engineers is day-two customer data — a single-builder corpus cannot produce it (Track B). Gemini pairwise membership is shown per row; the corrective-turn contrast comes from tool records and does not vanish when the classifier flakes.</p>
+  <p class="limit">Reproduce: <code>python3 fleet_cli.py prove</code> · open <code>surface/org-proof.html</code></p>
+</main>
+</body>
+</html>

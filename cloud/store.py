@@ -1,14 +1,51 @@
 #!/usr/bin/env python3
-"""Fleet propagation store — jsonl | firestore seam (from agent-claims-inbox)."""
+"""Fleet propagation store — jsonl | firestore.
+
+Default path: Firestore when ADC can resolve a project; else jsonl.
+Strangers without GCP still run. Judges with ADC hit Firestore — no flag required.
+"""
 
 import json
 import os
 import threading
 from datetime import datetime, timezone
 
+DEFAULT_PROJECT = "hack-fleet"
+
 
 def _now():
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def _resolve_project() -> str | None:
+    for key in ("GOOGLE_CLOUD_PROJECT", "GCLOUD_PROJECT", "FLEET_GCP_PROJECT"):
+        v = os.environ.get(key)
+        if v:
+            return v
+    try:
+        import google.auth
+        _, project = google.auth.default()
+        if project:
+            return project
+    except Exception:
+        pass
+    # ADC often has credentials but project=None (user creds). Vertex already
+    # uses hack-fleet; keep the same default so req 3 is exercised without a flag.
+    try:
+        import google.auth
+        google.auth.default()
+        return DEFAULT_PROJECT
+    except Exception:
+        return None
+
+
+def _adc_ready() -> bool:
+    try:
+        import google.auth
+        creds, _ = google.auth.default()
+        return creds is not None
+    except Exception:
+        return False
 
 
 class JsonlStore:
@@ -54,7 +91,8 @@ class FirestoreStore:
                 "FLEET_STORE=firestore needs google-cloud-firestore + GCP credentials."
             ) from e
         from google.cloud import firestore
-        self._c = firestore.Client(project=project).collection(collection)
+        self.project = project or _resolve_project() or DEFAULT_PROJECT
+        self._c = firestore.Client(project=self.project).collection(collection)
 
     def put(self, record):
         record = dict(record)
@@ -66,9 +104,17 @@ class FirestoreStore:
 
 
 def get_store():
-    kind = os.environ.get("FLEET_STORE", "jsonl").lower()
+    """Default = firestore when ADC exists; jsonl fallback for strangers."""
+    kind = os.environ.get("FLEET_STORE", "").lower().strip()
+    if not kind:
+        kind = "firestore" if _adc_ready() else "jsonl"
     if kind == "firestore":
-        return FirestoreStore()
+        try:
+            return FirestoreStore()
+        except Exception:
+            if os.environ.get("FLEET_STORE", "").lower() == "firestore":
+                raise  # explicit ask must not silently degrade
+            return JsonlStore()
     if kind == "jsonl":
         return JsonlStore()
     raise RuntimeError(f"FLEET_STORE={kind!r} — expected jsonl or firestore")

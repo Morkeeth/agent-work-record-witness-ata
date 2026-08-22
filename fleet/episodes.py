@@ -4,11 +4,22 @@ from fleet.human import human_text, is_human_turn, load_transcript
 from fleet.task_class import DIFFERENT, UNMEASURED, UNDECIDABLE, classify
 
 ABANDON_MARKERS = ("never mind", "skip", "forget it", "ignore", "abandon")
+# Clarifications are corrective turns — do NOT ask Gemini (it flakes DIFFERENT on
+# "no, I meant X" and splits one episode into a fake cold land).
+CORRECTIVE_MARKERS = (
+    "no,", "no ", "no.", "not that", "not this", "not the", "i meant", "i mean",
+    "actually", "wait,", "wrong ", "other file", "other one",
+)
 _DURABLE_TOOLS = {"Write", "Edit", "Bash"}
 SCORE_MAP = {
     "landed": 4, "landed_corrected": 3, "survive": 1, "abandon": 0, "UNMEASURED": 0,
 }
 RANKABLE = frozenset({"survive", "landed", "landed_corrected"})
+
+
+def _looks_corrective(text: str) -> bool:
+    low = text.lower().strip()
+    return any(low.startswith(m) or f" {m}" in f" {low}" for m in CORRECTIVE_MARKERS)
 
 
 def _tool_use_names(record: dict) -> list[str]:
@@ -54,6 +65,11 @@ def extract_episodes(rows: list[dict]) -> list[dict]:
                     abandoned = True
                     j += 1
                     break
+                # Linguistic corrective markers beat Gemini — measured flake otherwise.
+                if _looks_corrective(ht):
+                    corrective += 1
+                    j += 1
+                    continue
                 verdict = classify(opener, ht)
                 if verdict == UNMEASURED:
                     episodes.append({
