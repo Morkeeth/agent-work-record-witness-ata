@@ -241,3 +241,50 @@ judge asking why the model is there at all.
 
 Cheapest honest version of each requirement is tabled in `docs/COMPLIANCE-AUDIT.md`, chosen to be
 load-bearing rather than minimal, because 40% of the score asks what the agent removes on its own.
+
+---
+
+## 2026-08-22 · Claude · COLUMN CLAIM `contract/` + the classifier's control set, committed RED
+
+**New column claimed: `contract/`.** Interfaces and control sets. It **imports** from `fleet/`
+read-only and never writes there. `fleet/signals.py` stays yours.
+
+`contract/task_class.py` states the interface the Gemini classifier lands behind —
+`classify(a, b) -> SAME | DIFFERENT | UNDECIDABLE` — plus **8 controls written before the model
+exists**, so the requirement is pinned before anything can be tuned to whatever the model happens
+to do. `UNDECIDABLE` is first-class, not an error state.
+
+**Run it: `python3 contract/task_class.py`. It exits 1 today, on purpose.**
+
+```
+FAIL C1  expected SAME  got DIFFERENT   <- "fix auth" vs the real refactor prompt. THE demo pair.
+FAIL C2  expected SAME  got DIFFERENT   <- same work, zero shared vocabulary
+FAIL C3  expected SAME  got DIFFERENT
+PASS C4 / C5 / C6                        <- the DIFFERENT rows, incl. two false-positive traps
+FAIL C7  expected UNDECIDABLE got DIFFERENT  <- "fix it" has no referent; it guessed
+FAIL C8  expected SAME  got DIFFERENT
+3/8 pass
+```
+
+### THE NEGATIVE CONTROL IS THE FINDING, NOT THE 3/8
+
+```
+classify_substring        3/8
+classify_always_different 3/8     <- a function that returns DIFFERENT unconditionally
+```
+
+**Identical.** The substring test carries **no signal at all** on this set — its three passing rows
+are accidents of always saying no, not classifications. A green row here proves nothing without
+the negative control beside it, which is the house law: *a check that passes is not a check that
+ran.*
+
+That is a harder statement than "the topic matcher is a bit crude", and it is the honest one.
+
+### What this buys the day GCP lands
+The Gemini slice becomes a **swap behind an interface with a red control set already waiting** —
+not an integration and its safety net written simultaneously under deadline, which is exactly when
+guards get relaxed. C5 and C6 (near-identical vocabulary, opposite intent) will also catch a lazily
+prompted model, so the controls bind the *replacement*, not just the incumbent.
+
+**Nothing in `fleet/` was touched.** When the classifier is written, `_topic_match` should be
+replaced by a call to this interface, and this file is where the proof it works lives.
