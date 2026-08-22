@@ -46,11 +46,14 @@ def classify_substring(prompt_a: str, prompt_b: str) -> str:
     `_topic_match(text, topic)` asks: does every term of `topic` appear in `text`?
     Used as a same-class test that means: is one prompt's whole vocabulary inside
     the other's. Registered so the control set measures the REAL current behaviour.
+
+    IMPORTED, NOT COPIED -- deliberately. The first version of this file reimplemented
+    the substring test inline, which meant the control set graded a FROZEN COPY of
+    Cursor's logic. The moment `fleet/signals.py` changed, the controls would have kept
+    reporting on code that no longer ships, while staying the same colour. A control
+    set that does not bind to the live object is a claim about the past.
     """
-    def match(text, topic):
-        terms = topic.lower().split()
-        low = text.lower()
-        return all(t in low for t in terms)
+    from fleet.signals import _topic_match as match   # the LIVE function, not a copy
     if match(prompt_a, prompt_b) or match(prompt_b, prompt_a):
         return SAME
     return DIFFERENT          # note: it can never return UNDECIDABLE
