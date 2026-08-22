@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Org lift — live</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,650&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:#14171a; --paper:#f3efe6; --quiet:#5a5e59; --land:#0d6a4f; --refuse:#b83314;
+    --rule:#d2cec4; --mono:"IBM Plex Mono",monospace; --sans:"IBM Plex Sans",system-ui,sans-serif;
+    --display:"Fraunces",Georgia,serif;
+  }
+  body { margin:0; font:16px/1.5 var(--sans); color:var(--ink); background:var(--paper); }
+  main { max-width:880px; margin:0 auto; padding:48px 24px 80px; }
+  h1 { font-family:var(--display); font-size:clamp(2rem,4.5vw,3rem); line-height:1.05; max-width:16ch; }
+  .quiet { color:var(--quiet); }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:28px 0; }
+  .card { padding:20px; border-top:3px solid var(--ink); background:#fff; }
+  .card.a { border-color:var(--land); }
+  .card.b { border-color:var(--refuse); }
+  .num { font-family:var(--display); font-size:3.5rem; line-height:1; }
+  .card.a .num { color:var(--land); }
+  .card.b .num { color:var(--refuse); }
+  .who { font:700 11px/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--quiet); }
+  .prompt { font-family:var(--display); margin-top:12px; }
+  button, input {
+    font:600 13px/1 var(--mono); padding:12px 14px; border:1px solid var(--ink); background:var(--ink); color:#fff; cursor:pointer;
+  }
+  input { background:#fff; color:var(--ink); width:min(100%,420px); margin-right:8px; }
+  pre { background:#1a1e1c; color:#d7ece2; padding:16px; overflow:auto; font:12px/1.45 var(--mono); }
+  .ok { color:var(--land); font:600 13px var(--mono); }
+  .err { color:var(--refuse); font:600 13px var(--mono); }
+  @media (max-width:700px) { .row { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<main>
+  <div class="who">Transcripto · live org lift</div>
+  <h1>Same work. Different cost.</h1>
+  <p class="quiet" id="lede">Run prove against the local API or a Cloud Run URL.</p>
+  <p>
+    <input id="api" placeholder="API base (empty = local generate)" value="">
+    <button id="go">Run prove</button>
+  </p>
+  <div class="row">
+    <div class="card a">
+      <div class="who">Operator <span id="wa">—</span></div>
+      <div class="num" id="wt">—</div>
+      <div class="who">corrective turns · <span id="ws"></span></div>
+      <p class="prompt" id="wo"></p>
+    </div>
+    <div class="card b">
+      <div class="who">Operator <span id="la">—</span></div>
+      <div class="num" id="lt">—</div>
+      <div class="who">corrective turns · <span id="ls"></span></div>
+      <p class="prompt" id="lo"></p>
+    </div>
+  </div>
+  <p class="ok" id="wit"></p>
+  <p class="quiet" id="limit"></p>
+  <pre id="raw">{}</pre>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+function paint(data) {
+  const d = data.delta || {};
+  $("lede").textContent = data.vc_one_liner || data.vc_one_liner || "";
+  $("wa").textContent = d.winner || d.winner || "—";
+  $("la").textContent = d.loser || "—";
+  $("wt").textContent = d.winner_turns ?? d.winner_turns ?? "—";
+  $("lt").textContent = d.loser_turns ?? "—";
+  $("ws").textContent = d.winner_signal || "";
+  $("ls").textContent = d.loser_signal || "";
+  $("wo").textContent = d.winner_opener || "";
+  $("lo").textContent = d.loser_opener || "";
+  const w = data.witness || {};
+  $("wit").textContent = w.verdict ? `Witness ${w.verdict} · ${w.evidence || ""}` : "";
+  $("limit").textContent = data.honest_limit || "";
+  $("raw").textContent = JSON.stringify(data, null, 2);
+}
+$("go").onclick = async () => {
+  $("wit").textContent = "running…";
+  const base = $("api").value.replace(/\/$/, "");
+  try {
+    let data;
+    if (base) {
+      const r = await fetch(base + "/prove", {
+        method: "POST", headers: {"Content-Type": "application/json"}, body: "{}"
+      });
+      data = await r.json();
+      if (!r.ok) throw new Error(JSON.stringify(data));
+    } else {
+      // Offline: show last static proof if present via embed hint
+      $("wit").className = "err";
+      $("wit").textContent = "Set API base to Cloud Run URL (or run: python3 fleet_cli.py prove && open surface/org-proof.html)";
+      return;
+    }
+    paint(data);
+  } catch (e) {
+    $("wit").className = "err";
+    $("wit").textContent = String(e);
+  }
+};
+// Prefill from query ?api=
+const q = new URLSearchParams(location.search).get("api");
+if (q) { $("api").value = q; $("go").click(); }
+</script>
+</body>
+</html>

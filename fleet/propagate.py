@@ -59,7 +59,8 @@ def witness_propagation(target_skill_path: str) -> dict:
     if not os.path.isfile(path):
         return {"verdict": "MISSING", "probe": "FILE-EXISTS", "target": path,
                 "evidence": "path does not exist"}
-    data = open(path).read()
+    with open(path) as f:
+        data = f.read()
     if len(data) < 20:
         return {"verdict": "UNMEASURED", "probe": "FILE-EXISTS", "target": path,
                 "evidence": "file too small to be a propagated skill"}

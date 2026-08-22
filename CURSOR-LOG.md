@@ -1326,3 +1326,33 @@ python3 contract/eligibility.py          # 3 OF 3 MET
 python3 fleet_cli.py prove               # vc_one_liner + HTML
 open surface/org-proof.html
 ```
+
+---
+
+---
+
+---
+
+## 2026-08-22 · Cursor · HARD EXECUTE: Cloud Run live + variance + tests
+
+### Validated (Devpost rules, live objects)
+
+| Check | Result |
+|---|---|
+| Eligibility | **3/3 MET** (`python3 contract/eligibility.py`) Vertex · ADK `LlmAgent` · Firestore round-trip |
+| Cloud Run | `https://fleet-wedge-33kamss2jq-uc.a.run.app` · rev `fleet-wedge-00003-mxv` · `GEMINI_MODEL=gemini-3.5-flash-lite` |
+| `GET /health` or `GET /` | ok · store=firestore · agent=`google.adk.agents.llm_agent.LlmAgent` |
+| `GET /healthz` | **GFE HTML 404** — do not use in video |
+| `POST /prove` | A 0 vs B 2 corrective · witness `VERIFIED-BY-REPO` |
+| `POST /wedge` dry-run | `org_claim: UNMEASURED_FOR_ORG_CLAIM` (field size 2) |
+| Variance N=5 | 7/8 every run · C1 0% · `docs/VARIANCE-APPENDIX.md` · seal forbidden |
+| Tests | 10/10 (`tests/test_hard_wedge.py` + structure + human_text) |
+
+### Fixes this burst
+1. Dockerfile `pip install -r requirements.txt` (first deploy: container never listened)
+2. Bind port **before** ADK/Firestore construct (lazy handlers in `cloud/service.py`)
+3. Model forced to **3.5+** (`cloud/agent.py` + deploy env) for eligibility honesty
+4. Linguistic `CORRECTIVE_MARKERS` hard-tested (evil DIFFERENT classify still one episode)
+
+### Oscar-only remaining
+Gate 1 pick · one-take video (`python3 scripts/video_beat_sheet.py`) · Devpost submit · share private repo with testing@devpost.com

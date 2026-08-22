@@ -1,11 +1,9 @@
-# Cloud Build / gcloud run deploy --source
-__pycache__/
+.git
+.cursor
+**/__pycache__
 *.pyc
-.pytest_cache/
-.git/
 .env
 .env.*
 *.key
-.cursor/
-fixtures/org-repo/.cursor/rules/propagated-skill.md
 NEXT-STEPS.md
+fixtures/org-repo/.cursor/rules/propagated-skill.md

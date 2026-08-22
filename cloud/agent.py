@@ -12,8 +12,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from fleet.propagate import find_best_prompt, propagate_prompt, witness_propagation  # noqa: E402
 
-# Verified live on this machine; free-tier ladder starts here.
-DEFAULT_MODEL = "gemini-2.5-flash-lite"
+# Hackathon mandatory: Gemini 3.5+. Lite rung verified on Vertex for this project.
+DEFAULT_MODEL = "gemini-3.5-flash-lite"
 
 INSTRUCTION = """You are the fleet supervisor for org prompt propagation.
 
