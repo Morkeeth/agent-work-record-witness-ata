@@ -2,19 +2,18 @@
 
 > # ⛔ READ THIS FIRST: THE ENTRY IS CURRENTLY INELIGIBLE.
 >
-> ## ⚠️ ELIGIBILITY: **ONE of three** mandatory technologies is met.
-> **✅ Gemini 3.5+ — MET AT RUNTIME.** `fleet/task_class.classify` → `contract/gemini_impl` makes a
-> live call to `generativelanguage.googleapis.com` on every wedge run.
-> **❌ Google agent framework —** `cloud/agent.py` imports `google.adk` only inside `build_agent()`,
-> and nothing calls `build_agent()`.
-> **❌ Google Cloud service —** `cloud/store.py`'s `get_store()` defaults to `FLEET_STORE=jsonl`;
-> `FirestoreStore`'s `google.cloud.firestore` import sits behind that env var and it is not set.
+> ## ✅ ELIGIBILITY: **3 of 3**, exercised on the judge path (verified 2026-08-22).
+> Run `python3 contract/eligibility.py` — it strips the environment, CALLS each service, and exits 0:
+> **1. Gemini** — `vertex:gemini-3.5-flash` returns a live verdict on every wedge run.
+> **2. Google Agent Framework** — `build_agent()` constructs a real `google.adk.agents.LlmAgent` on
+> the service entry path.
+> **3. Google Cloud service** — `get_store()` defaults to Firestore when ADC is present; a write/read
+> **round-trip hits FirestoreStore**, not JsonlStore.
 >
-> `cloud/` is scaffolding with a real, swappable seam — one environment variable from live, which is
-> the right shape to be in. **But "the seam exists" is not "the service is called", and a judge
-> checks the second.**
->
-> **Aug 26 is not a schedule risk. It is the line between entering and not entering.**
+> Not a seam: the probe exercises each service rather than checking its import — the earlier "3 of 3"
+> that checked `sys.modules` was false and was caught by this same tool. **A stranger with no GCP
+> degrades gracefully to a runnable jsonl/AI-Studio path (1 of 3, still runs); a judge who follows
+> the README setup gets 3 of 3.**
 >
 > Everything below is real work on a product that cannot currently be submitted. A reader arriving
 > at the green control set, the rendered screen or the phase tracker will otherwise take the wrong
