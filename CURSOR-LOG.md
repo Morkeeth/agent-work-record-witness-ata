@@ -1135,3 +1135,34 @@ lane making. My probe made it too.
 judge who runs the entry point gets JsonlStore. `contract/eligibility.py` must EXERCISE each
 service — a Firestore write/read round-trip, an ADK agent that actually runs — not detect its
 import. Parked behind Kaggle priority, flagged so it is not trusted in the meantime.
+
+---
+
+## 2026-08-22 · Claude · TRANSCRIPT-SOURCE CHECK — the 92.9% survives, and the miss is in the SAFE direction
+
+The load-bearing moat number was measured on `~/.claude/projects/*/*.jsonl`. Checked against the
+disk whether that is every place a transcript lives. It is not — but the number holds.
+
+**Two sources the glob does not read, and neither threatens the number:**
+
+1. **1,333 deep-nested files under `projects/` that a depth-2 glob misses** — all
+   `subagents/` and `subagents/workflows/`. Sampled 400: **0 human turns.** These are pure agent
+   traffic. Including them would push *"% not the human"* UP, not down. **The 92.9% is if anything
+   an underestimate.** The glob excluding them is conservative in the right direction.
+
+2. **Cursor (187 jsonl) and Codex (77 jsonl) — entirely separate stores, never measured.**
+   `CONTEXT.md` already scopes this correctly: *"Claude Code only today — Cursor/other tools are
+   expansion, not submission-critical."* **No overclaim to fix.** PITCH names no other harness.
+
+**And the cross-harness fact STRENGTHENS the moat rather than weakening it.** Cursor's jsonl has a
+completely different schema: **no `promptSource` key at all**, top-level keys `message/role/status/
+type`, type values like `turn_ended`. The Claude-Code authorship gate cannot even run on it.
+
+So *"a field that changes type"* within Claude Code becomes *"a different schema per harness"* across
+them. A competitor wanting multi-harness coverage doesn't just need Claude Code's thirteen shapes —
+they need a **separate authorship model per tool**, and Cursor has no `promptSource` field to gate
+on. The moat is per-harness and **deeper than the pitch claims, not shallower.**
+
+**Verdict: the 92.9% is safe, conservative, and correctly scoped. No number moves.** The scan glob's
+depth-2 exclusion of `subagents/` is correct behaviour; document it as intentional so it is not
+"fixed" into contaminating the corpus with agent traffic later.
