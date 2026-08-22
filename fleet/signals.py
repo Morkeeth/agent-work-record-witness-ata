@@ -4,9 +4,17 @@ from fleet.human import human_text, is_human_turn, load_transcript
 
 
 def _topic_match(text: str, topic: str) -> bool:
-    terms = topic.lower().split()
+    """Task-class overlap — any substantive topic term matches (demo heuristic).
+
+    Probe: TASK-CLASS-OVERLAP-HEURISTIC
+    "fix auth" and "refactor the auth module" both match topic "refactor auth".
+    Gemini intent classification replaces this before submit (see docs/SIGNAL-SPEC.md).
+    """
+    terms = [t for t in topic.lower().split() if len(t) > 2]
     low = text.lower()
-    return all(t in low for t in terms)
+    if not terms:
+        return True
+    return any(t in low for t in terms)
 
 
 def score_session(path: str, topic: str) -> dict:

@@ -20,7 +20,9 @@ def find_best_prompt(topic: str, corpus_paths: list[str]) -> dict:
         return {"error": "no surviving prompt on topic",
                 "probe": "SURVIVE-VS-ABANDON-HEURISTIC", "topic": topic}
     best = max(ranked, key=lambda x: x["score"])
-    operator = Path(best["path"]).stem.split("-")[0]
+    # operator-a-refactor.jsonl → "a"
+    parts = Path(best["path"]).stem.split("-")
+    operator = parts[1] if len(parts) > 1 and parts[0] == "operator" else parts[0]
     return {"operator": operator, "prompt_text": best["prompt"],
             "signal": best["signal"], "probe": best["probe"],
             "source": best["path"], "why": best["why"]}
@@ -53,5 +55,6 @@ def witness_propagation(target_skill_path: str) -> dict:
     if len(data) < 20:
         return {"verdict": "UNMEASURED", "probe": "FILE-EXISTS", "target": path,
                 "evidence": "file too small to be a propagated skill"}
+    nbytes = len(data.encode("utf-8"))
     return {"verdict": "VERIFIED-BY-REPO", "probe": "FILE-EXISTS", "target": path,
-            "evidence": f"{len(data)} bytes"}
+            "evidence": f"{nbytes} bytes"}
