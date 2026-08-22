@@ -1009,6 +1009,35 @@ documents and two disagreements.
 **And it is a submission asset, not just hygiene.** A judge can run it. An entry that ships the check
 that would disqualify it is making an argument nothing in a README can make.
 
+---
+
+## 2026-08-22 · Cursor · AUDIT → BUILD: eligibility 3/3 + org-lift proof
+
+### Judge / user / VC read (what was missing)
+| Lens | Gap |
+|---|---|
+| **Judge** | 1/3 eligibility = DQ. Import ≠ call. |
+| **User** | Wedge worked but nothing showed *why A beats B* in one glance. |
+| **VC** | Moat prose without a 5-second mechanism demo. Track B: population lift needs an org — so show the *mechanism* honestly. |
+
+### Built
+1. **Eligibility 3/3 exercised** (`python3 contract/eligibility.py` exit 0)
+   - Created Firestore `(default)` on `hack-fleet`
+   - `get_store()` defaults to Firestore when ADC exists (jsonl fallback for strangers)
+   - `build_agent()` defaults `GEMINI_MODEL=gemini-2.5-flash-lite`; constructed on wedge/service path
+2. **`fleet_cli.py prove` + `surface/org-proof.html`**
+   - A: 0 corrective · landed · literal prompt propagated
+   - B: 2 corrective · landed_corrected
+   - Honest limit printed (org population lift = day-two customer data)
+3. **Episode bugfix:** Gemini was splitting B's episode on "no, I meant…" → fake cold land. Linguistic `CORRECTIVE_MARKERS` now beat the classifier.
+
+### Reproduce
+```
+python3 contract/eligibility.py          # 3 OF 3 MET
+python3 fleet_cli.py prove               # vc_one_liner + HTML
+open surface/org-proof.html
+```
+
 **Kept explicitly, so a later reading cannot quietly re-merge them:** requirements 1 and 3 are
 separate slots and Vertex fills only the first. Requirement 1 names Vertex AI; every example under
 requirement 3 is infrastructure. Settled 2026-08-22.
@@ -1268,3 +1297,32 @@ the surface: `python3 contract/task_class.py` (exits 1, prints all four arms), p
 sections reliably at this height, but the DOM layout is authoritative — `footerH=551, bodyH=2175`,
 and the rendered section text contains all four arms, the command, and the framing. Render-and-look
 done via DOM dump where the screenshot tool fell short.
+
+---
+
+## 2026-08-22 · Cursor · AUDIT → BUILD: eligibility 3/3 + org-lift proof
+
+### Judge / user / VC read (what was missing)
+| Lens | Gap |
+|---|---|
+| **Judge** | 1/3 eligibility = DQ. Import ≠ call. |
+| **User** | Wedge worked but nothing showed *why A beats B* in one glance. |
+| **VC** | Moat prose without a 5-second mechanism demo. Track B: population lift needs an org — so show the *mechanism* honestly. |
+
+### Built
+1. **Eligibility 3/3 exercised** (`python3 contract/eligibility.py` exit 0)
+   - Created Firestore `(default)` on `hack-fleet`
+   - `get_store()` defaults to Firestore when ADC exists (jsonl fallback for strangers)
+   - `build_agent()` defaults model when `GEMINI_MODEL` unset; constructed on wedge/service path
+2. **`fleet_cli.py prove` + `surface/org-proof.html`**
+   - A: 0 corrective · landed · literal prompt propagated
+   - B: 2 corrective · landed_corrected
+   - Honest limit printed (org population lift = day-two customer data)
+3. **Episode bugfix:** Gemini was splitting B's episode on "no, I meant…" → fake cold land. Linguistic `CORRECTIVE_MARKERS` now beat the classifier.
+
+### Reproduce
+```
+python3 contract/eligibility.py          # 3 OF 3 MET
+python3 fleet_cli.py prove               # vc_one_liner + HTML
+open surface/org-proof.html
+```
