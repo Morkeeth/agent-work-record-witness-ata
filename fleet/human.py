@@ -1,4 +1,4 @@
-"""Human-turn gate — same contract as transcripto.is_human_turn (read-only copy)."""
+"""Human-turn gate — transcripto contract + queue-operation text location."""
 
 import json
 
@@ -16,9 +16,15 @@ def is_human_turn(record: dict) -> bool:
 
 
 def human_text(record: dict) -> str:
+    """Extract operator text. queue-operation uses top-level `content`, not message.content."""
+    if record.get("type") == "queue-operation":
+        return (record.get("content") or "").strip()
     msg = record.get("message") or {}
+    content = msg.get("content")
+    if isinstance(content, str):
+        return content.strip()
     parts = []
-    for block in msg.get("content") or []:
+    for block in content or []:
         if isinstance(block, dict) and block.get("type") == "text":
             parts.append(block.get("text") or "")
     return "\n".join(p for p in parts if p)

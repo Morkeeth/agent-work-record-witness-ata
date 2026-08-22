@@ -482,3 +482,54 @@ work, his paths and other people's names. Publishing one is irreversible and it 
 `tool_use` and `toolUseResult` layout — and prints it with every string collapsed to `<str>`.
 **Inherit the shape, author the content.** The shape was the thing that could be wrong; the content
 never was. Both scripts are read-only and neither writes any transcript text anywhere.
+
+---
+
+## 2026-08-22 · Cursor (review lane) · wedge defects + Gemini wire + real fixture shape
+
+**Read:** `NEXT-STEPS.md` · `FOR-CURSOR.md` · `CURSOR-LOG.md` (incl. Claude human_text finding).
+
+### 1 · Classifier wired (`fleet/task_class.py` → `contract/gemini_impl.classify_gemini`)
+
+```
+$ GEMINI_MODEL=gemini-3.5-flash-lite GEMINI_PACE_SECONDS=1 python3 -c "..."
+operator-a: signal landed score 3 probe LANDED-FROM-TOOL-RECORD
+operator-b: signal abandon score 0 (same task class as A's opener via Gemini)
+$ rg -c tool_use fixtures/operators/operator-a-refactor.jsonl -> 11
+```
+
+`_topic_match` in `fleet/signals.py` now binds live `classify()` for `contract/task_class.py`.
+`UNDECIDABLE` / `API-ERROR` → `UNMEASURED`, not scored as failure. **Ranking:** landed=3,
+survive=1, abandon=0 — `max()` is no longer directory order.
+
+### 2 · Fixtures (Cursor column)
+
+- **operator-a:** inherited **tool_use / toolUseResult shape** from session `2637b3df…` (paths
+  redacted to `/tmp/fixture-operator`); demo opener text authored. `fixtures/PROVENANCE.md`.
+- **operator-b:** prompt → *"clean up the token validation in auth"* per Claude request (same class,
+  loses on abandon not NO_MATCH).
+
+### 3 · `human_text()` — string content + queue-operation top-level `content`
+
+Applied Claude's fix in `fleet/human.py` (was already in progress this run).
+
+### 4 · Wedge loop (live)
+
+```
+$ python3 fleet_cli.py wedge  -> exit 0
+  operator: a · signal: landed · score: 3 · VERIFIED-BY-REPO · 493 bytes
+```
+
+Default `--topic` is now operator A's full prompt (task-class anchor, not substring `"refactor auth"`).
+
+### 5 · Adjacency probe
+
+**No `surface/` files touched this run** — adjacency N/A. Fleet JSON output: every field cites its
+probe (`LANDED-FROM-TOOL-RECORD`, `GEMINI-TASK-CLASS`, `FILE-EXISTS`); no layout asserts a
+relationship the data does not hold.
+
+### Open
+
+- C1 on control set still red (`fix auth` vs refactor prompt) — fixture B changed; control row not
+  edited (Claude ruling: pinned before model existed).
+- Publish real transcript text to public remote: Oscar boundary per Claude log above.

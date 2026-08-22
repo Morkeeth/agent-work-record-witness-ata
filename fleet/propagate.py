@@ -8,24 +8,23 @@ from fleet.signals import score_session
 
 
 def find_best_prompt(topic: str, corpus_paths: list[str]) -> dict:
-    """Rank human prompts on topic by survive signal."""
+    """Rank human prompts on topic by score (landed > survive > abandon)."""
     ranked = []
     for path in corpus_paths:
         if not os.path.isfile(path):
             continue
         s = score_session(path, topic)
-        if s["signal"] == "survive":
+        if s["signal"] in ("survive", "landed"):
             ranked.append(s)
     if not ranked:
         return {"error": "no surviving prompt on topic",
-                "probe": "SURVIVE-VS-ABANDON-HEURISTIC", "topic": topic}
+                "probe": "GEMINI-TASK-CLASS+SURVIVE-VS-ABANDON", "topic": topic}
     best = max(ranked, key=lambda x: x["score"])
-    # operator-a-refactor.jsonl → "a"
     parts = Path(best["path"]).stem.split("-")
     operator = parts[1] if len(parts) > 1 and parts[0] == "operator" else parts[0]
     return {"operator": operator, "prompt_text": best["prompt"],
             "signal": best["signal"], "probe": best["probe"],
-            "source": best["path"], "why": best["why"]}
+            "source": best["path"], "why": best["why"], "score": best["score"]}
 
 
 def propagate_prompt(prompt_text: str, target_skill_path: str,
@@ -34,10 +33,10 @@ def propagate_prompt(prompt_text: str, target_skill_path: str,
     path = Path(os.path.expanduser(target_skill_path))
     path.parent.mkdir(parents=True, exist_ok=True)
     body = (
-        f"# Org prompt — propagated from {operator}"
+        f"# Org prompt — propagated from operator {operator}"
         + (f" ({topic})" if topic else "")
         + f"\n\n{prompt_text.strip()}\n\n"
-        f"_Probe: survive signal on topic {topic!r} · propagated by fleet supervisor_\n"
+        f"_Probe: best operator on task class {topic!r} · propagated by fleet supervisor_\n"
     )
     path.write_text(body)
     sha = hashlib.sha256(body.encode()).hexdigest()[:12]
