@@ -913,6 +913,12 @@ $ python3 -m unittest discover -s tests -> 5/5 OK
 - **Design pick** (Gate 1 HTML) + **USER-JOURNEY.md** (Claude A4)
 - Push remote if not yet on origin
 
+### Done same session (Oscar: "do it")
+
+- **STRANGER OK** — `./scripts/stranger_wedge.sh` · field_size 2 · operator a · VERIFIED-BY-REPO
+- **Remote:** https://github.com/Morkeeth/hack-fleet-ata · `main` pushed
+- **B1 prep:** `scripts/deploy_cloud_run.sh` + `.gcloudignore` (Aug 26: install gcloud, then run script)
+
 ---
 
 ## 2026-08-22 · Claude · VERTEX IS NOW PRIMARY — proven with no environment. But this is still 1 of 3.
