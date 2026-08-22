@@ -58,3 +58,35 @@ more air beneath it.
   `~/CODE/design-index`. The problem-keyed lookup was skipped.
 - **Phase 3 still has no named design owner.** This review is a builder reviewing his own screen,
   which is the exact position the playbook says cannot see its own defects.
+
+---
+
+# ADJACENCY AUDIT — a third probe class, run 2026-08-22
+
+Neither *"does it render"* nor *"can the data support this number"*. This one asks:
+**does the layout assert a relationship the data does not hold?** Every number was real. Every
+inferred relationship was not.
+
+| # | What the layout asserted | What actually held | Fix |
+|---|---|---|---|
+| **A1** | Operator b's hero figure was a bare **`1`** with `ABANDONED` beneath it → reads as *"1 abandoned"*. Operator a's slot held **`?`**, so a reader compared `?` to `1` as if they were the same measure | `1` was the **corrective-turn count**, and the two slots were not the same kind of statement at all | **the verdict is now the hero**, and every count is printed with its referent: *"1 corrective turn · 'never mind'"* |
+| **A2** | `ep. 1` beneath each name → *"episode 1 of N"*, implying a series | There is exactly **one** episode each | removed. Flagged at Gate 2 as decoration; the adjacency probe upgrades it — it was an **assertion**, not ornament |
+| **A3** | Header: `task class refactor-a-module` — stated as fact | **`contract/task_class.py` proves, red, that nothing in this repo can compute task class.** The substring test carries no signal at all | header now reads *"declared by the fixture, not computed"* with the red control set cited inline |
+| **A4** | D2's margin columns ran **four against four** → each of b's lines negates a's corresponding line | Three do. The fourth does not: *"asks to see it first"* and *"never mind"* are not opposites — one is a request, the other is an abandonment | the fourth line is separated by a rule and says so: *"not the opposite of the line above, a different kind of event"* |
+
+## Why A3 is the one that matters
+
+**The screen stated the output of the exact component that does not exist yet.** One file away, a
+control set proves task classification is unavailable — and the header printed a task class in
+mono, right-aligned, in the position a reader reads as machine-generated fact.
+
+Nobody would have caught it from the source. The string `refactor-a-module` is correct; it is the
+*position* that turns it into a claim.
+
+## The three probe classes, and none subsumes another
+
+1. **Render and look** — caught the fabricated bar widths (D3). *Looked* fake.
+2. **Check the metric against the data** — caught `LANDED · 0 corrections`. *Looked* real.
+3. **Adjacency** — caught a header asserting a computation that does not exist. **Every element correct.**
+
+A Gate-2 pass runs only the first. That is now written down.

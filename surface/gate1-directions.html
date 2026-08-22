@@ -77,6 +77,11 @@ body{font-family:'Source Sans 3',ui-sans-serif,sans-serif;background:#15171a;col
 .d3 .out p b{font-weight:800}
 .d3 .out .path{font:400 11px/1.7 'IBM Plex Mono',monospace;color:#69737d;text-align:right;white-space:nowrap}
 
+.d1 .fig b.v{font:900 19px/1.2 'Source Sans 3',sans-serif;letter-spacing:.06em}
+.d1 .fig.lose b.v{color:#5b646d}
+.d1 .hd time b{font-weight:700;color:#14181d}
+.d1 .warnline{display:block;color:#8a2f2f;font-size:10px;letter-spacing:.02em;margin-top:3px}
+.d2 .marg .sep{border-top:1px solid #c8ccd3;margin-top:9px;padding-top:9px}
 .d1 .fig.um b{color:#14181d}
 .d1 .fig.um small{color:#14181d;font-weight:600}
 .d2 .verdict.um{border-width:2px;border-color:#191d26;color:#191d26}
@@ -95,21 +100,21 @@ body{font-family:'Source Sans 3',ui-sans-serif,sans-serif;background:#15171a;col
 
 <!-- ============ D1 ============ -->
 <section class="pane on" id="d1"><div class="d1">
-  <div class="hd"><h1>Propagation record</h1><time>fixtures/operators · task class refactor-a-module</time></div>
+  <div class="hd"><h1>Propagation record</h1><time>fixtures/operators · task class <b>declared by the fixture</b>, not computed<br><span class="warnline">nothing in this repo can classify task class yet — contract/task_class.py is RED</span></time></div>
   <p class="lede">Two engineers opened the <em>same</em> task. This tool will not tell you who won.</p>
   <p class="sub">One abandoned it, and that is in the transcript. The other may have landed it, and <b>nothing in this session proves that</b> — so the verdict is UNMEASURED, not a guess dressed as a result.</p>
 
   <div class="row win">
-    <div class="who">operator a<span>ep. 1</span></div>
+    <div class="who">operator a</div>
     <div><p class="p">Refactor the auth module: extract <code>validate_token</code> into <code>auth/validate.py</code>, keep tests green, show me the diff before applying.</p></div>
-    <div class="fig um"><b>?</b><small>UNMEASURED<br>no tool record in<br>this session</small></div>
+    <div class="fig um"><b class="v">UNMEASURED</b><small>0 corrective turns · no tool record,<br>so nothing here can confirm it landed</small></div>
   </div>
 
   <div class="row lose">
-    <div class="who">operator b<span>ep. 1</span></div>
+    <div class="who">operator b</div>
     <div><p class="p">fix auth</p>
       <div class="trail"><div>never mind</div></div></div>
-    <div class="fig"><b>1</b><small>ABANDONED<br>"never mind",<br>read from the transcript</small></div>
+    <div class="fig lose"><b class="v">ABANDONED</b><small>1 corrective turn · “never mind”,<br>read from the transcript</small></div>
   </div>
 
   <div class="stamp">
@@ -134,7 +139,7 @@ body{font-family:'Source Sans 3',ui-sans-serif,sans-serif;background:#15171a;col
     <div><div class="by">operator b</div>
       <p class="body faded">fix auth</p>
       <span class="verdict out">abandoned · “never mind”</span></div>
-    <div class="marg"><div>no file</div><div>no symbol</div><div>no exit condition</div><div>“never mind”</div></div>
+    <div class="marg"><div>no file</div><div>no symbol</div><div>no exit condition</div><div class="sep">then abandoned it — <em>not</em> the opposite of the line above, a different kind of event</div></div>
   </div>
 
   <p class="close">The fleet <b>declined to propagate anything.</b> Operator a's prompt reads better and that is not evidence. Until a tool record shows work landing, the honest verdict is UNMEASURED — and a metric that refuses is the only kind worth trusting.
