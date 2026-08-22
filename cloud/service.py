@@ -11,7 +11,10 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from http.server import BaseHTTPRequestHandler, HTTPServer  # noqa: E402
 
 from cloud.store import get_store  # noqa: E402
+from fleet.bootstrap import ensure_google_stack  # noqa: E402
 from fleet.propagate import find_best_prompt, propagate_prompt, witness_propagation  # noqa: E402
+
+ensure_google_stack()  # ADK + Firestore modules on default service import path
 
 DEFAULT_TOPIC = (
     "Refactor the auth module: extract validate_token into auth/validate.py, "

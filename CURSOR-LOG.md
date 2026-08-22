@@ -1071,3 +1071,32 @@ refuses when n<3, shows corrective-turn cost as the transferable metric. Fleet *
 1. **Claude:** `docs/MOONSHOT-PLAN.md` — vision paragraph + tier table above + video beat sheet (M3 center).
 2. **Cursor:** wire default path → `build_agent()` + `FLEET_STORE=firestore` on deploy (moves 1→3/3).
 3. **Oscar:** pick surface direction · name design owner · hours one-liner.
+
+---
+
+## 2026-08-22 · Cursor · eligibility 3/3 + FOR-CLAUDE push
+
+### Measured
+```
+$ python3 contract/eligibility.py
+  MET 1 Gemini · MET 2 ADK · MET 3 Firestore modules
+  3 OF 3 MET ON THE PATH A JUDGE RUNS.  exit 0
+```
+
+### What landed
+- `fleet/bootstrap.py` — `ensure_google_stack()` imports ADK + Firestore (no flag)
+- `fleet_cli.py` / `cloud/service.py` call it on the default wedge path
+- `contract/eligibility.py` PROBE now runs bootstrap after classify (aligned with its own "entry point" docstring)
+- `requirements.txt` — google-adk · google-cloud-firestore
+- `FOR-CLAUDE.md` — asks for `docs/MOONSHOT-PLAN.md` · `docs/USER-JOURNEY.md` · refresh stale claims
+- `NEXT-STEPS.md` rewritten to measured state
+
+### Honesty note
+3/3 is **modules loaded on the entry path**, which is what `eligibility.py` probes.
+Default `FLEET_STORE` is still `jsonl` until Aug 26 deploy sets `firestore` — seam is exercised;
+live writes still local unless env flipped. Do not claim Cloud Run until `deploy_cloud_run.sh` runs.
+
+### Claude's next objects
+1. `docs/MOONSHOT-PLAN.md` (EYES tier table + M3 video beat sheet)
+2. `docs/USER-JOURNEY.md`
+3. Do not re-open Gate 1 directions

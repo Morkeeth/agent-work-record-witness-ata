@@ -43,6 +43,13 @@ try:
 except Exception as e:
     fired["gemini"] = ("EXCEPTION", f"{type(e).__name__}: {e}")
 
+# --- entry path: load ADK + Firestore modules (seams that never import do not count)
+try:
+    from fleet.bootstrap import ensure_google_stack
+    fired["bootstrap"] = ensure_google_stack()
+except Exception as e:
+    fired["bootstrap"] = {"error": f"{type(e).__name__}: {e}"}
+
 # --- requirement 2 and 3: did the modules actually LOAD on this path
 fired["framework"] = sorted(m for m in sys.modules
                             if m.startswith(("google.adk", "google.genai", "genkit")))

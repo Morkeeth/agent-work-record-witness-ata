@@ -7,12 +7,14 @@ import json
 import os
 import sys
 
+from fleet.bootstrap import ensure_google_stack
 from fleet.propagate import find_best_prompt, propagate_prompt, witness_propagation
 from fleet.episodes import extract_episodes, score_session_episodes
 from fleet.human import load_transcript
 
 
 def cmd_wedge(args):
+    ensure_google_stack()  # ADK + Firestore on the judge path — no flag
     corpus = args.corpus or glob.glob(
         os.path.join(os.path.dirname(__file__), "fixtures/operators/*.jsonl"))
     result = find_best_prompt(args.topic, corpus)
