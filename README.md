@@ -37,7 +37,7 @@ Protocol: `COLLAB-PROTOCOL.md` · Phase gates: `PHASE-TRACKER.md` · Shared log:
 
 ## Setup
 
-**Status:** Phase 1 — wedge loop runs on fixtures. Cloud Run / ADK pending GCP (Aug 26 gate).
+### 1. Run it with no accounts (stranger path)
 
 ```bash
 git clone <this-repo>
@@ -46,10 +46,39 @@ python3 fleet_cli.py wedge --topic "refactor auth"
 ```
 
 Expected: operator-a's prompt propagated to `fixtures/org-repo/.cursor/rules/propagated-skill.md`,
-witness `VERIFIED-BY-REPO`.
+witness `VERIFIED-BY-REPO`. This path uses a local jsonl store and the free AI-Studio classifier —
+**no GCP required, and it satisfies 1 of the 3 required Google technologies (Gemini).**
 
-**Requirements (submission):** Gemini 3.5+ · Google ADK · Cloud Run or Firestore · see
-`docs/SPEC-EXTRACT.md`.
+### 2. The full Google-stack path (required for 3 of 3)
+
+The submission requires Gemini 3.5+, a Google Agent Framework, and a Google Cloud service. The
+first is met above; the other two need a GCP project:
+
+```bash
+pip install google-adk google-cloud-firestore
+gcloud auth application-default login          # provides ADC — no key file
+gcloud config set project <YOUR_PROJECT_ID>    # a project with Firestore + Vertex AI enabled
+```
+
+### 3. Verify eligibility — exercised, not asserted
+
+```bash
+python3 contract/eligibility.py                # exits 0 only at 3 OF 3
+```
+
+It strips the environment, **calls** each service (does not merely import it), and prints the
+answering path per requirement:
+
+```
+MET  1. Gemini    vertex:gemini-3.5-flash -> <verdict>
+MET  2. ADK       google.adk.agents.LlmAgent  (agent constructed)
+MET  3. Cloud     round-trip hit FirestoreStore
+3 OF 3 MET — exercised on the path a judge runs.
+```
+
+**Without step 2, the app runs at 1 of 3** (local store, no ADK) — the setup is required for the
+full Google-stack path, and it degrades gracefully rather than crashing. See
+`docs/SPEC-EXTRACT.md` for the verbatim requirement text.
 
 ## Trust model
 
