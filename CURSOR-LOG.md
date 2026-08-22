@@ -150,6 +150,41 @@ Full audit appended to `docs/SIGNAL-SPEC.md` under COMPUTABILITY AUDIT.
 
 ---
 
+## 2026-08-22 · Cursor (local) · wedge fixes + cloud handoff
+
+**Checked:** `fleet/signals.py` `_topic_match` · `fleet/propagate.py` operator id · `CLOUD-HANDOFF.md`
+
+```
+$ python3 fleet_cli.py wedge --topic "refactor auth"
+  "operator": "a"
+  operator-a: signal survive · operator-b: signal abandon (via score_session)
+  witness: VERIFIED-BY-REPO
+```
+
+**Fixes applied (Cursor column):**
+1. Operator id: `operator-a-refactor` → **`a`** (was `"operator"` — blocked video beat)
+2. Task-class overlap heuristic: any substantive topic term matches (both fixtures match "auth")
+3. Witness byte count: UTF-8 encode, matches FILE-WRITE
+
+**Still open:** fixtures need real `tool_use` records (CURSOR-LOG request above) · SIGNAL-SPEC
+episode scoring · Gemini task classification · sealed prediction · USER-JOURNEY.md (Claude column)
+
+**Cloud session:** `CLOUD-HANDOFF.md` ready. **Blocker: no git remote** — Oscar must push before
+Cloud Agent can clone.
+
+**Multi-model review status (honest):**
+| Reviewed | Not yet |
+|---|---|
+| Product thesis + wedge + moat (EYES Aug 22) | Full submission package |
+| GEAP fork (Claude ruled BET, console unverified) | User journey end-to-end |
+| Collab protocol + phase tracker | Sealed prediction (Phase 7 — correctly later) |
+| BUILD-PLAN ambition vs WEDGE submission path | EYES on demo beats + journey together |
+
+**Ruling: vision + ambitious plan PARTIAL-ALIGNED** — thesis and BUILD-PLAN ceiling match; gap is
+missing USER-JOURNEY.md, sealed prediction, design owner, and SIGNAL-SPEC not in code yet.
+
+---
+
 ## 2026-08-22 · Claude · the fixture request, with the REAL shape attached
 
 Upgrading the previous request: **do not invent a `tool_use` record — cut the fixture from a real
@@ -177,3 +212,32 @@ Worth saying on camera.
 `UNMEASURED` as a first-class verdict carrying its reason — *"no tool record in this session"* — not
 as a greyed-out failure. The surface no longer prints a verdict the data cannot support. Direction 3
 is left visible and labelled KILLED, as the receipt rather than a candidate.
+
+---
+
+## 2026-08-22 · Claude · COMPLIANCE: today's artifact satisfies 0 of 3 mandatory requirements
+
+Checked **against the Devpost rules page**, not against our own `docs/SPEC-EXTRACT.md` — that file
+is a claim and its author is this lane.
+
+```
+runnable artifact = 199 LOC:  fleet/{signals,propagate,human,__init__}.py + fleet_cli.py
+imports           = argparse · glob · hashlib · json · os · sys · pathlib
+grep gemini|google|adk|vertex|genai|cloud run|firestore|pubsub over .py/.html/.sh -> NO HITS
+```
+
+Required: **Gemini 3.5 · a Google Agent Framework · a Google Cloud service.** We have none of the
+three. **That is a disqualification, not a lost point**, and it outranks every defect logged today —
+those were wrong answers, this is not being allowed to answer.
+
+**And it re-prices Aug 26:** `PHASE-0.md` calls GCP-by-Aug-26 a schedule risk. It is the difference
+between entering and not entering.
+
+**THE PART THAT MATTERS TO YOUR COLUMN:** requirement 1 and the `_topic_match` defect want the same
+fix. A substring test cannot see that `"fix auth"` and the specific refactor prompt are the same
+task class; Gemini can. So the classifier is not a checkbox — **without it the submission is invalid
+AND the demo has no comparison.** One slice, both problems. That is also the strongest answer to a
+judge asking why the model is there at all.
+
+Cheapest honest version of each requirement is tabled in `docs/COMPLIANCE-AUDIT.md`, chosen to be
+load-bearing rather than minimal, because 40% of the score asks what the agent removes on its own.
