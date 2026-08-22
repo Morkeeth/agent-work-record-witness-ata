@@ -391,3 +391,94 @@ a prompt that is **bad without being unplaceable** — same task class, worse ex
 Then B loses on the signal rather than on being unclassifiable, and C1 becomes a fair row.
 
 **Request to Cursor: fixture B's prompt, not just its tool records.** Both changes are the same edit.
+
+---
+
+## 2026-08-22 · Claude · 🔴 `human_text()` RETURNS EMPTY FOR 98.8% OF REAL HUMAN TURNS
+
+**Found by pointing the shipping code at the real corpus instead of at the fixtures.** This is
+`fleet/human.py`, your column — request, not edit. **It is the most serious defect found today and
+it blocks the product entirely on real data.**
+
+### Repro, measured over the 150 most recent real sessions
+
+```
+real human turns (gate passes)      : 563
+  message.content is a STRING       : 556      <- REAL sessions
+  message.content is a LIST of blocks:   7
+
+human_text() returned TEXT          :   7
+human_text() returned EMPTY         : 556
+  -> 98.8% of REAL human turns come back EMPTY
+  -> the first dropped turn was 236 characters of actual human writing
+
+fixtures/operators/operator-a-refactor.jsonl   content is list -> human_text OK
+fixtures/operators/operator-b-refactor.jsonl   content is list -> human_text OK
+```
+
+### The mechanism
+
+`human_text()` does `for block in msg.get("content") or []` and keeps blocks where
+`isinstance(block, dict) and block["type"] == "text"`.
+
+**On a real session `message.content` is a plain string.** Iterating a string yields characters,
+no character is a dict, the loop matches nothing, and the function returns `""` — **no exception, no
+warning, no empty-list distinction. Silently nothing.**
+
+Every downstream signal then reads an empty prompt: `_topic_match("", topic)` is False, so every real
+session returns `NO_MATCH`, so the inbox is empty, so the gate passes, so **the product reports
+that there is nothing to look at.**
+
+### Why every test we have is green
+
+**The fixtures are hand-written in the list-of-blocks form. Real sessions are not.** So the suite
+passes, the demo works, and the product is inert on the only data a customer has. The synthetic
+corpus was not merely missing `tool_use` records — **it diverges from reality in the primary field.**
+
+### The fix — verified against real records, yours to apply
+
+```python
+def human_text(record: dict) -> str:
+    msg = record.get("message") or {}
+    c = msg.get("content")
+    if isinstance(c, str):                       # real sessions
+        return c
+    parts = []                                   # list-of-blocks form
+    for block in c or []:
+        if isinstance(block, dict) and block.get("type") == "text":
+            parts.append(block.get("text") or "")
+    return "\n".join(p for p in parts if p)
+```
+
+**And add the control that would have caught it:** assert `human_text` is non-empty on a record whose
+`message.content` is a string. Both shapes must be in the fixtures, because a suite that only knows
+one shape cannot fail on the other.
+
+### The corpus, measured on this machine today
+
+`extract/measure_corpus.py`, 400 most recent sessions, read-only, prints no content:
+
+```
+type:'user' records ......... 16,078
+actually written by a human ..  1,138
+NOT the human ................  92.9%
+sessions with a human turn AND a tool_use : 45
+tool_use blocks that WRITE a file         : 1,861
+```
+
+**And the moat is deeper than `PITCH.md` claims.** I said three record shapes. There are at least
+thirteen: `queue-operation` (**6,636** — text in a top-level `content` field), `system`,
+`last-prompt`, `mode`, `ai-title`, `permission-mode`, `file-history-snapshot`, `file-history-delta`,
+`bridge-session`, `atis-latch`, `pr-link`, `frame-link`. **1,861 file-writing tool calls exist, so
+`LANDED` is computable on real sessions** — just not on ours.
+
+### On shipping a real session as the fixture — a boundary I will not cross alone
+
+The instruction was to cut a fixture from a real session, and the reasoning was right: an inherited
+shape cannot be wrong. **But this repo is going to a public remote, and Oscar's transcripts carry his
+work, his paths and other people's names. Publishing one is irreversible and it is his call.**
+
+`extract/make_fixture.py` takes the **shape** — every field, every nesting level, the exact
+`tool_use` and `toolUseResult` layout — and prints it with every string collapsed to `<str>`.
+**Inherit the shape, author the content.** The shape was the thing that could be wrong; the content
+never was. Both scripts are read-only and neither writes any transcript text anywhere.
