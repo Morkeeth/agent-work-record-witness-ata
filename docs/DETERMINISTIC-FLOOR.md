@@ -31,11 +31,18 @@ network and no domain synonym table**:
 
 ## The numbers (measured, not claimed)
 
-| Set | deterministic | no-signal baseline | lift |
+There are **two** zero-signal negative controls, and the honest report is against the
+**stronger** one. `always-DIFFERENT` scores 3/8; `always-SAME` scores **4/8** (it happens
+to catch the SAME rows for free). Margins are stated against both:
+
+| Set | deterministic | vs always-DIFFERENT (3/8) | vs always-SAME (4/8) |
 |---|---|---|---|
-| in-sample (`CONTROLS`, built against) | **6/8** | 3/8 | **+3** |
-| held-out#1 (`HELDOUT`, dev set — seen, then 2 bugs fixed) | 4/8 | 3/8 | +1 |
-| **held-out#2 (`HELDOUT2`, clean test — frozen before the run)** | **5/8** | 3/8 | **+2** |
+| in-sample (`CONTROLS`, built against) | **6/8** | +3 | **+2** |
+| held-out#1 (`HELDOUT`, dev set — seen, then 2 bugs fixed) | 4/8 | +1 | **tie** |
+| **held-out#2 (`HELDOUT2`, clean test — frozen before the run)** | **5/8** | +2 | **+1** |
+
+The clean-test margin is positive against **both** stubs (+2 / +1). Held-out#1 ties the
+stronger stub — which is exactly why it, as a dev set, was the right alarm.
 
 Secondary metric (task_class.py's own definition of signal — right where the stub is
 wrong): **held-out#2 2/5**.
