@@ -68,3 +68,65 @@ HELDOUT = [
      SAME,
      "SAME class (code hygiene) stated narrow vs broad. Mirrors C8."),
 ]
+
+
+# ============================================================================
+# HELD-OUT #2 — composition inherited 1:1 from CONTROLS, frozen (committed)
+# BEFORE the fixed classifier was run against it.
+#
+# Held-out#1 (above) was demoted to a dev set: it was seen, and two general bugs
+# (head-verb intent; generic verbs mis-read as objects) were fixed after seeing it.
+# It is kept UNMODIFIED as the pre-fix receipt.
+#
+# Held-out#1 deviated from the CONTROLS mirror by mapping the C1/C3-type SAME rows
+# (shared object, compatible intent, some lexical overlap -- the deterministic floor's
+# actual territory) onto zero-overlap semantic rows. That measured only the LLM's
+# territory. #2 corrects the MIRROR, not the difficulty: every row below maps 1:1 to
+# a CONTROLS row id and reproduces its trap, with entirely new surface content. The
+# zero-overlap SAME rows (mapping C2, C8) are kept and WILL be missed -- that is the
+# LLM's earned slot, and dropping them would flatter the classifier.
+# ============================================================================
+HELDOUT2 = [
+    ("T1", "the upload keeps failing",
+     "fix the retry loop in uploader.py so large files finish, keep the tests passing",
+     SAME,
+     "maps C1: same object (upload/uploader), both CHANGE, some overlap + a trailing "
+     "'keep the tests passing' side-constraint that must NOT flip the head intent."),
+
+    ("T2", "the report shows stale numbers",
+     "debug why aggregate_totals caches across billing periods",
+     SAME,
+     "maps C2: same work (a wrong-data bug in reporting), zero shared vocabulary. "
+     "Expected MISS for the deterministic floor -- the LLM's slot."),
+
+    ("T3", "add tests for the scheduler",
+     "write unit tests covering cron_parse boundary conditions",
+     SAME,
+     "maps C3: same class, synonymous verbs, partial stem overlap (schedul/cron)."),
+
+    ("T4", "refactor the billing module: split invoice.py",
+     "add a keyboard shortcut to the editor toolbar",
+     DIFFERENT,
+     "maps C4: plainly unrelated areas."),
+
+    ("T5", "refactor the export pipeline",
+     "document the export pipeline",
+     DIFFERENT,
+     "maps C5: FALSE-POSITIVE trap. Identical object, change vs describe."),
+
+    ("T6", "add the feature flag for beta search",
+     "remove the beta search feature flag",
+     DIFFERENT,
+     "maps C6: opposite-direction trap. Nearly all tokens shared, add vs remove."),
+
+    ("T7", "clean it up",
+     "refactor the parser",
+     UNDECIDABLE,
+     "maps C7: 'clean it up' names no placeable object -> UNDECIDABLE, not a guess."),
+
+    ("T8", "pin the transitive deps",
+     "regenerate requirements.txt from the lockfile",
+     SAME,
+     "maps C8: same class (dependency management) at two levels of abstraction, "
+     "zero literal overlap. Expected MISS -- the LLM's slot."),
+]

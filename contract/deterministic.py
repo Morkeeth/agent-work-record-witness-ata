@@ -51,11 +51,12 @@ SAME, DIFFERENT, UNDECIDABLE = "SAME", "DIFFERENT", "UNDECIDABLE"
 # TEST is its own family. Only same-family (or CHANGE-internal) pairs can be SAME.
 _INTENT_PHRASES = {
     "roll back": "REVERT", "rolling back": "REVERT",
-    "add tests": "TEST", "add test": "TEST", "unit test": "TEST",
-    "add coverage": "TEST",
 }
 _INTENT_WORDS = {
-    # CHANGE family (create / modify / repair)
+    # CHANGE family (create / modify / repair). Generic light verbs (make/let/get/do/
+    # have) live here too: their only job is to be STRIPPED from the object set so
+    # "make it faster" is seen as referent-less, not as an object called "make".
+    "make": "CHANGE", "let": "CHANGE", "get": "CHANGE", "do": "CHANGE", "have": "CHANGE",
     "fix": "CHANGE", "refactor": "CHANGE", "extract": "CHANGE", "add": "CHANGE",
     "implement": "CHANGE", "build": "CHANGE", "create": "CHANGE", "write": "CHANGE",
     "update": "CHANGE", "bump": "CHANGE", "upgrade": "CHANGE", "change": "CHANGE",
@@ -83,11 +84,10 @@ _INTENT_WORDS = {
     "deploy": "CHANGE", "ship": "CHANGE", "release": "CHANGE", "publish": "CHANGE",
 }
 
-# CHANGE and TEST and DESCRIBE are distinct jobs. But a prompt often carries a CHANGE verb
-# AND a downstream noun; we take the STRONGEST non-CHANGE signal when present, because the
-# traps live in DESCRIBE and REVERT. Compatibility: same bucket is compatible; nothing
-# cross-bucket is (CHANGE!=DESCRIBE, CHANGE!=REVERT, CHANGE!=TEST, etc.).
-_BUCKET_PRIORITY = ["REVERT", "DESCRIBE", "TEST", "CHANGE"]
+# Intent is the HEAD verb: the earliest recognised intent token/phrase in reading order.
+# A prompt's real job is named by its leading verb; later verbs ("...keep tests green",
+# "...before applying") are side constraints, not the intent. Taking a max over all verbs
+# let "keep tests green" turn a refactor into a TEST task -- the bug this replaced.
 
 # Pronouns / fillers that name no object. A prompt whose only "object" is one of these
 # cannot be placed -> UNDECIDABLE.
@@ -118,27 +118,24 @@ def _tokens(text: str) -> list[str]:
 
 
 def _intent(text: str) -> str | None:
+    """The HEAD intent: the earliest intent token/phrase in reading order, or None."""
     low = text.lower()
-    for phrase, bucket in _INTENT_PHRASES.items():
-        if phrase in low:
-            # phrase wins outright for REVERT/TEST (the trap-bearing buckets)
-            if bucket in ("REVERT", "TEST"):
-                return bucket
-    found = set()
-    for tok in _tokens(text):
+    toks = _tokens(text)
+    hits: list[tuple[float, str]] = []
+    for i, tok in enumerate(toks):
         b = _INTENT_WORDS.get(tok)
         if b:
-            found.add(b)
-    # phrase-level CHANGE/other buckets still count
+            hits.append((float(i), b))
     for phrase, bucket in _INTENT_PHRASES.items():
         if phrase in low:
-            found.add(bucket)
-    if not found:
+            first = phrase.split()[0]
+            if first in toks:
+                # a phrase sits just before its head word so it wins ties at that position
+                hits.append((toks.index(first) - 0.5, bucket))
+    if not hits:
         return None
-    for b in _BUCKET_PRIORITY:
-        if b in found:
-            return b
-    return None
+    hits.sort(key=lambda x: x[0])
+    return hits[0][1]
 
 
 def _compatible(bucket_a: str | None, bucket_b: str | None) -> bool:
