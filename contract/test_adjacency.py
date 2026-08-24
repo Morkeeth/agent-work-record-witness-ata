@@ -48,22 +48,69 @@ def test_denominator_defect_fires_on_any_subject_not_a_keyword():
     assert find_adjacency(text), "missed the same denominator defect on a different subject"
 
 
-def test_KNOWN_SCOPE_GAP_only_the_denominator_shape_is_caught():
-    """Honest limit of the folded feature, pinned so a future fix flips this red.
+def test_count_that_disagrees_with_its_own_list_is_flagged():
+    """The second member: a headline count above a list of a different length.
 
-    The pitch says "every fact true, the composition false" — a whole class. The engine
-    as folded implements ONE member of it: DENOMINATOR-EXCLUDES-ITS-FAILURES. Two sibling
-    shapes it does NOT yet catch:
-      - count-vs-its-own-list  ("54 repos" above 60 rows)
-      - percent-then-contradiction ("90% coverage" above "2 files had zero tests")
-    This test asserts the gap is REAL, so 'ADJACENT-FALSE is covered' can never be
-    claimed while these return nothing. When the engine grows to catch one, delete its
-    line here — the failure is the signal to update the pitch.
+    Both the markdown path ("MCP Server (14 tools)" over a 12-row table) and the
+    bare-row path ("54 repos" over 60 plain lines) belong to one kind. The kind is
+    asserted explicitly so a different detector firing cannot fake the pass.
     """
+    # bare rows — no bullet, no pipe — is the shape the folded engine used to miss.
     count_vs_list = "PROJECT PULSE · 54 repos\n" + "\n".join(f"repo{i}" for i in range(60))
-    pct_then_contra = "90% coverage (18 of 20)\n2 files had zero tests"
-    assert not find_adjacency(count_vs_list), "count-vs-list now caught — update the pitch + this test"
-    assert not find_adjacency(pct_then_contra), "pct-then-contradiction now caught — update the pitch + this test"
+    found = find_adjacency(count_vs_list)
+    assert found, "count-vs-bare-list not flagged"
+    assert found[0]["kind"] == "COUNT-DISAGREES-WITH-ITS-LIST"
+
+    # markdown table: a parenthesised count over 12 data rows.
+    table = "MCP Server (14 tools)\n| tool | note |\n|---|---|\n" + "\n".join(
+        f"| t{i} | ok |" for i in range(12)
+    )
+    tfound = find_adjacency(table)
+    assert tfound and tfound[0]["kind"] == "COUNT-DISAGREES-WITH-ITS-LIST", (
+        "count-over-table not flagged"
+    )
+
+
+def test_count_vs_list_stays_quiet_on_honest_shapes():
+    # A count is not its list only when the lengths differ AND a list truly follows.
+    for good in (
+        # a count followed by PROSE, not a list — sentences, not rows.
+        "Deployed 54 repos\nProduction is stable now.\nMonitoring looks clean.",
+        # the count matches the list it heads.
+        "3 files changed\nalpha\nbeta\ngamma",
+        # a bare-row block under three rows never counts (signature/fragment guard).
+        "shipped 9 repos\nalpha\nbeta",
+    ):
+        assert not find_adjacency(good), f"count-vs-list false positive on: {good!r}"
+
+
+def test_percent_contradicted_by_a_categorical_zero_below_is_flagged():
+    # 18 of 20 is CONSISTENT with "2 zero-test files" (2 = 20-18); the flag is not
+    # arithmetic. A success percentage above a positive count of items holding ZERO
+    # of the measured thing is the contradiction.
+    text = "90% coverage (18 of 20)\n2 files had zero tests"
+    found = find_adjacency(text)
+    assert found, "percent-then-categorical-zero not flagged"
+    assert found[0]["kind"] == "PERCENT-CONTRADICTED-BELOW"
+    assert "90% coverage" in found[0]["a"] and "zero tests" in found[0]["b"]
+
+
+def test_percent_contradiction_stays_quiet_on_honest_shapes():
+    # The dangerous false positive of this whole class is firing on honest
+    # elaboration. Each of these must stay silent.
+    for good in (
+        # elaboration: names the gap, but with no zero-word — a gradient, not a hole.
+        "90% coverage (18 of 20)\n2 files still need review",
+        # zero applied to a BAD thing is good news, and the count is 0 besides.
+        "100% pass (20 of 20)\n0 failures",
+        # the existing all-green report, restated for this detector.
+        "12 of 12 tests pass (100%)\nall green, nothing skipped",
+        # a LOW percentage already implies failures exist — not a contradiction.
+        "10% coverage (2 of 20)\n18 files had zero tests",
+        # the zero-word rides a failure verb: "zero tests failed" is honest.
+        "95% pass (19 of 20)\n5 suites ran; zero tests failed",
+    ):
+        assert not find_adjacency(good), f"percent-contradiction false positive on: {good!r}"
 
 
 if __name__ == "__main__":

@@ -43,6 +43,21 @@ sides verbatim so a human dismisses a wrong flag in one read. Every false
 positive it produced in development came from a number that looked like a count
 and was an ADDRESS — "3. COSMETIC" numbers a finding, "### 1.7" numbers a
 section, "Phase 1" labels a phase — so those are excluded by shape.
+
+## The shapes it catches
+
+Four members of the class, each a pair of true numbers asserting a false
+relationship:
+
+    DENOMINATOR-EXCLUDES-ITS-FAILURES  a fraction whose denominator drops the
+                                       cases restated right beneath it
+    COUNT-DISAGREES-WITH-ITS-LIST      a headline count above a list — markdown
+                                       or bare rows — of a different length
+    PARTS-DO-NOT-SUM                   a stated total its own breakdown misses
+    PERCENT-CONTRADICTED-BELOW         a success percentage above a positive
+                                       count of items with ZERO of the measured
+                                       thing (a categorical hole, not the
+                                       gradient the percentage implies)
 """
 import re
 
@@ -74,9 +89,69 @@ _LABEL_NUM = re.compile(
 # "4 tabs + 1 action" — a heading may state a sum.
 _SUM = re.compile(r"(\d[\d,]*)\s*[a-z][a-z -]{0,20}?(?=\s*\+)", re.I)
 
+# ── shape: a success percentage sat above a named categorical-zero failure ──
+# A percentage that reads as SUCCESS: a bare "NN%" only counts if a completeness
+# word rides with it, so "grew 90% YoY" is not mistaken for "90% covered".
+_PCT = re.compile(r"(\d[\d,]*)\s*%")
+_SUCCESS_WORD = re.compile(
+    r"\b(?:coverage|covered|passing|passed|pass|tested|complete|completed|"
+    r"green|success|done)\b",
+    re.I,
+)
+# A positive count of items that POSSESS ZERO of a good thing — "2 files had
+# zero tests", "3 modules with no coverage". The zero-word must sit directly on
+# the good noun, and the good-noun lexicon is deliberately tight: a generic noun
+# ("2 modules need zero changes") is good news, not a contradiction. The
+# negative lookahead drops "zero tests failed" — there the sense is inverted and
+# the report is honest.
+_ZERO_OF_GOOD = re.compile(
+    r"\b(?:zero|no|without|0)\s+"
+    r"(?:tests?|coverage|reviews?|docs?|documentation|checks?|specs?|assertions?)"
+    r"\b(?!\s+(?:failed|fail|fails|broke|broken|error|errored|"
+    r"skipped|passed|pass|passing))",
+    re.I,
+)
+_POS_COUNT = re.compile(r"(?<![\w.])[1-9]\d*")
+
 
 def _n(s):
     return int(s.replace(",", ""))
+
+
+def _pct_success(line):
+    """The success fraction (0–100) a line claims, or None if it makes no such
+    claim. A percentage needs a completeness word beside it; an "X of Y" ratio
+    counts on its own or with a percentage."""
+    pm = _PCT.search(line)
+    if pm and _SUCCESS_WORD.search(line):
+        return float(_n(pm.group(1)))
+    fm = _FRACTION.search(line)
+    if fm:
+        kept, total = _n(fm.group(1)), _n(fm.group(2))
+        if total and (pm or _SUCCESS_WORD.search(line)):
+            return 100.0 * kept / total
+    return None
+
+
+def _plain_rows_below(lines, start):
+    """Length of a clean plain-text row block starting at `start`.
+
+    A row is a short, non-empty line that is not a sentence: ≤ 48 chars, no
+    terminal .!?: and no mid-line ". ". A single prose line contaminates the
+    block and voids it — the point is to count a LIST, and prose is not one.
+    Returns 0 for anything under three rows, which kills signature blocks and
+    stray fragments."""
+    rows = 0
+    j = start
+    while j < len(lines):
+        s = lines[j].strip()
+        if not s:
+            break
+        if len(s) > 48 or s[-1] in ".!?:" or ". " in s:
+            return 0
+        rows += 1
+        j += 1
+    return rows if rows >= 3 else 0
 
 
 def find_adjacency(text):
@@ -144,6 +219,14 @@ def find_adjacency(text):
                 elif n > 0 or table_rows > 0:
                     break
                 j += 1
+            # A LIST NEED NOT BE MARKDOWN. "PROJECT PULSE · 54 repos" sits above
+            # 60 bare rows — no bullet, no pipe — and the count still disagrees
+            # with the list it heads. Only reach for the plain-row reading when
+            # the markdown walk found no list at all, so markdown behaviour is
+            # untouched; the row predicate (short, sentence-free, ≥3) is what
+            # keeps a prose paragraph from being read as a list.
+            if n == 0 and table_rows == 0:
+                n = _plain_rows_below(lines, i + 1)
             # AND THE COUNT MUST BE THE LAST THING SAID BEFORE THE LIST.
             #
             # Measured on 4,775 real agent reports: requiring a plural noun took
@@ -161,7 +244,7 @@ def find_adjacency(text):
             )
             if counts_the_list and n >= 2 and claimed != n and abs(claimed - n) <= max(3, n):
                 out.append({
-                    "kind": "COUNT-IS-NOT-ITS-LIST",
+                    "kind": "COUNT-DISAGREES-WITH-ITS-LIST",
                     "line": i + 1,
                     "a": line.strip(),
                     "b": "%d item%s follow" % (n, "" if n == 1 else "s"),
@@ -198,6 +281,42 @@ def find_adjacency(text):
                         % (total, sum(parts))
                     ),
                 })
+
+        # ── a success percentage above a named categorical-zero failure ─────
+        # "90% coverage (18 of 20)" over "2 files had zero tests". The example
+        # is arithmetically CONSISTENT (2 = 20−18), so this cannot gate on the
+        # numbers disagreeing — the discriminator is lexical. A percentage
+        # implies a GRADIENT of remaining work; a positive count of items that
+        # have ZERO of a good thing is a categorical hole the percentage smooths
+        # over. That is the contradiction. A line that merely restates the gap
+        # ("2 files still need review") carries no zero-word and stays silent —
+        # firing there would be this very class, committed inside the gate.
+        #
+        # The percentage must read as success (≥ 50): "the failures the
+        # percentage implies don't exist". A 10% headline already implies
+        # failures exist, so "10% coverage" over "18 files had zero tests" is an
+        # honest report, not a contradiction.
+        pct = _pct_success(line)
+        if pct is not None and pct >= 50:
+            for k in (i + 1, i + 2):
+                if k >= len(lines):
+                    break
+                below = lines[k]
+                if _ZERO_OF_GOOD.search(below) and _POS_COUNT.search(below):
+                    out.append({
+                        "kind": "PERCENT-CONTRADICTED-BELOW",
+                        "line": i + 1,
+                        "a": line.strip(),
+                        "b": below.strip(),
+                        "why": (
+                            "The headline reads as %d%% success, which implies "
+                            "the remainder is a gradient of partly-done work. The "
+                            "line under it names items with ZERO of the thing "
+                            "being measured — a categorical hole, not the gap the "
+                            "percentage describes." % int(pct)
+                        ),
+                    })
+                    break
 
     return out
 
