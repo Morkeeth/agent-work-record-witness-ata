@@ -204,3 +204,45 @@ def classify_deterministic(prompt_a: str, prompt_b: str) -> str:
     if not _compatible(_intent(prompt_a), _intent(prompt_b)):
         return DIFFERENT
     return SAME
+
+
+def classify_with_confidence(prompt_a: str, prompt_b: str) -> tuple[str, bool]:
+    """The cascade tier: the floor's verdict AND whether it is confident enough to keep.
+
+    This is the free deterministic model in an LLM cascade — it answers the cases it can
+    actually see evidence for, and DEFERS the rest to the model, which is where the model
+    earns its cost (cascades cut spend up to ~90% by only escalating the low-confidence
+    tail; arXiv:2502.09054). It is CONFIDENT when:
+      - a prompt has no placeable object          -> UNDECIDABLE, and sure it cannot decide
+      - the objects OVERLAP                        -> SAME/DIFFERENT rests on shared vocabulary it sees
+      - objects DISJOINT and intents INCOMPATIBLE  -> different job AND different object
+
+    It is NOT confident in exactly one place: objects DISJOINT but intents COMPATIBLE.
+    Disjoint objects with the same intent is the synonym-suspect zone — "fix auth" vs
+    "repair authentication" — where the floor would guess DIFFERENT but a synonym pair is
+    SAME, and no lexical evidence tells which. That is the model's slot, so the floor
+    hands it over instead of guessing. Returns (verdict, confident).
+    """
+    obj_a, obj_b = _objects(prompt_a), _objects(prompt_b)
+    if not obj_a or not obj_b:
+        return UNDECIDABLE, True
+    if _overlap(obj_a, obj_b):
+        same = _compatible(_intent(prompt_a), _intent(prompt_b))
+        return (SAME if same else DIFFERENT), True
+    if not _compatible(_intent(prompt_a), _intent(prompt_b)):
+        return DIFFERENT, True
+    # disjoint objects, compatible intents: the synonym-suspect tail. Defer.
+    return DIFFERENT, False
+
+
+def classify_cascade(prompt_a: str, prompt_b: str, escalate=None) -> tuple[str, str]:
+    """Run the cascade: the floor answers when confident, else `escalate` (the LLM) does.
+
+    Returns (verdict, tier) where tier is 'floor' or 'model'. With no escalate callable
+    the floor's own low-confidence guess is returned tagged 'floor' — so a caller with no
+    model still gets an answer, and can see it was the unescalated guess.
+    """
+    verdict, confident = classify_with_confidence(prompt_a, prompt_b)
+    if confident or escalate is None:
+        return verdict, "floor"
+    return escalate(prompt_a, prompt_b), "model"
