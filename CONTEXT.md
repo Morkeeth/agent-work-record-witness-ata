@@ -72,9 +72,9 @@ improve the *humans driving them* — then the supervisor acts on that measureme
 
 | Source | LOC | Role here |
 |---|---|---|
-| `claims_inbox.py` discovery | 257 | the ingest — already reads the transcripto spine + `~/.claude` walk |
-| `engine/witness.py` | 590 | trace-witness → an outcome signal |
-| `repo_witness.py` | 176 | ground truth: did the work land |
+| the `agent-claims-inbox` repo · claims_inbox discovery | 257 | the ingest — already reads the transcripto spine + `~/.claude` walk (sibling repo, not vendored here) |
+| the `agent-claims-inbox` repo · engine trace-witness | 590 | trace-witness → an outcome signal (sibling repo) |
+| the `agent-claims-inbox` repo · repo-witness | 176 | ground truth: did the work land (sibling repo) |
 | `cloud/store.py` | 113 | Jsonl \| Firestore, one env var — verbatim |
 | `cloud/service.py` + `Dockerfile` | 110 | the Cloud Run shell — verbatim |
 | `cloud/agent.py` | 99 | ADK-wraps-plain-functions pattern → **propagation tools** |
