@@ -1,0 +1,34 @@
+==========================================================================
+  PROMPTING COACH — oscar   (transcripto, single-seat wedge)
+==========================================================================
+  corpus : 185 transcript(s), 259,387 records
+  moat   : 3438 genuine human prompts kept (1.33% of records) — is_human_turn dropped the rest
+  ranked : 1843 prompt episodes; 859 survived (47%)
+  tiers  : commit 342 | write/edit 517 | reverted 2 | not-durable 982
+
+  SURVIVAL is a PROXY: survival = reached a durable Write/Edit or an un-reverted git commit in-episode (a PROXY, not proof of shipped/correct work).
+
+  TOP prompt patterns  (highest survival rate) — do more of these:
+     65%  (152/235)  detailed (>40 words)
+     65%  (64/99)  states-a-check-or-done-condition
+     60%  (21/35)  no-object (pronoun/vague)
+     59%  (388/660)  intent:CHANGE
+     57%  (90/158)  cites-a-file-or-path
+
+  BOTTOM prompt patterns  (lowest survival rate) — these tend to loop:
+     36%  (4/11)  intent:REVERT
+     39%  (392/1001)  intent:none
+     40%  (4/10)  intent:TEST
+     42%  (287/689)  terse (<8 words)
+     44%  (71/161)  intent:DESCRIBE
+
+  ✓ BEST landed prompt (a real one, with its witness):
+      “mTERMINAL 8 — Mountain of Helicon · ~/CODE/mountain-of-helicon Read ~/CODE/mountain-of-helicon. Two…”
+      survived → COMMIT-WITNESSED: git commit @ 2026-08-11T17:56:19.773Z
+      corrections: 0 | source: cb3ab19a-73fb-49c8-8ad9-99680c2d1e81.jsonl
+
+  ✗ WORST looped prompt (a real one, with its witness):
+      “ok, and lets see they might solve it in the future so i can go back to my beloeved routine :) Befor…”
+      no durable work → NO-DURABLE-RECORD: read-only Bash only, no file change
+      corrections: 15 | assistant turns: 221 | source: 13c25021-f6ef-4b16-86f3-008320841b2e.jsonl
+==========================================================================
