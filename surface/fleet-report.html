@@ -119,7 +119,16 @@ const d = window.__FLEET_REPORT__;
     `of commit claims disagreed with the repository, after the probe was corrected.<br>` +
     `<span class="raw">The same corpus read <b>${pct(d.raw_disagree, d.raw_sha_claims)}</b> before we fixed our own aim. ` +
     `The gap is the result, and all of it was ours.</span>`;
-  document.getElementById('caveat').textContent = d.precision_note.statement;
+  // The refusal travels with the numbers or it does not exist. witness-corpus does not emit
+  // it, so it is stated here and sourced, not derived — and if the payload ever carries one,
+  // the payload wins. It is never allowed to be silently absent: a missing refusal throws.
+  const refusal = (d.precision_note && d.precision_note.statement) || (
+    'Hand-labelling put the extractor\u2019s precision at 13/40 on free-form agent prose, so most '
+  + 'of what is counted here is still citation rather than claim. n=13 is a direction, not an '
+  + 'incidence rate, and every count is an upper bound: a rebased or garbage-collected commit '
+  + 'reads as absent. Source: docs/CORPUS-MEASUREMENT-2026-08-27.md.');
+  if (!refusal) throw new Error('refusal sentence missing — refusing to render numbers without it');
+  document.getElementById('caveat').textContent = refusal;
 
   document.getElementById('tally').innerHTML = [
     ['raw sha claims', d.raw_sha_claims], ['raw disagree', d.raw_disagree],
@@ -139,7 +148,7 @@ const d = window.__FLEET_REPORT__;
   }
   const rows = [...seen.values()];
   const collapsed = d.claims.length - rows.length;
-  document.getElementById('listnote').textContent = d.claims_listing_rule
+  document.getElementById('listnote').textContent = d.claims_listing_rule.replace(/\.?$/, '.')
     + (collapsed > 0 ? ` ${collapsed} repeat rows are folded into occurrence counts; the totals above are not folded.` : '');
   document.getElementById('claims').innerHTML = rows.map(x => `
     <details class="claim">

@@ -1,0 +1,422 @@
+{
+  "corpus_total_messages": 144306,
+  "examined_messages": 78618,
+  "examined_filter": "role='assistant' and is_human=0 and text is not null and length(text) > 20",
+  "messages_in_a_live_repo": 52878,
+  "messages": 78618,
+  "repos_on_disk": 83,
+  "raw_sha_claims": 247,
+  "raw_disagree": 103,
+  "corrected_sha_claims": 236,
+  "corrected_disagree": 19,
+  "resolved_in_a_sibling_repo": 73,
+  "dropped_as_machinery_or_fixture": 11,
+  "claims_pass": "corrected",
+  "claims_listed": 44,
+  "path_claims_not_checkable": 7,
+  "path_claims_not_checkable_by_reason": {
+    "a code identifier, not a file": 5,
+    "an absolute path outside the repository": 1,
+    "a hostname, not a repository path": 1
+  },
+  "claims_not_listed": 0,
+  "claims_listing_rule": "BLOCK rows from the CORRECTED pass only; PASS rows and every RAW-pass row are counted but not listed",
+  "claims": [
+    {
+      "message_id": 45110,
+      "repo": "paris-portfolio",
+      "assertion": "wrote todo.md",
+      "verdict": "BLOCK",
+      "probe": "stat todo.md",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 31294,
+      "repo": "cv-forge",
+      "assertion": "committed as 48811937",
+      "verdict": "BLOCK",
+      "probe": "git cat-file -t 48811937",
+      "evidence": "NOT a commit in this repo, nor in any of the 83 sibling repos checked",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 4017,
+      "repo": "helicon",
+      "assertion": "committed as 4cc1fb70",
+      "verdict": "BLOCK",
+      "probe": "git cat-file -t 4cc1fb70",
+      "evidence": "NOT a commit in this repo, nor in any of the 83 sibling repos checked",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 3023,
+      "repo": "helicon",
+      "assertion": "committed as e11b9ed9",
+      "verdict": "BLOCK",
+      "probe": "git cat-file -t e11b9ed9",
+      "evidence": "NOT a commit in this repo, nor in any of the 83 sibling repos checked",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 86582,
+      "repo": "pigeon",
+      "assertion": "wrote project_pigeon.md",
+      "verdict": "BLOCK",
+      "probe": "stat project_pigeon.md",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 124257,
+      "repo": "Datahubhack-jt",
+      "assertion": "wrote init.sql",
+      "verdict": "BLOCK",
+      "probe": "stat init.sql",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 70519,
+      "repo": "x-engine",
+      "assertion": "wrote x-analytics.md",
+      "verdict": "BLOCK",
+      "probe": "stat x-analytics.md",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 71355,
+      "repo": "helicon",
+      "assertion": "wrote workgraph_capture.py",
+      "verdict": "BLOCK",
+      "probe": "stat workgraph_capture.py",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 57818,
+      "repo": "Datahubhack-jt",
+      "assertion": "wrote PITCH.md",
+      "verdict": "BLOCK",
+      "probe": "stat PITCH.md",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 67686,
+      "repo": "skillsbench",
+      "assertion": "wrote reward.txt",
+      "verdict": "BLOCK",
+      "probe": "stat reward.txt",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 7390,
+      "repo": "zup",
+      "assertion": "committed as d63e3e4d",
+      "verdict": "BLOCK",
+      "probe": "git cat-file -t d63e3e4d",
+      "evidence": "NOT a commit in this repo, nor in any of the 83 sibling repos checked",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 72561,
+      "repo": "skill-lift",
+      "assertion": "wrote UPSTREAM-BUG-DRAFT.md",
+      "verdict": "BLOCK",
+      "probe": "stat UPSTREAM-BUG-DRAFT.md",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 47157,
+      "repo": "retract",
+      "assertion": "committed as 5258128",
+      "verdict": "BLOCK",
+      "probe": "git cat-file -t 5258128",
+      "evidence": "NOT a commit in this repo, nor in any of the 83 sibling repos checked",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 50766,
+      "repo": "retract",
+      "assertion": "committed as 5258128",
+      "verdict": "BLOCK",
+      "probe": "git cat-file -t 5258128",
+      "evidence": "NOT a commit in this repo, nor in any of the 83 sibling repos checked",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 50469,
+      "repo": "retract",
+      "assertion": "committed as 5258128",
+      "verdict": "BLOCK",
+      "probe": "git cat-file -t 5258128",
+      "evidence": "NOT a commit in this repo, nor in any of the 83 sibling repos checked",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 50110,
+      "repo": "retract",
+      "assertion": "committed as fb2f2f9",
+      "verdict": "BLOCK",
+      "probe": "git cat-file -t fb2f2f9",
+      "evidence": "NOT a commit in this repo, nor in any of the 83 sibling repos checked",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 48855,
+      "repo": "retract",
+      "assertion": "committed as 401ed6bf",
+      "verdict": "BLOCK",
+      "probe": "git cat-file -t 401ed6bf",
+      "evidence": "NOT a commit in this repo, nor in any of the 83 sibling repos checked",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 96363,
+      "repo": "fleet-ops",
+      "assertion": "committed as 8a5ecf2",
+      "verdict": "BLOCK",
+      "probe": "git cat-file -t 8a5ecf2",
+      "evidence": "NOT a commit in this repo, nor in any of the 83 sibling repos checked",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 43077,
+      "repo": "retract",
+      "assertion": "committed as 008c56ac",
+      "verdict": "BLOCK",
+      "probe": "git cat-file -t 008c56ac",
+      "evidence": "NOT a commit in this repo, nor in any of the 83 sibling repos checked",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 18326,
+      "repo": "zup",
+      "assertion": "committed as c21693c8",
+      "verdict": "BLOCK",
+      "probe": "git cat-file -t c21693c8",
+      "evidence": "NOT a commit in this repo, nor in any of the 83 sibling repos checked",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 58853,
+      "repo": "mountain-of-helicon",
+      "assertion": "committed as 66e8bf7",
+      "verdict": "BLOCK",
+      "probe": "git cat-file -t 66e8bf7",
+      "evidence": "NOT a commit in this repo, nor in any of the 83 sibling repos checked",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 18685,
+      "repo": "zup",
+      "assertion": "committed as 66e8bf7",
+      "verdict": "BLOCK",
+      "probe": "git cat-file -t 66e8bf7",
+      "evidence": "NOT a commit in this repo, nor in any of the 83 sibling repos checked",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 59031,
+      "repo": "mountain-of-helicon",
+      "assertion": "wrote .mcp.json",
+      "verdict": "BLOCK",
+      "probe": "stat .mcp.json",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 111718,
+      "repo": "fleet-ops",
+      "assertion": "committed as b04fcdd5",
+      "verdict": "BLOCK",
+      "probe": "git cat-file -t b04fcdd5",
+      "evidence": "NOT a commit in this repo, nor in any of the 83 sibling repos checked",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 111718,
+      "repo": "fleet-ops",
+      "assertion": "committed as 7c582601",
+      "verdict": "BLOCK",
+      "probe": "git cat-file -t 7c582601",
+      "evidence": "NOT a commit in this repo, nor in any of the 83 sibling repos checked",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 60934,
+      "repo": "zup",
+      "assertion": "committed as 8d8bf069",
+      "verdict": "BLOCK",
+      "probe": "git cat-file -t 8d8bf069",
+      "evidence": "NOT a commit in this repo, nor in any of the 83 sibling repos checked",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 61189,
+      "repo": "zup",
+      "assertion": "wrote registry.md",
+      "verdict": "BLOCK",
+      "probe": "stat registry.md",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 61194,
+      "repo": "zup",
+      "assertion": "wrote registry.md",
+      "verdict": "BLOCK",
+      "probe": "stat registry.md",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 64388,
+      "repo": "zup",
+      "assertion": "wrote registry.md",
+      "verdict": "BLOCK",
+      "probe": "stat registry.md",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 63447,
+      "repo": "zup",
+      "assertion": "wrote todo.md",
+      "verdict": "BLOCK",
+      "probe": "stat todo.md",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 61684,
+      "repo": "agent-attack",
+      "assertion": "wrote _jed.py",
+      "verdict": "BLOCK",
+      "probe": "stat _jed.py",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 62606,
+      "repo": "agent-attack",
+      "assertion": "wrote _jed.py",
+      "verdict": "BLOCK",
+      "probe": "stat _jed.py",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 62607,
+      "repo": "agent-attack",
+      "assertion": "wrote _jed.py",
+      "verdict": "BLOCK",
+      "probe": "stat _jed.py",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 62629,
+      "repo": "agent-attack",
+      "assertion": "wrote _jed.py",
+      "verdict": "BLOCK",
+      "probe": "stat _jed.py",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 98084,
+      "repo": "mountain-of-helicon-main",
+      "assertion": "wrote config.yaml",
+      "verdict": "BLOCK",
+      "probe": "stat config.yaml",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 86638,
+      "repo": "agent-claims-inbox",
+      "assertion": "wrote docs/plan.md",
+      "verdict": "BLOCK",
+      "probe": "stat docs/plan.md",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 86671,
+      "repo": "agent-claims-inbox",
+      "assertion": "wrote utils.py",
+      "verdict": "BLOCK",
+      "probe": "stat utils.py",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 86677,
+      "repo": "agent-claims-inbox",
+      "assertion": "wrote package.json",
+      "verdict": "BLOCK",
+      "probe": "stat package.json",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 86681,
+      "repo": "agent-claims-inbox",
+      "assertion": "wrote package.json",
+      "verdict": "BLOCK",
+      "probe": "stat package.json",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 145601,
+      "repo": "agent-attack",
+      "assertion": "wrote needs.ts",
+      "verdict": "BLOCK",
+      "probe": "stat needs.ts",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 146070,
+      "repo": "cleared",
+      "assertion": "committed as a9f685e",
+      "verdict": "BLOCK",
+      "probe": "git cat-file -t a9f685e",
+      "evidence": "NOT a commit in this repo, nor in any of the 83 sibling repos checked",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 146288,
+      "repo": "cleared",
+      "assertion": "committed as a0f691e",
+      "verdict": "BLOCK",
+      "probe": "git cat-file -t a0f691e",
+      "evidence": "NOT a commit in this repo, nor in any of the 83 sibling repos checked",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 144372,
+      "repo": "cleared",
+      "assertion": "wrote fika-preferences.md",
+      "verdict": "BLOCK",
+      "probe": "stat fika-preferences.md",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    },
+    {
+      "message_id": 138365,
+      "repo": "helicon",
+      "assertion": "wrote score.py",
+      "verdict": "BLOCK",
+      "probe": "stat score.py",
+      "evidence": "NO SUCH PATH in the repo",
+      "pass": "corrected"
+    }
+  ]
+}

@@ -24,13 +24,8 @@ the working tree, unless a shot says otherwise.
 >    Either redeploy before filming, or do not linger on the `/health` body in shot 5.
 > 2. **The public clone is behind local `main`.** A judge cloning today gets `dd9800b`.
 >    The push is the coordinator's, and it must land before this is filmed.
-> 3. **`surface/fleet-report-page.html` in the repo is the PRE-REWIRE build.** The template
->    `fleet-report.html` now reads `witness-corpus`'s fields and shows RAW beside CORRECTED; the
->    openable page was generated before that and still shows the old single number (hero reads
->    `53`, not `8.1%`). **It renders — 43 rows, receipts work — it is just the wrong version.**
->    Regenerating it is one command once the scan finishes:
->    `witness-corpus --db ~/.trace/trace.db --code-root ~/CODE --json > surface/witness-corpus.json`
->    then re-inline into the template. **Do not film shot 3 off the committed page until this is done.**
+>    *(Resolved: the page was a pre-rewire build for one commit and is now regenerated from the
+>    real `witness-corpus` output — hero reads `8.1%`, 36 rows, receipts open.)*
 
 ---
 
@@ -43,10 +38,29 @@ pip install .            # or: python3 -m gate.corpus_scan
 witness-corpus --db ~/.trace/trace.db --code-root ~/CODE
 ```
 
-**⚠ NOT VERIFIED IN THIS PASS.** The full run takes longer than the window I had; it was still
-executing when this list was written. **Run it once end to end before filming and paste the real
-block here.** The two numbers that must appear on screen are the examined count *and* the corpus
-total, because quoting only the larger one is the defect this tool reports in others.
+```
+What the gate finds in a real transcript corpus
+
+  78,618 messages examined, of 144,306 in the corpus · 83 repos on disk
+  filter: role='assistant' and is_human=0 and text is not null and length(text) > 20
+  52,878 of those were written in a directory that is still a git repo today
+
+  RAW          247 sha claims ·  103 disagree · 41.7%
+  CORRECTED    236 sha claims ·   19 disagree · 8.1%
+
+      11 dropped — shell commands, fenced output, and this repo's own test fixtures
+      73 resolved in a SIBLING repo — the agent was right, the probe was aimed at the wrong repo
+       5 path claims dropped — a code identifier, not a file
+       1 path claims dropped — a hostname, not a repository path
+       1 path claims dropped — an absolute path outside the repository
+
+  The gap between those two lines is the result. Neither is an incidence
+  rate: hand-labelling put extractor precision at 13/40 on prose, so most
+  of what remains above is still citations rather than claims. n=13 is far
+  too small to state a rate, and this tool will not print one.
+```
+
+**Verified 2026-08-27, full run.** Three populations printed, none inferred from another.
 
 ---
 
@@ -54,11 +68,18 @@ total, because quoting only the larger one is the defect this tool reports in ot
 
 **Say:** *"Our first number said agents are wrong 41.7% of the time. That was our probe, not them."*
 
-The same `witness-corpus` output carries both lines. **Both stay on screen together.** The point
-is not the corrected number; it is that the entire gap was ours — a probe aimed at the wrong
-repository, machinery counted as prose, and our own fixtures scored as claims.
+The same `witness-corpus` output carries both lines. **Both stay on screen together.**
 
-**⚠ Depends on shot 1. Paste the real RAW/CORRECTED lines here after the run.**
+```
+  RAW          247 sha claims ·  103 disagree · 41.7%
+  CORRECTED    236 sha claims ·   19 disagree · 8.1%
+```
+
+**The whole gap is ours, and it itemises:** **73** claims were right and probed against the wrong
+repository · **11** were shell commands, fenced output or our own fixtures · **7** were never
+checkable at all — 5 code identifiers, 1 hostname, 1 absolute path. **Verified, full run.**
+
+The point is not 8.1%. It is that a tool which shipped the 41.7% would have been believed.
 
 ---
 
@@ -84,11 +105,7 @@ the probe. **Do not narrate over it — let it sit.**
 The page is self-contained: data is inlined at generation, so it opens from disk with no server.
 *(An earlier draft fetched its JSON and rendered blank from `file://` — caught by rendering it.)*
 
-**⚠ The committed page is the pre-rewire build — see warning 3 at the top.** It renders correctly
-(43 rows, receipts open) but shows the old hero number instead of RAW beside CORRECTED. Regenerate
-before filming.
-
-**Verified: renders at 1440 with 43 rows.** **390px is UNVERIFIED** — headless Chrome clamps its
+**Verified 2026-08-27: renders at 1440, hero `8.1%` with `41.7%` beside it, 36 rows, receipts open.** **390px is UNVERIFIED** — headless Chrome clamps its
 layout viewport to 500px, so a true phone render was never produced. At 500px `scrollWidth ==
 innerWidth`, so there is no overflow. **If you film a phone, check it first.**
 
@@ -200,11 +217,9 @@ submission that a judge cannot catch out.
 
 ## What I could not verify, stated plainly
 
-1. **Shots 1, 2 and 3 all wait on one thing: the full `witness-corpus` run.** It was still
-   executing after twenty minutes when this was written — it probes every message twice and shells
-   out to `git` each time. Commands are correct and the template is wired. **One run unblocks all
-   three shots**, and until it lands shot 3 must be filmed from a regenerated page, not the
-   committed one.
+1. ~~Shots 1, 2 and 3 wait on the corpus run.~~ **Resolved — the full run landed and all three are
+   verified with real output above.** Kept here because the run takes about twenty-five minutes:
+   **do not plan to regenerate this on filming day.**
 2. **390px rendering** — tooling clamps to a 500px viewport. No overflow at 500. Unchecked at 390.
 3. **The break-glass write** — deliberately not pre-run, so the record stays clean for shot 5c.
 4. **A live third-party install** — the workflow and action are verified to exist; the install was not run.
