@@ -44,14 +44,30 @@ python3 -m gate.tonight_cases   # the logged case series: agents confidently wro
 
 ## Google eligibility (3 of 3 mandatory)
 
-| Requirement | Status | Probe |
-|---|---|---|
-| Gemini 3.5+ (API or Vertex) | MET | `python3 contract/eligibility.py` |
-| Google Agent Framework (ADK) | MET | agent **constructed** on `/wedge` |
-| Google Cloud infra | MET | Firestore default store · Cloud Run |
+**3/3 is verified against the live deployment.** Curl the running Cloud Run URL — it reports the
+Firestore store and the constructed ADK agent live, on the project that fills all three slots:
 
 ```bash
-python3 contract/eligibility.py    # exits 0 only at 3/3 — services CALLED, not imported
+curl -s https://fleet-wedge-33kamss2jq-uc.a.run.app/health
+# {"ok":true,"store":"firestore","agent":"google.adk.agents.llm_agent.LlmAgent"}
+```
+
+| Requirement | Verified where | Probe |
+|---|---|---|
+| Gemini 3.5+ (API or Vertex) | live deploy / with creds | Gemini classify verdict returned |
+| Google Agent Framework (ADK) | live deploy / with creds | ADK agent **constructed** on `/wedge` |
+| Google Cloud infra | live deploy / with creds | Firestore default store · Cloud Run |
+
+`contract/eligibility.py` exercises all three on the path a judge runs. **It shows 3/3 only with ADC +
+the `hack-fleet` project (Firestore + Vertex reachable); a cold local run with no GCP creds shows 1/3
+— only ADK — by design.** That is not a bug: the same object-over-claim honesty this tool exists to
+enforce is applied to its own eligibility check. Import is not call, and creds you don't have don't
+count.
+
+```bash
+# With ADC + Firestore + Vertex on the hack-fleet project → 3/3, exit 0:
+python3 contract/eligibility.py    # services CALLED, not imported; 1/3 cold (ADK only), by design
+
 python3 fleet_cli.py wedge         # field of 2 · operator a · VERIFIED-BY-REPO
 python3 fleet_cli.py prove         # A 0 vs B 2 corrective turns → surface/org-proof.html
 ```
