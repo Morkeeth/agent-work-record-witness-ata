@@ -96,7 +96,7 @@ A customer sees a JSON parse error, not "the gate is missing". Vendoring `gate/`
 repo was the only way to make the installed workflow run, and that is what this run did.
 **The gate needs to ship as a published action or a pip package.**
 
-### 2. STILL OPEN · The README has no install section
+### 2. FIXED by T3 · The README had no install section
 
 Measured: **0 mentions of `HOLD_POLICY_URL`, 0 of `secrets.`/`vars.`/"required check"/"branch
 protection".** The Quickstart explains how to run *this* repo, not how to adopt the product. There
@@ -104,9 +104,15 @@ is no documented step for the workflow file, the `HOLD_POLICY_URL` variable, the
 secret, or making the check required. Every value used in this run was read out of the workflow's
 own YAML, which is not a thing a customer should have to do.
 
-`examples/customer-workflow.yml` now carries those four steps in its header comment, so the
-instructions exist — they are just not in the README, which is where someone looks. Re-verified
-after T3's rewrite: still 0 mentions. **`README.md` is T3's; this row stays open until T3 lands it.**
+**Closed by T3, verified at the object.** The README now carries a four-step install: the twelve-line
+workflow with `uses: Morkeeth/hack-fleet-ata@main`, the `HOLD_POLICY_URL` variable and
+`HOLD_API_TOKEN` secret in a table, running your own Gateway, and — the part worth naming — making
+the check binding *last*, in report-only first, with the README refusing to call it a required check
+until the reader actually requires it. It also states the degrade path: with neither variable set the
+probe still runs and still fails on a false claim.
+
+An earlier revision of this receipt said "still 0 mentions" after T3's rewrite. That was measured
+before T3 landed the section and I published it without re-checking. Corrected here.
 
 ### 3. FIXED · The jsonl store duplicated rows instead of updating them
 
@@ -190,11 +196,11 @@ tests/test_gate.py` is still not probed — five filler words including a noun t
 carry. *The gate probes what a report states plainly and says nothing about what it states vaguely.
 It no longer rewards vagueness, but it cannot punish it either.*
 
-### Also stale after R3
+### Also fixed by T3 · the stale `/health` example
 
-`README.md` still shows `/health` returning `"agent":"google.adk.agents.llm_agent.LlmAgent"` as a
-flat string. Since `bd436e5` that field is an object carrying the run receipt. Not edited here —
-`README.md` belongs to another lane.
+`README.md` showed `/health` returning `"agent":"google.adk.agents.llm_agent.LlmAgent"` as a flat
+string; since `bd436e5` that field is an object carrying the run receipt. The flat-string example is
+gone — 0 occurrences at the object.
 
 ---
 
