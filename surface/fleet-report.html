@@ -1,0 +1,162 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Fleet claim report — Agent Work Record Witness</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f1419; --panel:#171d24; --ink:#e6edf2; --muted:#8b9aab; --line:#2a3540;
+  --hold:#d64545; --clear:#3d8b6e;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --sans:"IBM Plex Sans","Source Sans 3",system-ui,sans-serif;
+}
+*{box-sizing:border-box;min-width:0}
+html,body{max-width:100%;overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:300;
+     line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:56px 24px 96px}
+
+header{border-bottom:1px solid var(--line);padding-bottom:28px;margin-bottom:44px}
+h1{font-size:15px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;margin:0 0 6px;color:var(--muted)}
+.sub{font-size:19px;font-weight:300;margin:0;max-width:60ch;color:var(--ink)}
+.src{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:16px;overflow-wrap:anywhere}
+
+/* the count is the hero: one number, mono, coloured by meaning */
+.headline{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;margin:0 0 8px}
+.big{font-family:var(--mono);font-size:64px;font-weight:500;line-height:1;color:var(--hold);
+     letter-spacing:-.03em}
+.big.none{color:var(--clear)}
+.big-label{font-size:17px;font-weight:300;color:var(--ink);max-width:46ch}
+.raw{color:var(--muted);font-size:15px}
+.raw b{color:var(--ink);font-weight:600}
+.caveat{font-size:14px;color:var(--muted);max-width:66ch;margin:18px 0 0;
+        border-left:2px solid var(--line);padding-left:14px}
+
+.tally{display:flex;gap:36px;flex-wrap:wrap;margin:40px 0 8px;
+       border-top:1px solid var(--line);padding-top:24px}
+.tally div{min-width:104px}
+.tally .n{font-family:var(--mono);font-size:26px;font-weight:500;display:block}
+.tally .k{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+
+h2{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);
+   font-weight:600;margin:56px 0 4px}
+.h2note{font-size:14px;color:var(--muted);margin:0 0 18px;max-width:70ch}
+
+/* ── THE DEVICE ── every verdict opens to the command that produced it ── */
+.claim{border-top:1px solid var(--line)}
+.claim:last-child{border-bottom:1px solid var(--line)}
+.claim summary{list-style:none;cursor:pointer;display:grid;
+  grid-template-columns:92px 1fr auto;gap:16px;align-items:baseline;padding:15px 2px}
+.claim summary::-webkit-details-marker{display:none}
+.claim summary:hover{background:var(--panel)}
+.v{font-family:var(--mono);font-size:12px;font-weight:500;letter-spacing:.08em}
+.v.BLOCK{color:var(--hold)} .v.UNVERIFIABLE,.v.HOLD{color:var(--muted)}
+.assertion{font-size:15px;color:var(--ink);overflow-wrap:anywhere}
+.repo{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.times{color:var(--ink)}
+.receipt{background:var(--panel);border-left:2px solid var(--line);
+  margin:0 0 16px;padding:16px 18px;font-family:var(--mono);font-size:13px;overflow-x:auto}
+.claim[open] .receipt{border-left-color:var(--hold)}
+.claim[open] summary{background:var(--panel)}
+.receipt .cmd{color:var(--ink);white-space:pre}
+.receipt .cmd::before{content:"$ ";color:var(--muted)}
+.receipt .out{color:var(--muted);white-space:pre-wrap;margin-top:7px}
+.receipt .out::before{content:"→ ";color:var(--line)}
+.hint{font-size:12px;color:var(--muted);margin:0 0 14px}
+
+footer{margin-top:64px;border-top:1px solid var(--line);padding-top:22px;
+       font-size:13px;color:var(--muted);max-width:74ch}
+code{font-family:var(--mono);font-size:.92em}
+@media(max-width:640px){
+  .wrap{padding:34px 16px 72px}
+  .big{font-size:54px}
+  .claim summary{grid-template-columns:1fr;gap:5px}
+  .sub{font-size:17px}
+  .receipt{font-size:12px;padding:13px 14px}
+  .tally{gap:24px}
+}
+</style>
+<div class="wrap">
+<header>
+  <h1>Fleet claim report</h1>
+  <p class="sub">What an agent fleet said it did, checked against what the repositories actually contain.</p>
+  <p class="src" id="src">loading…</p>
+</header>
+
+<div class="headline">
+  <span class="big" id="big">–</span>
+  <span class="big-label" id="biglabel">claims the repository disagreed with</span>
+</div>
+<p class="caveat" id="caveat"></p>
+
+<div class="tally" id="tally"></div>
+
+<h2>The claims</h2>
+<p class="h2note" id="listnote"></p>
+<p class="hint">Open any row to see the command that produced the verdict, and what it returned.</p>
+<div id="claims"></div>
+
+<footer id="foot"></footer>
+</div>
+<script>
+/*__DATA__*/
+const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+// Data is INLINED at generation time, not fetched. A judge opens this file from disk with
+// no server, and fetch() on file:// is blocked by every browser — a report that needs a
+// web server is a report nobody opens.
+const d = window.__FLEET_REPORT__;
+(function render(){
+  const c = d.counts;
+  document.getElementById('src').textContent =
+    `${d.examined_messages.toLocaleString()} messages examined, of ${d.corpus_total_messages.toLocaleString()} in the corpus · `
+  + `${d.messages_in_a_live_repo.toLocaleString()} written in a directory that is still a git repo · ${d.repos_on_disk} repos on disk`;
+  const pct = (n, dd) => dd ? (100*n/dd).toFixed(1) + '%' : 'n/a';
+  const big = document.getElementById('big');
+  big.textContent = pct(d.corrected_disagree, d.corrected_sha_claims);
+  document.getElementById('biglabel').innerHTML =
+    `of commit claims disagreed with the repository, after the probe was corrected.<br>` +
+    `<span class="raw">The same corpus read <b>${pct(d.raw_disagree, d.raw_sha_claims)}</b> before we fixed our own aim. ` +
+    `The gap is the result, and all of it was ours.</span>`;
+  document.getElementById('caveat').textContent = d.precision_note.statement;
+
+  document.getElementById('tally').innerHTML = [
+    ['raw sha claims', d.raw_sha_claims], ['raw disagree', d.raw_disagree],
+    ['corrected claims', d.corrected_sha_claims], ['corrected disagree', d.corrected_disagree],
+    ['right, wrong repo', d.resolved_in_a_sibling_repo],
+    ['dropped as machinery', d.dropped_as_machinery_or_fixture],
+    ['never checkable', d.path_claims_not_checkable],
+  ].map(([k,n]) => `<div><span class="n">${(n||0).toLocaleString()}</span><span class="k">${k}</span></div>`).join('');
+
+  // Dedupe for DISPLAY only, never for counting. The same assertion probed in four
+  // separate messages is one fact about the repository and four rows of padding; the
+  // occurrence count says it better. corrected_disagree above is the untouched total.
+  const seen = new Map();
+  for (const x of d.claims) {
+    const k = x.repo + '\u0000' + x.assertion + '\u0000' + x.verdict;
+    if (seen.has(k)) seen.get(k).n++; else seen.set(k, Object.assign({n:1}, x));
+  }
+  const rows = [...seen.values()];
+  const collapsed = d.claims.length - rows.length;
+  document.getElementById('listnote').textContent = d.claims_listing_rule
+    + (collapsed > 0 ? ` ${collapsed} repeat rows are folded into occurrence counts; the totals above are not folded.` : '');
+  document.getElementById('claims').innerHTML = rows.map(x => `
+    <details class="claim">
+      <summary>
+        <span class="v ${esc(x.verdict)}">${esc(x.verdict)}</span>
+        <span class="assertion">${esc(x.assertion)}</span>
+        <span class="repo">${x.n > 1 ? `<span class="times">seen ${x.n}\u00d7</span>  ` : ''}${esc(x.repo)}</span>
+      </summary>
+      <div class="receipt">
+        <div class="cmd">${esc(x.probe)}</div>
+        <div class="out">${esc(x.evidence)}</div>
+      </div>
+    </details>`).join('');
+
+  document.getElementById('foot').innerHTML =
+    `Generated by <code>python3 gate/corpus_report.py --db &lt;your.db&gt; --code-root &lt;dir&gt;</code>. ` +
+    `Every probe string above is the command the gate ran at scan time; nothing is re-run when this page loads, ` +
+    `and no text from a transcript is ever executed. Counts are upper bounds.`;
+})();
+</script>

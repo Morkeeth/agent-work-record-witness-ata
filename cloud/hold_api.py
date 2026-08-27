@@ -145,7 +145,7 @@ def make_clearance_record(
     return {
         "id": rid,
         "kind": "clearance",
-        "product": "HOLD",
+        "product": "THE AGENT WORK RECORD WITNESS",
         "stored_at": _now(),
         "decision": evaluation["decision"],
         "gate": evaluation["gate"],
@@ -175,7 +175,7 @@ def make_exception_record(
     return {
         "id": f"E-{uuid.uuid4().hex[:10]}",
         "kind": "exception",
-        "product": "HOLD",
+        "product": "THE AGENT WORK RECORD WITNESS",
         "stored_at": _now(),
         "clearance_id": clearance_id,
         "reason": reason.strip(),

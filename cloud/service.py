@@ -169,7 +169,7 @@ def run_clearance(body: dict) -> dict:
         "ok": recorded,
         "recorded": recorded,
         "store_error": record.get("store_error"),
-        "product": "HOLD",
+        "product": "THE AGENT WORK RECORD WITNESS",
         "clearance": record,
         "ci_should_fail": bool(enforced and evaluation["decision"] == "HOLD" and evaluation["gate"] == "BLOCK"),
         "ci_should_warn": bool(evaluation["gate"] == "HOLD"),
@@ -229,7 +229,7 @@ class Handler(BaseHTTPRequestHandler):
         self._send(401, {
             "ok": False,
             "error": "HOLD_API_TOKEN required — set header X-HOLD-Token or Authorization: Bearer",
-            "product": "HOLD",
+            "product": "THE AGENT WORK RECORD WITNESS",
         })
         return False
 
@@ -261,8 +261,8 @@ class Handler(BaseHTTPRequestHandler):
         if path in ("/", "/health", "/ready", "/healthz"):
             info = {
                 "ok": True,
-                "service": "hold-gateway",
-                "product": "HOLD",
+                "service": "agent-work-record-witness-gateway",
+                "product": "THE AGENT WORK RECORD WITNESS",
                 "route": path,
                 "console": "/hold/",
                 "auth_required": bool(_api_token()),
@@ -294,7 +294,7 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/config":
             return self._send(200, {
                 "ok": True,
-                "product": "HOLD",
+                "product": "THE AGENT WORK RECORD WITNESS",
                 "auth_required": bool(_api_token()),
                 "demo_seed_enabled": _demo_seed_enabled(),
                 "clearance_url": "/clearance",
@@ -316,7 +316,7 @@ class Handler(BaseHTTPRequestHandler):
                 rows = filter_queue(_store().all())
                 return self._send(200, {
                     "ok": True,
-                    "product": "HOLD",
+                    "product": "THE AGENT WORK RECORD WITNESS",
                     "calm": len(rows) == 0,
                     "count": len(rows),
                     "holds": rows,
@@ -337,7 +337,7 @@ class Handler(BaseHTTPRequestHandler):
                 # Spec metric: clears / (clears + holds) ignoring prove spam in numerator story
                 return self._send(200, {
                     "ok": True,
-                    "product": "HOLD",
+                    "product": "THE AGENT WORK RECORD WITNESS",
                     "events": rows[:200],
                     "pct_cleared_without_hold": pct,
                     "counts": {
@@ -365,7 +365,7 @@ class Handler(BaseHTTPRequestHandler):
                 if (qs.get("include_prove") or [""])[0] in ("1", "true"):
                     export_rows = rows
                 payload = {
-                    "product": "HOLD",
+                    "product": "THE AGENT WORK RECORD WITNESS",
                     "exported_at": __import__("datetime").datetime.now(
                         __import__("datetime").timezone.utc
                     ).isoformat(timespec="seconds"),
@@ -445,7 +445,7 @@ class Handler(BaseHTTPRequestHandler):
                     rec["store_id"] = sid
                 except Exception as e:
                     rec["store_error"] = f"{type(e).__name__}: {e}"
-                return self._send(201, {"ok": True, "exception": rec, "product": "HOLD"})
+                return self._send(201, {"ok": True, "exception": rec, "product": "THE AGENT WORK RECORD WITNESS"})
 
             if path == "/policy":
                 if not self._require_token():
@@ -458,7 +458,7 @@ class Handler(BaseHTTPRequestHandler):
                 if p.get("mode") not in ("report-only", "enforce"):
                     return self._send(400, {"error": "mode must be report-only|enforce"})
                 _POLICY = p
-                row = {"kind": "policy", "product": "HOLD", **p}
+                row = {"kind": "policy", "product": "THE AGENT WORK RECORD WITNESS", **p}
                 try:
                     _store().put(row)
                 except Exception as e:
@@ -470,7 +470,7 @@ class Handler(BaseHTTPRequestHandler):
                     return self._send(403, {
                         "ok": False,
                         "error": "demo seed disabled — set HOLD_DEMO_MODE=1 to enable; film should use a real agent PR",
-                        "product": "HOLD",
+                        "product": "THE AGENT WORK RECORD WITNESS",
                     })
                 if not self._require_token():
                     return
@@ -546,7 +546,7 @@ class Handler(BaseHTTPRequestHandler):
                     try:
                         _store().put({
                             "kind": "prove",
-                            "product": "HOLD",
+                            "product": "THE AGENT WORK RECORD WITNESS",
                             "delta": out.get("delta"),
                             "vc": out.get("vc_one_liner"),
                             "org_claim": "UNMEASURED_FOR_ORG_CLAIM",
