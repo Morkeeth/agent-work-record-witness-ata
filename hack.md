@@ -35,7 +35,7 @@ So, settled and not to be re-litigated:
 
 ---
 
-## 🏷️ BRANDING  ⚠️ ONE OPEN QUESTION, BLOCKING THE FILM
+## 🏷️ BRANDING  ✅ RULED 2026-08-27 — **THE AGENT WORK RECORD WITNESS**
 
 Five names are live for one product: **HOLD · Witness · Transcripto · Claims Inbox · hack-fleet-ata**.
 That is the naming version of the doc sprawl, and a judge meets it on the repo, the console
@@ -51,7 +51,10 @@ and the pitch in the same four minutes.
 | `agent-claims-inbox` | disclosure only | Per SUBMISSION-PACK: *"disclosure, not a second entry."* Not a product. **It has no git remote at all.** |
 
 - [x] ~~is the product a gate or a record~~ **RULED: RECORD** (Oscar, 2026-08-27)
-- [ ] **[NEEDS CLARIFICATION: what is it CALLED?]** The pitch is ruled; the name is not. A record wants a noun. (phase: BUILD, **blocking the film**)
+- [x] ~~what is it called~~ **RULED: THE AGENT WORK RECORD WITNESS** (Oscar, 2026-08-27, verbatim:
+  *"NO THE AGENT WORK RECORD WITNESS IS GREAT! i love names like research papers"*). Long and
+  descriptive on purpose; he rejected one-word brands twice. **Hold** survives only as the name of
+  the queue inside the product. This closes the second half of Phase 3, open since Aug 22.
 
 ---
 
@@ -236,7 +239,7 @@ ADC; cold is 1 of 3) · any org-lift claim at n=2 · adjacency as "accurate."
 
 ## 📋 OPEN QUESTIONS
 
-- [ ] **[NEEDS CLARIFICATION: is the product WITNESS?]** blocking the film
+- [x] ~~is the product WITNESS~~ **RULED: THE AGENT WORK RECORD WITNESS**
 - [ ] **[NEEDS CLARIFICATION: repo requiredness — GitHub Pro, public, or advisory?]** blocking Slice 2
 - [ ] [NEEDS CLARIFICATION: does `agent-claims-inbox` get a remote, or fold in?] non-blocking
 
