@@ -3,6 +3,8 @@
 **Required submission artifact.** All Things Agentic · Fortified Enterprise Fleet.
 Product: **THE AGENT WORK RECORD WITNESS**. Canonical doc: [`hack.md`](../hack.md).
 
+> **Run your agents. Check the math.**
+
 The product is **the record**: who claimed what, whether the object agreed, whether the work
 survived, and the session behind each claim. **The gate is a feature inside it** · the moment a
 claim gets caught, and the reason a record accumulates at all. The gate is how you install it.
@@ -80,6 +82,46 @@ Say the cold number on camera.
 
 **Smoke note:** use `GET /health` or `GET /`. GFE returns HTML 404 for `/healthz`. The video
 must show the `*.run.app` URL.
+
+## The two claims that stopped being name-checks tonight
+
+Both were true-looking and false, and both were fixed at the object rather than reworded.
+
+**Gemini was never called inside the container.** The task-class classifier fell back to a
+substring heuristic whenever no key file was present, which is always, because the key lives
+outside the repo and the Dockerfile mounts no secret. Graded against this repo's own control
+set, that fallback was **row-for-row identical to `classify_always_same`**, which
+`contract/task_class.py:81` declares to be **the negative control**: a stub carrying zero
+information. It scored **4 of 8** and therefore appeared to beat the frozen **3 of 8** baseline,
+**purely by defaulting**. The benchmark was being won by a stub the repo had already labelled
+meaningless.
+
+Real Vertex now scores **6 of 8**, passes both false-positive traps, and every failure mode
+collapses to `UNMEASURED` rather than a verdict. `UNMEASURED` is never cached, because an
+unreachable model is a condition of the environment, not a fact about two prompts.
+
+**The ADK agent was constructed and never invoked**, with `type()` printed on `/health` as
+evidence. It now runs through `google.adk.runners.Runner`: `POST /agent/run` returns **7 events
+and 3 real tool calls**, and `/health` carries the run receipt instead of a class name. A
+clearance record now stores `agent_class` alongside `agent_invoked: false`, so no reader can
+mistake an import for a model having reasoned about that clearance.
+
+**Verified red as well as green.** With credentials removed, `/agent/run` returns 502,
+`invoked: false`, and no tool calls. A receipt that cannot fail is not a receipt.
+
+## The seven enterprise surfaces, measured before tonight
+
+Fortified Enterprise Fleet names seven. Measured at the object: **0 present, 3 partial, 4 absent.**
+
+| Surface | State | Note |
+|---|---|---|
+| Agent Gateway | partial | strongest surface: enforce vs report-only genuinely changes behaviour |
+| Agent Observability | partial | `/audit` and `/audit/export` real and Firestore-backed; no OpenTelemetry |
+| Agent Identity | partial | real token gate and break-glass role; one shared token is not per-agent identity |
+| Agent Runtime | absent, now partial | the ADK Runner landed tonight |
+| Memory Bank | absent | the session is carried as provenance; nothing is retrieved and fed back |
+| Agent Registry | absent | `/prove` publishes a prompt, not an agent. It would be a **skill** registry and we would say skill. |
+| Model Armor | absent | an honest adjacent design exists, transcript text is never executed, but that is a trust boundary and not a content filter. **Never call it Model Armor.** |
 
 ## Live vs roadmap
 
