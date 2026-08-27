@@ -1,4 +1,4 @@
-# User journey — one person, one Monday
+# User journey: one person, one Monday
 
 *Rewritten 2026-08-27. The previous version of this file was a shot list: every row had a
 "Video" column, and its steps described prompt propagation, which is not the product being
@@ -36,7 +36,7 @@ of them can tell her whether a claim an agent made was true.**
 
 ---
 
-## Monday, week one — she installs it and nothing happens
+## Monday, week one. She installs it and nothing happens
 
 She adds a YAML file to one repo. Five minutes. It is a required check on pull requests
 labelled `agent`.
@@ -51,7 +51,7 @@ the repository. `deadbee` is not a commit. That path does not exist. **The merge
 The engineer sees a red check with two lines under it. They fix it in four minutes and never
 think about it again. **That is their entire relationship with this product, forever.**
 
-## Monday, week four — she opens it for the first time
+## Monday, week four. She opens it for the first time
 
 Four weeks of pull requests have gone through. She opens the console and sees something no
 tool she has ever bought could show her:
@@ -66,7 +66,7 @@ produced it. She reads what actually happened before the sentence was written.
 
 **No CI product can do that, and the reason is structural: none of them has the transcript.**
 
-## Monday, week twelve — the question gets an answer
+## Monday, week twelve. The question gets an answer
 
 Her CTO asks again. She exports the record.
 
