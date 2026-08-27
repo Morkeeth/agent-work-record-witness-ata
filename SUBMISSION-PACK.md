@@ -176,10 +176,12 @@ Measured 2026-08-27 by probing the live service, not quoted from a note.
 |---|---|---|
 | The record is empty of real work | 4 clearances, **all four staged by us**; `GET /audit` → **`clear: 0`** | "Nothing has ever passed the gate, because nothing real has ever gone through it." |
 | The check has never fired on a real PR | zero | roadmap — one real PR moves it |
-| Endpoint disagreement | `/audit` reports 30 events, `/audit/export` returns 6 | open defect |
+| Endpoint disagreement | `/audit` returns 31 events, `/audit/export` returns 6 | open defect |
 | Deployed revision behind repo | anon `POST /prove` → **201** live, gated in `cloud/service.py` | open defect, not a claim |
-| Gemini not called in the container | ADK agent constructed and visible in `/health`, not invoked on the request path | roadmap |
-| Non-author installs | **zero** | roadmap |
+| Agent genuinely invoked | `GET /audit` carries an `agent_run`: `invoked: true`, `google.adk.runners.Runner`, `gemini-3.5-flash-lite`, 3 tool calls | **claim this — it is live and recorded** |
+| `/health` still advertises the old flat `agent` string | receipt shape (`constructed`/`invoked`/`last_run`) is in `cloud/service.py`, not deployed | open defect |
+| No stranger can install it | composite action fixed the vendored-path defect; the repo is **private**, so `uses: Morkeeth/hack-fleet-ata@main` does not resolve externally | **blocker — a decision, not a code fix** |
+| Non-author installs | **zero** | roadmap. The 2026-08-27 foreign-repo run does not count: we wrote the test organisation and scripted its PRs. It proves the chain, not adoption. |
 | Org lift | field of 2 → `UNMEASURED_FOR_ORG_CLAIM` | never claim a population effect |
 
 `tests/test_auth_gate.sh` is green **against a local server**. It is not a statement about the

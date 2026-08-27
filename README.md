@@ -116,8 +116,17 @@ Firestore as the live store, and the ADK agent constructed:
 
 ```bash
 curl -s https://fleet-wedge-33kamss2jq-uc.a.run.app/health
-# {"ok":true,"store":"firestore","agent":"google.adk.agents.llm_agent.LlmAgent", ...}
+# {"ok":true,"store":"firestore","agent":{"class":"...LlmAgent","constructed":true,
+#  "invoked":true,"last_run":{...}}, ...}
 ```
+
+**Read the `agent` field carefully — it is the honest one.** Until `bd436e5` this service reported
+`"agent": "google.adk.agents.llm_agent.LlmAgent"`, a flat string produced by an *import*, while no
+model had reasoned about anything. It now reports a run receipt: `constructed`, `invoked`, and the
+`last_run` itself. A real run is `POST /agent/run` and it leaves a record.
+
+⚠️ **The deployed revision is behind the repo on this.** Curling the live URL on 2026-08-27 still
+returned the flat string. The receipt shape is in `cloud/service.py` and is not deployed yet.
 
 `/health` does **not** evidence the Gemini requirement — no Gemini call happens on that path, and
 today none happens inside the container at all. Requirement 1 is exercised by
@@ -129,6 +138,69 @@ gcloud auth application-default login
 gcloud config set project hack-fleet
 python3 contract/eligibility.py
 ```
+
+## Install it in your own repo
+
+Everything above is how you run *this* repo. This is how a customer adopts the product.
+Nothing is vendored — the probe ships inside the action.
+
+> ⚠️ **One blocker, and it is not a code fix.** This repo is **private**. GitHub cannot resolve
+> `uses: Morkeeth/hack-fleet-ata@main` from outside, so no external customer can install the
+> workflow below until the repo is public or the action is published to the Marketplace. The path
+> itself works — it is dogfooded by this repo's own `.github/workflows/outcome-gate.yml` on every
+> agent PR — but adoption by a stranger is gated on that one decision.
+
+**1 · Add the workflow.** Copy [`examples/customer-workflow.yml`](examples/customer-workflow.yml)
+to `.github/workflows/agent-clearance.yml` in your repo. Twelve lines:
+
+```yaml
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0                    # the SHA probe needs history, not a shallow tip
+
+      - uses: Morkeeth/hack-fleet-ata@main
+        with:
+          pr-body:    ${{ github.event.pull_request.body }}
+          policy-url: ${{ vars.HOLD_POLICY_URL }}
+          api-token:  ${{ secrets.HOLD_API_TOKEN }}
+          pr-number:  ${{ github.event.pull_request.number }}
+          repo:       ${{ github.repository }}
+```
+
+It scopes itself to agent work — PRs labelled `agent`, or authored by a login containing `[bot]`.
+Human pull requests are never touched. Widen or narrow that `if:` to match how your org labels
+agent PRs.
+
+**2 · Point it at a Gateway.** Repository → Settings → Secrets and variables → Actions.
+
+| Kind | Name | Value |
+|---|---|---|
+| **Variable** | `HOLD_POLICY_URL` | your Gateway base URL, e.g. `https://<your-service>.run.app` |
+| **Secret** | `HOLD_API_TOKEN` | the token that Gateway was deployed with |
+
+**Both are optional, and they degrade honestly.** With neither, the probe still runs and the check
+still fails on a false claim — you get the gate, and nothing accumulates. If the gate cannot run at
+all, the action fails the check with *"Witness gate did not run — this is a broken install, not a
+clean PR"* rather than passing you green on nothing.
+
+**3 · Run your own Gateway.** `./scripts/deploy_cloud_run.sh` deploys the service; set
+`HOLD_API_TOKEN` in its environment to the same value as the secret above.
+
+**4 · Make it binding — optional, and this is the honest order.** Start in report-only
+(`POST /policy {"mode": "report-only"}`) and watch the queue for a week. Only then Settings →
+Branches → **Require status checks to pass** → select **`verify-claims`**, and switch to
+`{"mode": "enforce"}`. Until you do that the check is advisory, and neither the repo nor this
+README will call it a required check.
+
+**What you see on the first held claim.** An agent opens a PR whose body says it committed
+`deadbee` and wrote `docs/auth-migration.md`. `verify-claims` goes red with the probe output —
+`git cat-file -t deadbee` → not a commit; `stat` → no such path. A row appears in your Hold queue
+at `/hold/` carrying the claim, the probe, the evidence, and the session that produced it, recovered
+from a `claude.ai/code/session_...` URL or a `Claude-Session:` line in the PR body. If neither is
+present the decision is recorded as untraceable and the CI log says so — **no session id is ever
+invented.** Nobody has to read the PR body to know the claim was false. If you must ship anyway,
+break-glass takes a written reason and records it; auditors pull the history from
+`GET /audit/export`.
 
 ## Architecture
 
@@ -157,13 +229,20 @@ These are probes run today, not numbers quoted from a note.
   (`demo-seed` ×2, `api`, `eyes-probe`). `GET /audit` reports `clear: 0` — **nothing has ever
   passed the gate, because nothing real has ever gone through it.**
 - **The check has never fired on a real pull request.**
-- **`GET /audit` reports 30 events; `GET /audit/export` returns 6.** Two judge-facing endpoints
+- **`GET /audit` returns 31 events; `GET /audit/export` returns 6.** Two judge-facing endpoints
   disagree about how many events exist. Open defect.
+- **No stranger can install it yet, and the reason is not code.** The composite action fixed the
+  vendored-path defect, but this repo is **private**, so `uses: Morkeeth/hack-fleet-ata@main` does
+  not resolve for anyone outside. Adoption is gated on making the repo public or publishing the
+  action.
 - **The deployed revision is behind the repo on one route.** Anonymous `POST /prove` returns
   **201** against the live service; it is gated in `cloud/service.py`. `tests/test_auth_gate.sh`
   is green — against a local server. A green local test is not a statement about production.
-- **The ADK agent is constructed, not invoked.** It is visible in `/health`; the Gemini call does
-  not happen inside the container on the request path today.
+- **The agent is now genuinely invoked, and the record proves it.** `GET /audit` carries an
+  `agent_run` record: `invoked: true`, `framework: google.adk.runners.Runner`, model
+  `gemini-3.5-flash-lite`, three tool calls, `app_name: agent-work-record-witness`. This is the
+  strongest thing in the repo and it is live. What is *not* live is the `/health` receipt shape
+  that reports it — see the caveat above.
 - Demo field size is **2** fixtures — enough for the mechanism; org-population claims need **n≥3**
   (`org_claim: UNMEASURED_FOR_ORG_CLAIM`).
 - Classifier C1 can stay red — do not seal "8/8" (`scripts/variance_appendix.py`).
@@ -175,7 +254,9 @@ These are probes run today, not numbers quoted from a note.
   intact; the real cause is that no Gemini call was possible. Separately,
   `contract/gemini_impl.py` calls `_key()` outside its try block, so the key path can raise an
   uncaught `FileNotFoundError`. Both open.
-- **Installs by a person who is not the author: zero.**
+- **Installs by a person who is not the author: zero.** An end-to-end run against a foreign repo
+  was completed on 2026-08-27, and it does not change this number: we wrote the test organisation
+  and scripted its pull requests. What that run proves is the chain, not adoption.
 
 ## License
 
