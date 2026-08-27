@@ -24,6 +24,13 @@ the working tree, unless a shot says otherwise.
 >    Either redeploy before filming, or do not linger on the `/health` body in shot 5.
 > 2. **The public clone is behind local `main`.** A judge cloning today gets `dd9800b`.
 >    The push is the coordinator's, and it must land before this is filmed.
+> 3. **`surface/fleet-report-page.html` in the repo is the PRE-REWIRE build.** The template
+>    `fleet-report.html` now reads `witness-corpus`'s fields and shows RAW beside CORRECTED; the
+>    openable page was generated before that and still shows the old single number (hero reads
+>    `53`, not `8.1%`). **It renders — 43 rows, receipts work — it is just the wrong version.**
+>    Regenerating it is one command once the scan finishes:
+>    `witness-corpus --db ~/.trace/trace.db --code-root ~/CODE --json > surface/witness-corpus.json`
+>    then re-inline into the template. **Do not film shot 3 off the committed page until this is done.**
 
 ---
 
@@ -76,6 +83,10 @@ the probe. **Do not narrate over it — let it sit.**
 
 The page is self-contained: data is inlined at generation, so it opens from disk with no server.
 *(An earlier draft fetched its JSON and rendered blank from `file://` — caught by rendering it.)*
+
+**⚠ The committed page is the pre-rewire build — see warning 3 at the top.** It renders correctly
+(43 rows, receipts open) but shows the old hero number instead of RAW beside CORRECTED. Regenerate
+before filming.
 
 **Verified: renders at 1440 with 43 rows.** **390px is UNVERIFIED** — headless Chrome clamps its
 layout viewport to 500px, so a true phone render was never produced. At 500px `scrollWidth ==
@@ -189,8 +200,11 @@ submission that a judge cannot catch out.
 
 ## What I could not verify, stated plainly
 
-1. **Shots 1 and 2** — the full `witness-corpus` run did not finish inside this pass. Commands are
-   correct; the numbers must be pasted from a real run before filming.
+1. **Shots 1, 2 and 3 all wait on one thing: the full `witness-corpus` run.** It was still
+   executing after twenty minutes when this was written — it probes every message twice and shells
+   out to `git` each time. Commands are correct and the template is wired. **One run unblocks all
+   three shots**, and until it lands shot 3 must be filmed from a regenerated page, not the
+   committed one.
 2. **390px rendering** — tooling clamps to a 500px viewport. No overflow at 500. Unchecked at 390.
 3. **The break-glass write** — deliberately not pre-run, so the record stays clean for shot 5c.
 4. **A live third-party install** — the workflow and action are verified to exist; the install was not run.
