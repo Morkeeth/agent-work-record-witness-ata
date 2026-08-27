@@ -25,11 +25,45 @@ on this machine has.
 import argparse
 import json
 import os
+import re
 import sqlite3
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from gate.outcome_gate import check_report  # noqa: E402
+
+
+# A claim whose target was never inside a repository is not a finding: the probe is
+# correct and the claim was never checkable. Proposed by another lane, verified here
+# against the real rows before wiring -- 7 drops of 33, every one read by hand.
+# Dropped rows are COUNTED WITH THEIR REASON and never silently deleted. A filter
+# that quietly shrinks the finding list is the flattering version, and the refusal
+# is the product.
+_HOST = re.compile(r"^[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.(com|org|net|io|dev|ai|co|sh|app)(/|$)")
+_ABS = ("/tmp", "/var", "/private", "/Users", "/home", "~")
+# A dotted token with no path separator and an extension nobody ships is an
+# identifier -- a db column `task_runs.run_id`, an attribute `oracle.signing.digest`,
+# a method call `_INDEX_OK.pop`. Kept narrow on purpose: over-filtering hides real
+# findings, which is the worse failure.
+_CODEISH = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)+$")
+_REAL_EXT = {"md", "py", "ts", "js", "tsx", "json", "yml", "yaml", "sql", "txt",
+             "html", "css", "sh", "toml", "cfg", "ini", "lock", "rs", "go", "java",
+             "rb", "xml", "csv", "jsonl"}
+
+
+def not_checkable(target: str):
+    """A reason string when this path claim can never be checked, else None."""
+    t = (target or "").strip().strip("`\"'")
+    if "://" in t or t.startswith("www."):
+        return "a URL, not a repository path"
+    if _HOST.match(t):
+        return "a hostname, not a repository path"
+    if t.startswith(_ABS) or os.path.isabs(t):
+        return "an absolute path outside the repository"
+    if "/" not in t and _CODEISH.match(t):
+        if t.rsplit(".", 1)[-1].lower() not in _REAL_EXT:
+            return "a code identifier, not a file"
+    return None
 
 
 def git_repos(code_root: str) -> list:
@@ -65,6 +99,7 @@ def scan(db_path: str, code_root: str, limit: int | None = None) -> dict:
     # one, and the receipt is the whole point -- a number you can click into
     # `git cat-file -t deadbee -> NOT a commit in this repo`.
     claims = []
+    not_checkable_counts = {}
 
     for _mid, cwd, text in rows:
         if not cwd:
@@ -86,6 +121,20 @@ def scan(db_path: str, code_root: str, limit: int | None = None) -> dict:
         # CORRECTED: machinery stripped, fixtures excluded, siblings consulted.
         for f in check_report(text, cwd, sibling_repos=siblings,
                               exclude_fixtures=True):
+            if f.assertion.startswith("wrote ") and f.verdict == "BLOCK":
+                reason = not_checkable(f.assertion[len("wrote "):])
+                if reason:
+                    not_checkable_counts[reason] = not_checkable_counts.get(reason, 0) + 1
+                    continue
+                claims.append({
+                    "message_id": _mid,
+                    "repo": os.path.basename(cwd.rstrip("/")),
+                    "assertion": f.assertion,
+                    "verdict": f.verdict,
+                    "probe": f.probe,
+                    "evidence": f.evidence,
+                    "pass": "corrected",
+                })
             if not f.assertion.startswith("committed as"):
                 continue
             fixed_sha += 1
@@ -123,7 +172,10 @@ def scan(db_path: str, code_root: str, limit: int | None = None) -> dict:
         "dropped_as_machinery_or_fixture": skipped_machinery,
         "claims_pass": "corrected",
         "claims_listed": len(claims),
-        "claims_not_listed": max(0, fixed_wrong - len(claims)),
+        "path_claims_not_checkable": sum(not_checkable_counts.values()),
+        "path_claims_not_checkable_by_reason": not_checkable_counts,
+        "claims_not_listed": max(0, fixed_wrong - len([c for c in claims
+                                                       if c["assertion"].startswith("committed as")])),
         "claims_listing_rule": ("BLOCK rows from the CORRECTED pass only; PASS rows "
                                 "and every RAW-pass row are counted but not listed"),
         "claims": claims,
@@ -150,6 +202,8 @@ def render(r: dict) -> str:
              f"output, and this repo's own test fixtures")
     L.append(f"    {r['resolved_in_a_sibling_repo']:>4} resolved in a SIBLING repo — the agent "
              f"was right, the probe was aimed at the wrong repo")
+    for reason, n in sorted(r.get("path_claims_not_checkable_by_reason", {}).items()):
+        L.append(f"    {n:>4} path claims dropped — {reason}")
     L.append("")
     L.append("  The gap between those two lines is the result. Neither is an incidence")
     L.append("  rate: hand-labelling put extractor precision at 13/40 on prose, so most")

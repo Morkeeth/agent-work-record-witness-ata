@@ -23,25 +23,44 @@ $ python3 gate/corpus_scan.py --db ~/.trace/trace.db --code-root ~/CODE
   52,878 of those were written in a directory that is still a git repo today
 
   RAW          247 sha claims ·  103 disagree · 41.7%
-  CORRECTED    237 sha claims ·   20 disagree · 8.4%
+  CORRECTED    236 sha claims ·   19 disagree · 8.1%
 
-      10 dropped — shell commands, fenced output, and this repo's own test fixtures
+      11 dropped — shell commands, fenced output, and this repo's own test fixtures
       73 resolved in a SIBLING repo — the agent was right, the probe was aimed at the wrong repo
+       5 path claims dropped — a code identifier, not a file
+       1 path claims dropped — a hostname, not a repository path
+       1 path claims dropped — an absolute path outside the repository
 ```
 
-**41.7% → 8.4%.** The gap is the product of this lane, and it was entirely our error, not the
+**41.7% → 8.1%.** The gap is the product of this lane, and it was entirely our error, not the
 agents'.
 
 - **73 of 103** "wrong" commit claims were **real commits in another repo on the same disk**.
   `cae8c30` is real in `rekt-capital`. `7b3256d` is real in `helicon`. `da23d89` is real in
   `mountain-of-helicon`. An agent's `cwd` is where it was standing, not where it committed — and
   the check was aimed at the wrong object, which is the exact failure this product is named after.
-- **10** were machinery: a SHA inside a shell command the agent was *running*, or inside fenced
+- **7 path claims were never checkable at all** — `github.com`, `/tmp/harness.html`, and code
+  identifiers a probe read as filenames: the database column `task_runs.run_id`, the attribute
+  `oracle.signing.digest`, the method call `_INDEX_OK.pop`. The probe was right and the claim was
+  never a claim. **Each is counted with its reason rather than silently deleted** — a filter that
+  quietly shrinks a finding list is the flattering version, and the refusal is the product.
+- **11** were machinery: a SHA inside a shell command the agent was *running*, or inside fenced
   git output it was *reading*. And six of those, across the sample, were **`deadbee` — this repo's
   own test fixture**, surfacing in transcripts about building this gate. The tool for catching false
   claims about work counted its own test data as agent claims.
 
 ### The number we did not ship, and why
+
+**Two of those were our own staged demo strings.** `docs/auth-migration-2026.md` is the literal
+false-done text in `cloud/service.py` and `fixtures/agent-false-done-PR-BODY.md`, and `abc1234` is
+the placeholder in `gate/outcome_gate.py`. They reach a corpus because real messages discuss the
+demo while it is being built, so a judge who greps the repo would find our tool reporting **our own
+seed text as a caught claim**. Excluded on the corpus path, and still blocking in the product's own
+demo where they are deliberately false.
+
+**Two rows are left in and unprobed on purpose.** `wrote _jed.py` and `wrote needs.ts` survive every
+filter and nobody has checked them. They stay listed and labelled unprobed rather than guessed in
+either direction.
 
 **"42% of agent commit claims are wrong" was a real number from a real corpus and it was false by
 5x.** It survives in [`CORPUS-MEASUREMENT-2026-08-27.md`](CORPUS-MEASUREMENT-2026-08-27.md) on

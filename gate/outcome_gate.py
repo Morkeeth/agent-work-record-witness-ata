@@ -48,7 +48,14 @@ _SHELL_LINE = re.compile(r"^\s*(?:\$|#|>)?\s*(?:git|echo|cd|cat|ls|grep|sed|awk|
                          r"python3?|curl|gh|npm|pytest)\b.*$", re.M)
 # Fixtures this repo ships. A tool that counts its own test data as an agent's
 # claim is the joke that writes itself, and it happened.
-_OWN_FIXTURES = {"deadbee", "deadbee1", "deadbeef"}
+_OWN_FIXTURES = {"deadbee", "deadbee1", "deadbeef", "abc1234"}
+
+# Path literals this repo itself stages as false done-claims. Same circularity as
+# `deadbee`: they reach a corpus because real messages discuss the demo while it is
+# being built, and the tool then reports its own seed text as a caught claim. A
+# judge who greps the repo finds the string in cloud/service.py and
+# fixtures/agent-false-done-PR-BODY.md.
+_OWN_PATH_FIXTURES = {"docs/auth-migration-2026.md"}
 
 # A report region, when the message declares one. An agent's done-report is a
 # section, not a whole conversational turn -- scoping to it is the cheap half of
@@ -166,6 +173,8 @@ def check_report(report: str, repo: str = ".", *, scope: bool = False,
     for m in re.finditer(r'(?:wrote|added|created|updated|extended)\s+' + _FILLER +
                          r'`?([\w./-]+\.\w{1,6})`?', report, re.I):
         path = m.group(1)
+        if exclude_fixtures and path in _OWN_PATH_FIXTURES:
+            continue
         ok = os.path.exists(os.path.join(repo, path))
         findings.append(Finding(f"wrote {path}", PASS if ok else BLOCK,
                                 f"stat {path}", "exists" if ok else "NO SUCH PATH in the repo"))

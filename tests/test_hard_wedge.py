@@ -160,3 +160,32 @@ def test_scope_refuses_to_guess_when_there_is_no_report_section():
     reported = "## Done\n\nCommitted as a1b2c3d.\n"
     assert [f for f in check_report(reported, ".", scope=True)
             if f.assertion.startswith("committed as")]
+
+
+def test_not_checkable_drops_non_paths_and_keeps_real_ones():
+    """A claim whose target was never inside a repo is not a finding — the probe is
+    right and the claim was never checkable. The floor matters more than the
+    ceiling: over-filtering HIDES real findings, so every real path shape below
+    must survive."""
+    from gate.corpus_scan import not_checkable
+    for keep in ("docs/plan.md", "package.json", ".mcp.json", "config.yaml",
+                 "_jed.py", "needs.ts", "src/a/b.ts", "registry.md", "init.sql"):
+        assert not_checkable(keep) is None, keep
+    assert "hostname" in not_checkable("github.com")
+    assert "URL" in not_checkable("https://x.com/a")
+    assert "outside the repository" in not_checkable("/tmp/harness.html")
+    assert "code identifier" in not_checkable("task_runs.run_id")
+    assert "code identifier" in not_checkable("_INDEX_OK.pop")
+
+
+def test_our_own_staged_demo_path_is_excluded_only_when_asked():
+    """docs/auth-migration-2026.md is the literal false-done string this repo
+    stages in cloud/service.py and fixtures/agent-false-done-PR-BODY.md. It reaches
+    a corpus because real messages discuss the demo while building it, and the tool
+    then reports its own seed text as a caught claim. Same circularity as deadbee,
+    and like deadbee it MUST still block in the product's own demo."""
+    from gate.outcome_gate import BLOCK, check_report
+    body = "Done. Wrote docs/auth-migration-2026.md."
+    assert any(f.verdict == BLOCK for f in check_report(body, "."))
+    assert [f for f in check_report(body, ".", exclude_fixtures=True)
+            if f.assertion.startswith("wrote ")] == []
