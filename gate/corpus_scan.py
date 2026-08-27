@@ -221,9 +221,29 @@ def main():
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--json", action="store_true")
     a = ap.parse_args()
+
+    # The README sends a stranger here first, and the default --db is a file that
+    # exists on one machine. Without this, their first command is a raw
+    # sqlite3.OperationalError traceback. A product about checking claims does not
+    # get to hand a stranger a stack trace on the way in.
+    db = os.path.expanduser(a.db)
+    if not os.path.exists(db):
+        sys.stderr.write(
+            "\n  No transcript database at " + db + "\n\n"
+            "  This command reads a corpus of agent transcripts you already have.\n"
+            "  If you do not have one, nothing is wrong: it is the second thing to\n"
+            "  run, not the first.\n\n"
+            "  Start here instead, it needs no database and no account:\n\n"
+            '      echo "Fixed the race. Committed as deadbee." | witness\n\n'
+            "  Point this at your own corpus when you have one:\n\n"
+            "      witness-corpus --db <your.db> --code-root <dir>\n\n"
+        )
+        return 2
+
     r = scan(a.db, a.code_root, a.limit)
     print(json.dumps(r, indent=2) if a.json else render(r))
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
