@@ -3,8 +3,9 @@
 Same task. Same land. Different corrective-turn cost.
 The cheaper prompt is propagated literally.
 
-Episode scores are deterministic (tool records). Gemini pairwise membership is
-reported per row — it must not blank the corrective-turn contrast when it flakes.
+Episode scores are deterministic (tool records). Task-class membership is reported
+per row and NAMES ITS AUTHOR — it reads UNMEASURED when no model was reached, and
+it must not blank the corrective-turn contrast when it flakes.
 Population lift across an org is day-two customer data (Track B).
 """
 
@@ -18,7 +19,7 @@ from pathlib import Path
 from fleet.episodes import extract_episodes
 from fleet.human import load_transcript
 from fleet.propagate import find_best_prompt, propagate_prompt, witness_propagation
-from fleet.task_class import classify
+from fleet.task_class import DIFFERENT, SAME, UNDECIDABLE, UNMEASURED, classify, verdict_source
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CORPUS = str(ROOT / "fixtures/operators/*.jsonl")
@@ -67,7 +68,7 @@ def build_proof(anchor: str = DEFAULT_ANCHOR,
     winner_opener = (find.get("prompt_text") if isinstance(find, dict) else "") or ""
     field = []
     for op in scored:
-        v = classify(op["opener"], winner_opener) if winner_opener else "UNMEASURED"
+        v = classify(op["opener"], winner_opener) if winner_opener else UNMEASURED
         field.append(dict(op, vs_winner=v))
 
     durable = [o for o in scored if o["signal"] in ("landed", "landed_corrected", "survive")]
@@ -78,7 +79,13 @@ def build_proof(anchor: str = DEFAULT_ANCHOR,
     if len(ranked) >= 2:
         win, lose = ranked[0], ranked[1]
         gap = (lose["corrective_turns"] or 0) - (win["corrective_turns"] or 0)
-        gemini_same = sum(1 for o in field if o.get("vs_winner") == "SAME")
+        # A count is only reportable if a model produced the verdicts it counts.
+        # `same_class_count` is None — never 0 — when nothing was measured, because
+        # 0 reads as "asked and none matched" and that is a different claim.
+        verdicts = {v: sum(1 for o in field if o.get("vs_winner") == v)
+                    for v in (SAME, DIFFERENT, UNDECIDABLE, UNMEASURED)}
+        measured = verdicts[SAME] + verdicts[DIFFERENT] + verdicts[UNDECIDABLE]
+        same_class_count = verdicts[SAME] if measured else None
         delta = {
             "winner": win["operator"],
             "loser": lose["operator"],
@@ -89,7 +96,10 @@ def build_proof(anchor: str = DEFAULT_ANCHOR,
             "loser_opener": lose["opener"],
             "winner_signal": win["signal"],
             "loser_signal": lose["signal"],
-            "gemini_same_count": gemini_same,
+            "same_class_count": same_class_count,
+            "task_class_verdicts": verdicts,
+            "task_class_measured": measured,
+            "task_class_source": verdict_source(),
             "rank_field_size": find.get("field_size") if isinstance(find, dict) else None,
         }
         vc = (
@@ -114,12 +124,15 @@ def build_proof(anchor: str = DEFAULT_ANCHOR,
         "propagate": prop,
         "witness": wit,
         "vc_one_liner": vc,
+        "task_class_source": verdict_source(),
         "honest_limit": (
             "This proves the mechanism on a two-operator fixture. "
             "Population lift across an org's engineers is day-two customer data — "
             "a single-builder corpus cannot produce it (Track B). "
-            "Gemini pairwise membership is shown per row; the corrective-turn "
-            "contrast comes from tool records and does not vanish when the classifier flakes."
+            "Task-class membership is shown per row and names what produced it: it "
+            "reads UNMEASURED when no model was reached, and no task-class count is "
+            "reported in that case. The corrective-turn contrast comes from tool records "
+            "and does not vanish when the classifier is unavailable."
         ),
     }
 
@@ -130,6 +143,20 @@ def write_surface(proof: dict, out_path: str | None = None) -> str:
     wit = proof.get("witness") or {}
     find = proof.get("find") or {}
     e = html.escape
+
+    # The vs-winner column must never be read as a model verdict when no model ran.
+    src = proof.get("task_class_source") or "no-classification-run"
+    n_same = d.get("same_class_count")
+    if n_same is None:
+        class_line = ("<strong>vs&nbsp;winner: UNMEASURED.</strong> No model was reached, so "
+                      "no task-class count is reported. The corrective-turn contrast above "
+                      "comes from tool records and is unaffected.")
+    else:
+        vd = d.get("task_class_verdicts") or {}
+        tally = " · ".join(f"{k} {v}" for k, v in vd.items() if v)
+        class_line = (f"<strong>vs&nbsp;winner: {n_same} of {d.get('task_class_measured', '?')} "
+                      f"measured rows SAME.</strong> Classified by <code>{e(str(src))}</code>"
+                      f" — {e(tally)}")
 
     rows = []
     for o in proof.get("field") or []:
@@ -223,6 +250,7 @@ def write_surface(proof: dict, out_path: str | None = None) -> str:
     <thead><tr><th>Op</th><th>Signal</th><th>Corrective</th><th>vs winner</th><th>Opener</th></tr></thead>
     <tbody>{"".join(rows)}</tbody>
   </table>
+  <p class="limit">{class_line}</p>
 
   <div class="witness">
     <div class="tag">PROPAGATED · operator <code>{e(str(find.get("operator", "?")))}</code>

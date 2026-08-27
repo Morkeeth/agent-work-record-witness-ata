@@ -78,17 +78,18 @@
     <thead><tr><th>Op</th><th>Signal</th><th>Corrective</th><th>vs winner</th><th>Opener</th></tr></thead>
     <tbody><tr><td>a</td><td>landed</td><td>0</td><td>SAME</td><td class='prompt'>Refactor the auth module: extract validate_token into auth/validate.py, keep tests green, show me the diff before applying.</td></tr><tr><td>b</td><td>landed_corrected</td><td>2</td><td>SAME</td><td class='prompt'>clean up the token validation in auth</td></tr></tbody>
   </table>
+  <p class="limit"><strong>vs&nbsp;winner: 2 of 2 measured rows SAME.</strong> Classified by <code>gemini:vertex:gemini-3.5-flash</code> — SAME 2</p>
 
   <div class="witness">
     <div class="tag">PROPAGATED · operator <code>a</code>
       · score 4</div>
     <p class="prompt">Refactor the auth module: extract validate_token into auth/validate.py, keep tests green, show me the diff before applying.</p>
     <div class="ok">Witness VERIFIED-BY-REPO
-      · 245 bytes
-      · /var/folders/n0/hkc4pnk96b9f56ff0bgqgp5c0000gn/T/fleet-prove-skill.md</div>
+      · 367 bytes
+      · /Users/morkeeth/CODE/hack-fleet-ata/fixtures/org-repo/.cursor/rules/propagated-skill.md</div>
   </div>
 
-  <p class="limit"><strong>Honest limit.</strong> This proves the mechanism on a two-operator fixture. Population lift across an org&#x27;s engineers is day-two customer data — a single-builder corpus cannot produce it (Track B). Gemini pairwise membership is shown per row; the corrective-turn contrast comes from tool records and does not vanish when the classifier flakes.</p>
+  <p class="limit"><strong>Honest limit.</strong> This proves the mechanism on a two-operator fixture. Population lift across an org&#x27;s engineers is day-two customer data — a single-builder corpus cannot produce it (Track B). Task-class membership is shown per row and names what produced it: it reads UNMEASURED when no model was reached, and no task-class count is reported in that case. The corrective-turn contrast comes from tool records and does not vanish when the classifier is unavailable.</p>
   <p class="limit">Reproduce: <code>python3 fleet_cli.py prove</code> · open <code>surface/org-proof.html</code></p>
 </main>
 </body>
