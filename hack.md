@@ -18,6 +18,23 @@ restores: docs/internal/PRD-2026-08.md (Aug 24) — the last doc that described 
 
 ---
 
+## ⚖️ RULED BY OSCAR 2026-08-27 — THE PITCH
+
+**The product is THE RECORD. The gate is a feature inside it.** His words: *"the RECORD is
+great, but the Gate is a nice extra feature no?"*
+
+So, settled and not to be re-litigated:
+- **We pitch:** the system of record for what an agent workforce actually did. Who claimed what,
+  whether the object agreed, whether the work survived, and the session behind each claim.
+- **The gate is how it gets installed**, and it is the moment a claim gets caught. It is a
+  feature of the record, not the headline.
+- **The demo opens on week four**, not week one. See `docs/USER-JOURNEY.md`.
+- Phase 3 of the playbook ladder (`docs/internal/PHASE-TRACKER.md`) has had "design owner
+  unnamed" open since Aug 22. **This ruling closes the half of it that was a product question.
+  The name itself is still open.**
+
+---
+
 ## 🏷️ BRANDING  ⚠️ ONE OPEN QUESTION, BLOCKING THE FILM
 
 Five names are live for one product: **HOLD · Witness · Transcripto · Claims Inbox · hack-fleet-ata**.
@@ -33,7 +50,8 @@ and the pitch in the same four minutes.
 | The corpus layer | **Transcripto** | Stays. The PRD's single writer: owns the schema and the local DB, never leaves the machine, everything downstream reads three stable views. Not the brand. |
 | `agent-claims-inbox` | disclosure only | Per SUBMISSION-PACK: *"disclosure, not a second entry."* Not a product. **It has no git remote at all.** |
 
-- [ ] **[NEEDS CLARIFICATION: is the product WITNESS?]** (phase: BUILD, **blocking the film**)
+- [x] ~~is the product a gate or a record~~ **RULED: RECORD** (Oscar, 2026-08-27)
+- [ ] **[NEEDS CLARIFICATION: what is it CALLED?]** The pitch is ruled; the name is not. A record wants a noun. (phase: BUILD, **blocking the film**)
 
 ---
 
