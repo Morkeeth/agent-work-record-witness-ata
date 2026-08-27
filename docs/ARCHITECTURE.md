@@ -51,7 +51,7 @@ flowchart TB
   FS --> EX
   T --> H --> SV
   SV -.-> Q
-  Q -.-> TR["open the session<br/>that produced the claim"]
+  Q --> TR["open the session<br/>that produced the claim"]
   TR -.-> T
 ```
 
@@ -89,8 +89,7 @@ must show the `*.run.app` URL.
 **Live:** the required check · the object probe · `/clearance` with token · ADK + Vertex ·
 Firestore · the hold queue · break-glass with a reason · `/audit/export` · enforce mode.
 
-**Roadmap, dashed above, must not be claimed as built:** survival on the queue · the trace
-join · GEAP Memory Bank (Firestore is the live path) · cross-harness ingestion beyond Claude
+**Roadmap, dashed above, must not be claimed as built:** survival on the queue · GEAP Memory Bank (Firestore is the live path) · cross-harness ingestion beyond Claude
 Code and Codex.
 
 ## What is NOT claimed

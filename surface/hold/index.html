@@ -72,6 +72,8 @@
     padding: 0.5rem 0.65rem; font: inherit;
   }
   textarea { min-height: 4.5rem; font-family: var(--mono); font-size: 0.8rem; }
+  .trace { font-size: 0.9rem; margin: 0.35rem 0 0.9rem; }
+  .trace.muted { opacity: 0.62; }
   .row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
   button.act {
     background: var(--ink); color: var(--bg); border: none; padding: 0.55rem 1rem;
@@ -282,10 +284,21 @@ function showDetail(h) {
     `<tr><td><span class="pill ${f.verdict === "BLOCK" ? "hold" : ""}">${esc(f.verdict)}</span></td>
      <td>${esc(f.assertion)}</td><td><code>${esc(f.probe)}</code></td><td>${esc(f.evidence)}</td></tr>`
   ).join("");
+  // The join. A held claim opens back to the session that produced it. When the report
+  // carried no session reference we say so plainly rather than showing an empty field:
+  // "not traceable" is a real state of the world and hiding it would be the same class
+  // of dishonesty this gate exists to catch.
+  const trace = h.session
+    ? `<p class="trace">Trace · session <code>${esc(h.session)}</code>
+         <a href="https://claude.ai/code/session_${encodeURIComponent(h.session)}"
+            target="_blank" rel="noopener">open the session that produced this claim</a></p>`
+    : `<p class="trace muted">Trace · no session reference in the report. This claim cannot be
+         opened back to what the agent actually did.</p>`;
   d.innerHTML = `
     <h2>Release ${esc(h.id)}</h2>
     <p><span class="pill hold">${esc(h.gate || h.decision)}</span>
        · PR ${esc(h.pr || "—")} · ${esc(h.repo || "—")} · ${esc(h.actor || "")}</p>
+    ${trace}
     <table><thead><tr><th>Verdict</th><th>Claim</th><th>Probe</th><th>Evidence</th></tr></thead>
     <tbody>${rows}</tbody></table>
     <label>Break-glass reason</label>

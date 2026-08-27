@@ -132,6 +132,10 @@ def run_clearance(body: dict) -> dict:
     record = make_clearance_record(
         evaluation=evaluation,
         policy=policy,
+        # The join: carry the session that produced the claim, so a hold opens back to
+        # what the agent actually did rather than stopping at what it wrote.
+        session=body.get("session"),
+        report=report,
         pr=body.get("pr"),
         repo=body.get("repo"),
         actor=body.get("actor") or "agent",
@@ -151,8 +155,16 @@ def run_clearance(body: dict) -> dict:
     except Exception as e:
         record["agent_error"] = f"{type(e).__name__}: {e}"
 
+    # A gateway that sells an audit trail must not report success over a failed write.
+    # Storing is the product here: if the record did not land, the caller has to know,
+    # or HOLD is making exactly the kind of true-looking claim it exists to block.
+    # The verdict is still returned and CI still fails on a BLOCK; only the claim about
+    # having RECORDED it changes.
+    recorded = "store_error" not in record
     return {
-        "ok": True,
+        "ok": recorded,
+        "recorded": recorded,
+        "store_error": record.get("store_error"),
         "product": "HOLD",
         "clearance": record,
         "ci_should_fail": bool(enforced and evaluation["decision"] == "HOLD" and evaluation["gate"] == "BLOCK"),

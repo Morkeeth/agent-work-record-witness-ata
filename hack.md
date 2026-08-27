@@ -155,12 +155,17 @@ rows and debris. Rewrite `ARCHITECTURE.md` for this product. Stamp the supersede
 **Done-when:** anonymous POST to `/wedge` and `/prove` returns 401; `/queue` returns 0; `git status` clean.
 **⚑ push · set `HOLD_API_TOKEN` + `HOLD_POLICY_URL` · rule the requiredness question.**
 
-### Slice 1 — THE JOIN (the demo, and the thing no competitor can build)
+### Slice 1 — THE JOIN  ✅ BUILT 2026-08-27
 A gate decision carries the session that produced it. The console row opens the trace.
 This is why the buyer is an org and not a solo dev, and it is the only claim on this board
 that Zenity, Norm Ai, Qodo and Langfuse structurally cannot make: **none of them has the
 agent's transcript.**
 **Done-when:** a blocked row in the queue links to the real session, and the audit export carries both.
+**Status: DONE.** `extract_session_ref()` recovers a session from three real report shapes;
+`make_clearance_record` stores `session` + `traceable`; the console renders the trace link, and
+says plainly when a claim is NOT traceable. End-to-end probe: the fixture PR body produces
+HOLD / BLOCK with 2 real findings, `session=01Lzbh4XPYTAgCKg1dciFS3Q`, `traceable=true`, and
+`/queue` exposes it. Tests: `tests/test_session_join.py` 14/14.
 
 ### Slice 2 — close the loop, live
 Labeled PR → `verify-claims` red → Action POSTs to `/clearance` → row appears → break-glass

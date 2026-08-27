@@ -8,6 +8,7 @@ Gemini/ADK may extract claims elsewhere; they are never the release authority.
 from __future__ import annotations
 
 import os
+import re
 import uuid
 from datetime import datetime, timezone
 from typing import Any
@@ -99,6 +100,34 @@ def default_policy() -> dict[str, Any]:
     }
 
 
+# A done-report is written by an agent that had a session. If the report carries a
+# reference to that session, the hold can be opened back to what actually happened,
+# instead of stopping at what was claimed. Accepted shapes, most explicit first.
+_SESSION_PATTERNS = (
+    re.compile(r"claude\.ai/code/session_([A-Za-z0-9_-]{8,64})"),
+    re.compile(r"^\s*(?:Claude-)?Session(?:-Id)?\s*[:=]\s*([A-Za-z0-9_-]{8,64})\s*$",
+               re.IGNORECASE | re.MULTILINE),
+    re.compile(r"\bsession[_-]?id\s*[:=]\s*[\"']?([A-Za-z0-9_-]{8,64})[\"']?",
+               re.IGNORECASE),
+)
+
+
+def extract_session_ref(report: str | None) -> str | None:
+    """Pull a session reference out of a done-report, or None.
+
+    Deliberately read-only and deliberately narrow. It never executes report text and
+    never invents an id: an absent reference stays absent, because a hold that links to
+    a guessed session is worse than one that links to nothing.
+    """
+    if not report:
+        return None
+    for pat in _SESSION_PATTERNS:
+        m = pat.search(report)
+        if m:
+            return m.group(1)
+    return None
+
+
 def make_clearance_record(
     *,
     evaluation: dict,
@@ -107,8 +136,12 @@ def make_clearance_record(
     repo: str | None = None,
     actor: str | None = None,
     source: str = "api",
+    session: str | None = None,
+    report: str | None = None,
 ) -> dict[str, Any]:
     rid = f"H-{uuid.uuid4().hex[:10]}"
+    # An explicitly-passed session wins; otherwise recover one from the report itself.
+    session_ref = (session or "").strip() or extract_session_ref(report)
     return {
         "id": rid,
         "kind": "clearance",
@@ -125,6 +158,8 @@ def make_clearance_record(
         "repo": repo,
         "actor": actor or "agent",
         "source": source,
+        "session": session_ref,
+        "traceable": bool(session_ref),
         "open": evaluation["decision"] == HOLD,
     }
 
