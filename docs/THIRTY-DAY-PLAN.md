@@ -1,3 +1,6 @@
+> ⛔ **SUPERSEDED 2026-08-27 — do not read as current.** The canonical doc is `hack.md` at the repo root.
+> This file is kept for history only. It described a narrower product than the one being built.
+
 # THIRTY-DAY PLAN — prompt immune system → category product
 
 **Written 2026-08-22.** Objective: not "ship a hackathon demo," but **prove and harden an institutional prompt immune system** that a VP Eng would pay for — then expand it into a category product.

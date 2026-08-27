@@ -1,3 +1,6 @@
+> ⛔ **SUPERSEDED 2026-08-27 — do not read as current.** The canonical doc is `hack.md` at the repo root.
+> This file is kept for history only. It described a narrower product than the one being built.
+
 # WEDGE — the one loop the video must show
 
 Phase 3 vision lock. Overrides code's current state (there is none yet). Written post-EYES

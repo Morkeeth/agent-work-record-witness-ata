@@ -1,3 +1,6 @@
+> ⛔ **SUPERSEDED 2026-08-27 — do not read as current.** The canonical doc is `hack.md` at the repo root.
+> This file is kept for history only. It described a narrower product than the one being built.
+
 # NEXT STEPS — read this first, every session
 _Kept current 2026-08-26 evening. If this disagrees with a chat message, open the object._
 

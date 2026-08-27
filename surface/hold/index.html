@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>HOLD — outcome clearance</title>
+<style>
+  :root {
+    --bg: #0f1419;
+    --panel: #171d24;
+    --ink: #e6edf2;
+    --muted: #8b9aab;
+    --line: #2a3540;
+    --hold: #d64545;
+    --clear: #3d8b6e;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    --sans: "IBM Plex Sans", "Source Sans 3", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh;
+    background: var(--bg); color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px; line-height: 1.45;
+  }
+  header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    padding: 1.25rem 1.75rem; border-bottom: 1px solid var(--line);
+  }
+  header .brand { font-weight: 700; letter-spacing: 0.08em; font-size: 1.1rem; }
+  header .tag { color: var(--muted); font-size: 0.85rem; max-width: 28rem; }
+  nav {
+    display: flex; gap: 0.25rem; padding: 0.75rem 1.75rem;
+    border-bottom: 1px solid var(--line); flex-wrap: wrap;
+  }
+  nav button {
+    background: transparent; border: 1px solid transparent; color: var(--muted);
+    padding: 0.4rem 0.75rem; cursor: pointer; font: inherit;
+  }
+  nav button.on { color: var(--ink); border-color: var(--line); background: var(--panel); }
+  main { padding: 1.5rem 1.75rem 3rem; max-width: 920px; }
+  .strip {
+    min-height: 4.5rem; border: 1px solid var(--line); background: var(--panel);
+    display: flex; align-items: stretch; overflow: hidden;
+  }
+  .strip.empty {
+    align-items: center; justify-content: center; color: var(--muted);
+    letter-spacing: 0.02em;
+  }
+  .mark {
+    flex: 0 0 auto; min-width: 7rem; padding: 0.85rem 1rem;
+    border-right: 1px solid var(--line); background: #1c1010;
+    border-left: 3px solid var(--hold);
+  }
+  .mark .v { color: var(--hold); font-weight: 700; font-size: 0.75rem; letter-spacing: 0.06em; }
+  .mark .a { font-family: var(--mono); font-size: 0.8rem; margin-top: 0.35rem; }
+  .mark .p { color: var(--muted); font-family: var(--mono); font-size: 0.72rem; margin-top: 0.35rem; }
+  h1 { font-size: 1.35rem; font-weight: 600; margin: 0 0 0.35rem; }
+  h2 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); font-weight: 600; }
+  p.lead { color: var(--muted); margin: 0 0 1.25rem; max-width: 36rem; }
+  .panel {
+    background: var(--panel); border: 1px solid var(--line); padding: 1rem 1.15rem; margin-top: 1rem;
+  }
+  pre, code { font-family: var(--mono); font-size: 0.78rem; }
+  pre {
+    background: #0a0e12; border: 1px solid var(--line); padding: 0.85rem 1rem;
+    overflow-x: auto; white-space: pre-wrap;
+  }
+  label { display: block; color: var(--muted); font-size: 0.8rem; margin: 0.75rem 0 0.25rem; }
+  input, select, textarea {
+    width: 100%; background: #0a0e12; color: var(--ink); border: 1px solid var(--line);
+    padding: 0.5rem 0.65rem; font: inherit;
+  }
+  textarea { min-height: 4.5rem; font-family: var(--mono); font-size: 0.8rem; }
+  .row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
+  button.act {
+    background: var(--ink); color: var(--bg); border: none; padding: 0.55rem 1rem;
+    font: inherit; font-weight: 600; cursor: pointer;
+  }
+  button.act.secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  button.act.danger { background: var(--hold); color: #fff; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  th, td { text-align: left; padding: 0.45rem 0.5rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 500; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  .pill { display: inline-block; padding: 0.1rem 0.4rem; font-family: var(--mono); font-size: 0.7rem; border: 1px solid var(--line); }
+  .pill.hold { color: var(--hold); border-color: var(--hold); }
+  .pill.clear { color: var(--clear); border-color: var(--clear); }
+  .stat { font-family: var(--mono); font-size: 1.75rem; font-weight: 500; }
+  .err { color: var(--hold); margin-top: 0.75rem; }
+  .ok { color: var(--clear); }
+  .hidden { display: none; }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+<header>
+  <div>
+    <div class="brand">HOLD</div>
+    <div class="tag">Outcome clearance for agentic production — against the object.</div>
+  </div>
+  <div id="apiHint" class="tag"></div>
+</header>
+<nav id="nav">
+  <button data-tab="queue" class="on">Hold queue</button>
+  <button data-tab="install">Install</button>
+  <button data-tab="policy">Policy</button>
+  <button data-tab="audit">Audit</button>
+  <button data-tab="registry">Registry</button>
+</nav>
+<main>
+  <section id="tab-queue">
+    <h1>Hold queue</h1>
+    <p class="lead">Calm default: empty. Humans only see releases the object disproves.</p>
+    <div id="strip" class="strip empty">No agent releases need attention.</div>
+    <div class="row">
+      <button class="act secondary" id="btnRefresh">Refresh</button>
+      <button class="act danger hidden" id="btnSeed">Seed false-done (demo only)</button>
+    </div>
+    <div id="tokenBar" class="panel" style="margin-top:1rem">
+      <h2>Operator token</h2>
+      <p class="lead" style="margin:0 0 0.5rem">Writes require <code>X-HOLD-Token</code> when the gateway has auth on. Stored only in this browser.</p>
+      <input id="holdToken" type="password" placeholder="HOLD_API_TOKEN" autocomplete="off" />
+    </div>
+    <div id="detail" class="panel hidden"></div>
+  </section>
+
+  <section id="tab-install" class="hidden">
+    <h1>Install</h1>
+    <p class="lead">Platform eng arms HOLD as a required check on agent PRs. Five minutes. No dashboard login required for the gate itself.</p>
+    <div class="panel">
+      <h2>1 · Policy URL</h2>
+      <pre id="policyUrl"></pre>
+      <h2>2 · GitHub Action (agent-scoped)</h2>
+      <pre id="actionYaml"></pre>
+      <h2>3 · Required check</h2>
+      <p class="lead" style="margin:0">Branch protection → require status check <code>verify-claims</code> on agent-labeled PRs. Start in <code>report-only</code>, promote to <code>enforce</code>.</p>
+    </div>
+  </section>
+
+  <section id="tab-policy" class="hidden">
+    <h1>Policy</h1>
+    <p class="lead">Progressive enforcement — report-only first, then fail-closed on agent paths.</p>
+    <div class="panel">
+      <label>Mode</label>
+      <select id="mode">
+        <option value="report-only">report-only</option>
+        <option value="enforce">enforce</option>
+      </select>
+      <label>Agent label</label>
+      <input id="label" value="agent" />
+      <div class="row">
+        <button class="act" id="btnSavePolicy">Save policy</button>
+      </div>
+      <pre id="policyOut" style="margin-top:1rem"></pre>
+    </div>
+  </section>
+
+  <section id="tab-audit" class="hidden">
+    <h1>Audit</h1>
+    <p class="lead">Append-only clearance decisions. One number enterprises ask for.</p>
+    <div class="panel">
+      <div class="stat" id="pct">—</div>
+      <div style="color:var(--muted);font-size:0.85rem">% of clearance events that were CLEAR (no hold)</div>
+      <div class="row">
+        <button class="act secondary" id="btnExport">Export JSON</button>
+      </div>
+      <div style="margin-top:1rem;overflow-x:auto">
+        <table>
+          <thead><tr><th>When</th><th>Kind</th><th>Decision</th><th>PR / claim</th><th>Actor</th></tr></thead>
+          <tbody id="auditBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="tab-registry" class="hidden">
+    <h1>Registry</h1>
+    <p class="lead">Surviving practice → literal org skill. Module, not the hero. Field of 2 stays UNMEASURED.</p>
+    <div class="panel">
+      <button class="act" id="btnProve">Run /prove (practice promote)</button>
+      <pre id="proveOut" style="margin-top:1rem">Not run yet.</pre>
+    </div>
+  </section>
+
+  <p id="err" class="err"></p>
+</main>
+<script>
+const params = new URLSearchParams(location.search);
+const API = params.get("api")
+  || (location.origin.includes("127.0.0.1") || location.origin.includes("localhost")
+      ? location.origin
+      : location.origin);
+
+document.getElementById("apiHint").textContent = API;
+
+const tokenInput = document.getElementById("holdToken");
+tokenInput.value = localStorage.getItem("HOLD_API_TOKEN") || params.get("token") || "";
+tokenInput.addEventListener("change", () => {
+  localStorage.setItem("HOLD_API_TOKEN", tokenInput.value.trim());
+});
+
+function showErr(e) {
+  document.getElementById("err").textContent = e ? String(e) : "";
+}
+
+function authHeaders() {
+  const t = (tokenInput.value || "").trim();
+  const h = { "Content-Type": "application/json" };
+  if (t) h["X-HOLD-Token"] = t;
+  return h;
+}
+
+async function jfetch(path, opts) {
+  const r = await fetch(API + path, {
+    headers: { ...authHeaders(), ...(opts && opts.headers || {}) },
+    ...opts,
+  });
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(data.error || r.statusText);
+  return data;
+}
+
+async function loadConfig() {
+  try {
+    const cfg = await jfetch("/config");
+    const seed = document.getElementById("btnSeed");
+    if (cfg.demo_seed_enabled) seed.classList.remove("hidden");
+    else seed.classList.add("hidden");
+    if (cfg.auth_required && !tokenInput.value) {
+      showErr("Gateway requires X-HOLD-Token — paste operator token above.");
+    }
+  } catch (e) { /* health may still work */ }
+}
+
+function tab(name) {
+  document.querySelectorAll("nav button").forEach(b => b.classList.toggle("on", b.dataset.tab === name));
+  ["queue","install","policy","audit","registry"].forEach(t => {
+    document.getElementById("tab-" + t).classList.toggle("hidden", t !== name);
+  });
+  showErr("");
+  if (name === "queue") loadQueue();
+  if (name === "audit") loadAudit();
+  if (name === "policy") loadPolicy();
+  if (name === "install") fillInstall();
+}
+
+document.getElementById("nav").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-tab]");
+  if (b) tab(b.dataset.tab);
+});
+
+let selected = null;
+
+function renderStrip(holds) {
+  const el = document.getElementById("strip");
+  if (!holds.length) {
+    el.className = "strip empty";
+    el.textContent = "No agent releases need attention.";
+    document.getElementById("detail").classList.add("hidden");
+    return;
+  }
+  el.className = "strip";
+  el.innerHTML = holds.map(h => {
+    const block = (h.blocks && h.blocks[0]) || (h.findings || []).find(f => f.verdict === "BLOCK") || {};
+    return `<div class="mark" data-id="${h.id}">
+      <div class="v">HOLD</div>
+      <div class="a">${esc(block.assertion || h.report_preview || h.id)}</div>
+      <div class="p">${esc(block.probe || "")} → ${esc(block.evidence || "")}</div>
+    </div>`;
+  }).join("");
+  el.querySelectorAll(".mark").forEach(m => m.addEventListener("click", () => {
+    selected = holds.find(h => h.id === m.dataset.id);
+    showDetail(selected);
+  }));
+}
+
+function showDetail(h) {
+  const d = document.getElementById("detail");
+  d.classList.remove("hidden");
+  const rows = (h.findings || []).map(f =>
+    `<tr><td><span class="pill ${f.verdict === "BLOCK" ? "hold" : ""}">${esc(f.verdict)}</span></td>
+     <td>${esc(f.assertion)}</td><td><code>${esc(f.probe)}</code></td><td>${esc(f.evidence)}</td></tr>`
+  ).join("");
+  d.innerHTML = `
+    <h2>Release ${esc(h.id)}</h2>
+    <p><span class="pill hold">${esc(h.gate || h.decision)}</span>
+       · PR ${esc(h.pr || "—")} · ${esc(h.repo || "—")} · ${esc(h.actor || "")}</p>
+    <table><thead><tr><th>Verdict</th><th>Claim</th><th>Probe</th><th>Evidence</th></tr></thead>
+    <tbody>${rows}</tbody></table>
+    <label>Break-glass reason</label>
+    <textarea id="bgReason" placeholder="Why override this hold?"></textarea>
+    <label>Actor</label>
+    <input id="bgActor" value="platform-eng" />
+    <div class="row"><button class="act danger" id="btnGlass">Break glass</button></div>
+  `;
+  document.getElementById("btnGlass").onclick = async () => {
+    try {
+      await jfetch("/break-glass", {
+        method: "POST",
+        body: JSON.stringify({
+          clearance_id: h.id,
+          reason: document.getElementById("bgReason").value,
+          actor: document.getElementById("bgActor").value,
+          pr: h.pr,
+          repo: h.repo,
+        }),
+      });
+      await loadQueue();
+      await loadAudit();
+    } catch (e) { showErr(e); }
+  };
+}
+
+function esc(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
+async function loadQueue() {
+  try {
+    const data = await jfetch("/queue");
+    renderStrip(data.holds || []);
+  } catch (e) { showErr(e); }
+}
+
+async function loadAudit() {
+  try {
+    const data = await jfetch("/audit");
+    document.getElementById("pct").textContent =
+      data.pct_cleared_without_hold == null ? "—" : data.pct_cleared_without_hold + "%";
+    const body = document.getElementById("auditBody");
+    body.innerHTML = (data.events || []).slice(0, 40).map(e => {
+      const claim = (e.blocks && e.blocks[0] && e.blocks[0].assertion)
+        || e.reason || e.report_preview || e.vc || "";
+      return `<tr>
+        <td>${esc(e.stored_at || "")}</td>
+        <td>${esc(e.kind || "")}</td>
+        <td><span class="pill ${(e.decision === "HOLD" || e.gate === "BLOCK") ? "hold" : "clear"}">${esc(e.decision || e.gate || "")}</span></td>
+        <td>${esc(e.pr || "")} ${esc(claim).slice(0, 80)}</td>
+        <td>${esc(e.actor || "")}</td>
+      </tr>`;
+    }).join("") || `<tr><td colspan="5" style="color:var(--muted)">No events yet.</td></tr>`;
+  } catch (e) { showErr(e); }
+}
+
+async function loadPolicy() {
+  try {
+    const data = await jfetch("/policy");
+    const p = data.policy || {};
+    document.getElementById("mode").value = p.mode || "enforce";
+    document.getElementById("label").value = p.label || "agent";
+    document.getElementById("policyOut").textContent = JSON.stringify(p, null, 2);
+  } catch (e) { showErr(e); }
+}
+
+function fillInstall() {
+  document.getElementById("policyUrl").textContent = API + "/clearance";
+  document.getElementById("actionYaml").textContent =
+`# Copy from this repo (canonical):
+#   .github/workflows/outcome-gate.yml
+#
+# Repo variables / secrets:
+#   HOLD_POLICY_URL = ${API}/clearance
+#   HOLD_API_TOKEN  = (same token as Cloud Run env)
+#
+# Branch protection: require check "verify-claims" on agent-labeled PRs.
+# Start report-only (POST /policy {"mode":"report-only"}), then enforce.
+
+name: HOLD Outcome Clearance
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+jobs:
+  verify-claims:
+    if: >
+      contains(join(github.event.pull_request.labels.*.name, ','), 'agent')
+      || contains(github.event.pull_request.user.login, '[bot]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Probe + clear through HOLD
+        env:
+          HOLD_POLICY_URL: \${{ vars.HOLD_POLICY_URL }}
+          HOLD_API_TOKEN: \${{ secrets.HOLD_API_TOKEN }}
+          PR_BODY: \${{ github.event.pull_request.body }}
+          PR_NUMBER: \${{ github.event.pull_request.number }}
+          REPO: \${{ github.repository }}
+        run: |
+          printf '%s' "$PR_BODY" | python3 gate/outcome_gate.py --json > /tmp/hold-findings.json || true
+          python3 - <<'PY'
+          import json, os, sys, urllib.request
+          findings = json.load(open("/tmp/hold-findings.json"))
+          url = (os.environ.get("HOLD_POLICY_URL") or "").strip()
+          if not url:
+              sys.exit(int(findings.get("exit_hint") or 0))
+          if not url.endswith("/clearance"):
+              url = url.rstrip("/") + "/clearance"
+          payload = {
+            "report": os.environ.get("PR_BODY") or "",
+            "findings": findings.get("findings"),
+            "pr": os.environ.get("PR_NUMBER"),
+            "repo": os.environ.get("REPO"),
+            "actor": "github-action",
+            "source": "github-action",
+          }
+          headers = {"Content-Type": "application/json"}
+          tok = (os.environ.get("HOLD_API_TOKEN") or "").strip()
+          if tok:
+              headers["X-HOLD-Token"] = tok
+          req = urllib.request.Request(url, data=json.dumps(payload).encode(), headers=headers, method="POST")
+          body = json.load(urllib.request.urlopen(req, timeout=60))
+          print(json.dumps(body, indent=2))
+          if body.get("ci_should_fail"):
+              sys.exit(1)
+          sys.exit(0)
+          PY
+`;
+}
+
+document.getElementById("btnRefresh").onclick = () => loadQueue();
+document.getElementById("btnSeed").onclick = async () => {
+  try {
+    await jfetch("/demo/seed-hold", { method: "POST", body: "{}" });
+    await loadQueue();
+    await loadAudit();
+  } catch (e) { showErr(e); }
+};
+document.getElementById("btnExport").onclick = () => {
+  window.open(API + "/audit/export", "_blank");
+};
+document.getElementById("btnSavePolicy").onclick = async () => {
+  try {
+    const data = await jfetch("/policy", {
+      method: "POST",
+      body: JSON.stringify({
+        mode: document.getElementById("mode").value,
+        label: document.getElementById("label").value,
+        agent_only: true,
+      }),
+    });
+    document.getElementById("policyOut").textContent = JSON.stringify(data.policy, null, 2);
+  } catch (e) { showErr(e); }
+};
+document.getElementById("btnProve").onclick = async () => {
+  try {
+    const data = await jfetch("/prove", { method: "POST", body: "{}" });
+    document.getElementById("proveOut").textContent = JSON.stringify(data, null, 2);
+  } catch (e) { showErr(e); }
+};
+
+loadConfig();
+fillInstall();
+loadQueue();
+</script>
+</body>
+</html>

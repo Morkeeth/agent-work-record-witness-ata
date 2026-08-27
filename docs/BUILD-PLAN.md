@@ -1,3 +1,6 @@
+> ⛔ **SUPERSEDED 2026-08-27 — do not read as current.** The canonical doc is `hack.md` at the repo root.
+> This file is kept for history only. It described a narrower product than the one being built.
+
 # BUILD PLAN — three builders, nine days
 
 **Supersedes the earlier version of this file** (pre-dated the compliance audit, the GEAP

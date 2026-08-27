@@ -1,24 +1,79 @@
-name: Outcome Gate
-# Blocks auto-merge when an agent's PR description makes a claim the repo disproves.
-# The buyer's install: agent-authored PRs pass through this before merge.
+name: HOLD Outcome Clearance
+# Required check for agent-authored PRs. Probes claims against the repo object,
+# then posts the decision to the HOLD Gateway (Cloud Run) for the org ledger.
 on:
   pull_request:
     types: [opened, edited, synchronize]
 
 jobs:
   verify-claims:
+    if: >
+      contains(join(github.event.pull_request.labels.*.name, ','), 'agent')
+      || contains(github.event.pull_request.user.login, '[bot]')
+      || contains(github.event.pull_request.user.login, 'copilot')
+      || contains(github.event.pull_request.user.login, 'claude')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0          # a shallow checkout cannot resolve a claimed SHA — would
-                                  # report a TRUE commit as disproved. Pinned deliberately.
-      - name: Check the PR's claims against the repo
+          fetch-depth: 0
+
+      - name: Probe + clear through HOLD
         env:
+          HOLD_POLICY_URL: ${{ vars.HOLD_POLICY_URL }}
+          HOLD_API_TOKEN: ${{ secrets.HOLD_API_TOKEN }}
           PR_BODY: ${{ github.event.pull_request.body }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
         run: |
-          # Production scoping (documented, not silent): gate agent-authored PRs only.
-          # A human "fix typo" PR has nothing checkable and should not be blocked.
-          # As shipped here it runs on every PR — that is the DEMO config; the buyer adds:
-          #   if: github.event.pull_request.user.login == '<agent-bot>'
-          printf '%s' "$PR_BODY" | python3 gate/outcome_gate.py
+          set -e
+          printf '%s' "$PR_BODY" | python3 gate/outcome_gate.py --json > /tmp/hold-findings.json || true
+          python3 - <<'PY'
+          import json, os, sys, urllib.error, urllib.request
+
+          findings = json.load(open("/tmp/hold-findings.json"))
+          gate = findings.get("gate")
+          exit_hint = int(findings.get("exit_hint") or 0)
+          print("local_gate", gate, "exit_hint", exit_hint)
+          print(json.dumps(findings, indent=2))
+
+          url = (os.environ.get("HOLD_POLICY_URL") or "").strip()
+          if not url:
+            print("HOLD_POLICY_URL unset — enforcing local probe only")
+            sys.exit(exit_hint)
+
+          if not url.rstrip("/").endswith("/clearance"):
+              url = url.rstrip("/") + "/clearance"
+
+          payload = {
+              "report": os.environ.get("PR_BODY") or "",
+              "findings": findings.get("findings"),
+              "pr": os.environ.get("PR_NUMBER"),
+              "repo": os.environ.get("REPO"),
+              "actor": "github-action",
+              "source": "github-action",
+          }
+          headers = {"Content-Type": "application/json"}
+          tok = (os.environ.get("HOLD_API_TOKEN") or "").strip()
+          if tok:
+              headers["X-HOLD-Token"] = tok
+          req = urllib.request.Request(
+              url,
+              data=json.dumps(payload).encode(),
+              headers=headers,
+              method="POST",
+          )
+          try:
+              with urllib.request.urlopen(req, timeout=60) as r:
+                  body = json.load(r)
+          except urllib.error.HTTPError as e:
+              print("HOLD gateway HTTP", e.code, e.read()[:500])
+              sys.exit(exit_hint or 1)
+
+          print(json.dumps(body, indent=2))
+          if body.get("ci_should_fail"):
+              sys.exit(1)
+          if body.get("ci_should_warn") and (body.get("clearance") or {}).get("policy_mode") == "enforce":
+              sys.exit(2)
+          sys.exit(0)
+          PY

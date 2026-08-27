@@ -1,3 +1,6 @@
+> ⛔ **SUPERSEDED 2026-08-27 — do not read as current.** The canonical doc is `hack.md` at the repo root.
+> This file is kept for history only. It described a narrower product than the one being built.
+
 # CLOSE — lane HACK FLEET, 2026-08-22
 
 > # ⛔ READ THIS FIRST: THE ENTRY IS CURRENTLY INELIGIBLE.

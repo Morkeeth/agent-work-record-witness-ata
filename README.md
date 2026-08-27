@@ -1,16 +1,21 @@
-# WITNESS
+# HOLD
 
-**The trust layer that verifies what agent fleets claim against the object — the repo, the deploy, the test.**
+**Outcome clearance for agentic production** — agent work is not production-real until its claims survive the object.
 
 Built for **All Things Agentic** (Devpost · **Aug 31 2026, 5:00pm PT**) · Track: **Fortified Enterprise Fleet**.
 
-> **GEAP governs the agents. Witness governs whether their work is true.**
+> **GEAP governs the agents. HOLD governs the release.**
 
-**Live demo (Cloud Run · verified HTTP 200):** https://fleet-wedge-33kamss2jq-uc.a.run.app
+**Enterprise console (Cloud Run):** https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/  
+**Gateway health:** https://fleet-wedge-33kamss2jq-uc.a.run.app/health
 
 ```bash
 curl -s https://fleet-wedge-33kamss2jq-uc.a.run.app/health
+curl -s https://fleet-wedge-33kamss2jq-uc.a.run.app/queue
+open "https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/"
 ```
+
+> **Deploy note:** Live URL is HOLD Gateway + console. Re-deploy with `./scripts/deploy_cloud_run.sh` after local changes (needs `.hold_api_token`).
 
 ---
 
@@ -18,25 +23,25 @@ curl -s https://fleet-wedge-33kamss2jq-uc.a.run.app/health
 
 Enterprises bought coding-agent seats. They see spend. They cannot govern whether agent work is
 **true** before it merges, deploys, or acts. An agent reports *"Fixed the race. 214 tests pass.
-Committed as `deadbee`. Deployed."* — four claims — and today the only way to know is to open the
-repo, the CI, and the URL by hand. With one agent that is annoying; with a fleet running async in
-the background it is impossible. You either trust blindly (and ship a hallucination) or re-check by
-hand (and lose the point of delegating).
+Committed as `deadbee`. Deployed."* — and today the only way to know is to open the repo by hand.
+With overnight fleets and auto-merge, that prose is an ungoverned production surface.
 
-That gap is not observability (trace theater). It is **assurance** — closer to Datadog-for-agentic-
-outcomes than a chat-search tool. Witness stands between an agent's "done" and your trust in it.
+HOLD is **release control**: fail closed when the claim and the object disagree. Not observability.
+Not code review. Not a chat inbox.
 
-## What Witness does
+## What HOLD does
 
-Two surfaces, one trust layer:
+| Surface | Job |
+|---|---|
+| **Gateway** `POST /clearance` | Claim vs object (`git cat-file` / path). CLEAR or HOLD. |
+| **Console** `/hold/` | Empty Hold Queue = calm. Break-glass + audit when not. |
+| **Action** `.github/workflows/outcome-gate.yml` | Required check on agent PRs → posts to Gateway. |
+| **Registry** `POST /prove` | Literal surviving practice → org skill (`UNMEASURED` on n=2). |
 
-| Surface | What it governs | Verdict |
-|---|---|---|
-| **Verify the work they did** | Each claim an agent makes vs the real artifact (git / deploy / test). | `CONTRADICTED-BY-REPO`, `VERIFIED-BY-REPO`, or `UNVERIFIABLE` — never "looks done." |
-| **Govern the prompts they never see** | Which operator practice actually survives on a task class. | Ranks by corrective-turn count and **propagates the literal winning prompt** into the org skill file — witnessed on disk / Firestore. No LLM rewrite. |
+Pitch: [`SUBMISSION-PACK.md`](SUBMISSION-PACK.md) · Film: [`docs/ATA-FILM-AND-SHIP.md`](docs/ATA-FILM-AND-SHIP.md) · Product: [`hack.md`](hack.md) **(canonical)**
 
-**The twist — not stageable:** the verification demo is the four confident "done" claims **this fleet
-made building it**. 3 of 4 were blocked against the real object. The tool catches its own makers.
+**The twist — not stageable:** the verification demo includes confident "done" claims **this fleet
+made building it** — blocked against the real object. The tool catches its own makers.
 
 ```bash
 python3 -m gate.tonight_cases   # the logged case series: agents confidently wrong, the object right
@@ -92,7 +97,7 @@ python3 contract/eligibility.py
 
 ## Architecture
 
-See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) (mermaid) · journey [`docs/USER-JOURNEY.md`](docs/USER-JOURNEY.md) · company thesis [`docs/COMPANY.md`](docs/COMPANY.md) · moonshot tiers [`docs/MOONSHOT-PLAN.md`](docs/MOONSHOT-PLAN.md).
+See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) (mermaid) · journey [`docs/USER-JOURNEY.md`](docs/USER-JOURNEY.md) · company thesis [`docs/COMPANY.md`](docs/COMPANY.md) · build plan [`hack.md`](hack.md).
 
 Internal process logs (collab protocol, phase tracker, patent memos, submission pack) are preserved
 under [`docs/internal/`](docs/internal/).

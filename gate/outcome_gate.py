@@ -27,7 +27,15 @@ class Finding:
 
 
 def _sh(args, repo):
-    return subprocess.run(args, cwd=repo, capture_output=True, text=True)
+    try:
+        return subprocess.run(args, cwd=repo, capture_output=True, text=True)
+    except FileNotFoundError as e:
+        # Cloud Run image may lack git — CI Action always has it and posts findings.
+        class _R:
+            stdout = ""
+            stderr = f"probe binary missing: {e.filename or args[0]}"
+            returncode = 127
+        return _R()
 
 
 def check_report(report: str, repo: str = "."):
@@ -39,6 +47,11 @@ def check_report(report: str, repo: str = "."):
         if not re.search(r'(commit|sha|as)\b', report[max(0, m.start()-24):m.start()], re.I):
             continue
         r = _sh(["git", "cat-file", "-t", sha], repo)
+        if r.returncode == 127:
+            findings.append(Finding(f"committed as {sha}", BLOCK,
+                                    f"git cat-file -t {sha}",
+                                    "NOT verifiable here (git missing in runtime) — treat as HOLD/BLOCK for safety"))
+            continue
         ok = r.stdout.strip() == "commit"
         findings.append(Finding(f"committed as {sha}", PASS if ok else BLOCK,
                                 f"git cat-file -t {sha}",
@@ -69,9 +82,38 @@ def check_report(report: str, repo: str = "."):
     return findings
 
 
-def gate(report, repo="."):
+def gate(report, repo=".", *, as_json: bool = False):
     fs = check_report(report, repo)
     blocks = [f for f in fs if f.verdict == BLOCK]
+    payload = {
+        "findings": [
+            {
+                "assertion": f.assertion,
+                "verdict": f.verdict,
+                "probe": f.probe,
+                "evidence": f.evidence,
+            }
+            for f in fs
+        ],
+        "blocks": len(blocks),
+        "report_preview": report.strip()[:240],
+    }
+    if blocks:
+        payload["gate"] = "BLOCK"
+        code = 1
+    elif any(f.verdict == UNVERIFIABLE for f in fs):
+        payload["gate"] = "HOLD"
+        code = 2
+    else:
+        payload["gate"] = "PASS"
+        code = 0
+    payload["exit_hint"] = code
+
+    if as_json:
+        import json
+        print(json.dumps(payload, indent=2))
+        return code
+
     print("=" * 74)
     print("  OUTCOME GATE — the agent's report, checked against the repo")
     print("=" * 74)
@@ -91,5 +133,7 @@ def gate(report, repo="."):
 
 
 if __name__ == "__main__":
-    report = sys.stdin.read() if not sys.argv[1:] else " ".join(sys.argv[1:])
-    sys.exit(gate(report, os.environ.get("GATE_REPO", ".")))
+    args = [a for a in sys.argv[1:] if a != "--json"]
+    as_json = "--json" in sys.argv[1:] or os.environ.get("OUTCOME_GATE_JSON") == "1"
+    report = sys.stdin.read() if not args else " ".join(args)
+    sys.exit(gate(report, os.environ.get("GATE_REPO", "."), as_json=as_json))

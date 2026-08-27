@@ -97,10 +97,22 @@ class FirestoreStore:
     def put(self, record):
         record = dict(record)
         record.setdefault("stored_at", _now())
+        doc_id = record.get("id")
+        if doc_id:
+            self._c.document(str(doc_id)).set(record)
+            return str(doc_id)
         return self._c.add(record)[1].id
 
     def all(self):
-        return [d.to_dict() | {"id": d.id} for d in self._c.stream()]
+        out = []
+        for d in self._c.stream():
+            row = d.to_dict() or {}
+            # Prefer product id (H-…) over Firestore auto-id when both exist
+            if not row.get("id"):
+                row["id"] = d.id
+            row["store_doc"] = d.id
+            out.append(row)
+        return out
 
 
 def get_store():
