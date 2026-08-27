@@ -130,9 +130,11 @@ Oscar's, said in passing today, and better than anything written in this repo.
 **True today:** the gate is live and enforcing. A held claim carries the session that produced
 it. The export exists and is Firestore-backed.
 
-**Not true today, and must be stated as roadmap:** the record holds **zero real agent claims**;
-24 of 30 audit events are our own probes; the check has never fired on a real pull request; the
-Gemini call does not happen inside the container; the ADK agent is constructed and never invoked.
+**Not true today, and must be stated as roadmap:** the record holds **zero real agent claims** —
+4 clearances, all four staged by us, and `GET /audit` reports **`clear: 0`**, so nothing has ever
+passed the gate because nothing real has ever gone through it; the check has never fired on a real
+pull request; the Gemini call does not happen inside the container; the ADK agent is constructed
+and never invoked.
 
 **One real agent pull request moves the first four of those.** The last two need the key mounted
 and a Runner wired.

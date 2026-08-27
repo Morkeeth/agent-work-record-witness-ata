@@ -35,26 +35,29 @@ So, settled and not to be re-litigated:
 
 ---
 
-## 🏷️ BRANDING  ✅ RULED 2026-08-27 — **THE AGENT WORK RECORD WITNESS**
+## 🏷️ BRANDING  ✅ RULED 2026-08-27
 
-Five names are live for one product: **HOLD · Witness · Transcripto · Claims Inbox · hack-fleet-ata**.
-That is the naming version of the doc sprawl, and a judge meets it on the repo, the console
-and the pitch in the same four minutes.
+**THE AGENT WORK RECORD WITNESS.**
 
-**Recommendation, needs Oscar's yes:**
+Oscar, verbatim: *"NO THE AGENT WORK RECORD WITNESS IS GREAT! i love names like research papers"*.
+He rejected a one-word brand twice. Long and descriptive is the register he asked for, and it is
+the register the paper track reads in.
 
-| Layer | Name | Why |
-|---|---|---|
-| The product / the company | **WITNESS** | It already IS the codebase's own verb. `witness_propagation()` returns `VERIFIED-BY-REPO`. A witness observes what happened and can testify to it later — which is precisely both halves: the gate observes, the record testifies. It survives the move from CI check to compliance artifact; "HOLD" does not. |
-| The gate + queue (a feature) | **Hold** | Keep it. It names the action at the moment of blocking, and it is the right word on a console. It is not the company. |
-| The corpus layer | **Transcripto** | Stays. The PRD's single writer: owns the schema and the local DB, never leaves the machine, everything downstream reads three stable views. Not the brand. |
-| `agent-claims-inbox` | disclosure only | Per SUBMISSION-PACK: *"disclosure, not a second entry."* Not a product. **It has no git remote at all.** |
+| Layer | Name |
+|---|---|
+| The product | **THE AGENT WORK RECORD WITNESS** |
+| The queue inside it | **Hold** |
+| The corpus layer | **Transcripto** |
+| `agent-claims-inbox` | disclosure only, not a product, no git remote |
 
-- [x] ~~is the product a gate or a record~~ **RULED: RECORD** (Oscar, 2026-08-27)
-- [x] ~~what is it called~~ **RULED: THE AGENT WORK RECORD WITNESS** (Oscar, 2026-08-27, verbatim:
-  *"NO THE AGENT WORK RECORD WITNESS IS GREAT! i love names like research papers"*). Long and
-  descriptive on purpose; he rejected one-word brands twice. **Hold** survives only as the name of
-  the queue inside the product. This closes the second half of Phase 3, open since Aug 22.
+**Dead names, and a dead name in a current claim is rot:** HOLD as the product · WITNESS alone ·
+Claims Inbox · hack-fleet-ata as anything but a directory. This section previously proposed
+WITNESS and asked for Oscar's yes; that table is deleted rather than annotated, because a
+superseded recommendation sitting under a RULED heading is the contradiction this doc exists
+to prevent.
+
+**This closes Phase 3 of the playbook ladder**, open since 2026-08-22 as "design owner unnamed"
+in `docs/internal/PHASE-TRACKER.md`. Both halves, product and name, are now ruled.
 
 ---
 

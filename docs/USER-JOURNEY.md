@@ -108,22 +108,24 @@ Written so nobody has to guess which parts are real.
 |---|---|---|
 | 1 · the red check | **yes**, deterministic probes, live and enforcing | never fired on a real pull request. Zero non-author installs. |
 | 2 · the trace | **built today**, session carried on the record, console renders it | **the record holds zero real claims.** 4 clearances, all staged. |
-| 3 · the export | **yes**, `/audit/export`, Firestore-backed | 24 of 30 events are our own probes |
+| 3 · the export | **yes**, `/audit/export`, Firestore-backed | every stored clearance is our own probe. `GET /audit` also reports 30 events while `/audit/export` returns 6 — open defect. |
 
 **The single thing that turns all three from a demo into a product is one real agent pull
 request.** Ten minutes. Every other gap on this page is downstream of that.
 
 ---
 
-## What the unruled pitch decision changes
+## The pitch decision, ruled
 
-Oscar has not yet ruled **record** or **gate**. This journey is written for **record**, and the
-difference is only where the story opens:
+**RULED by Oscar 2026-08-27: the product is THE RECORD. The gate is a feature inside it.** This
+journey was already written for that ruling, so nothing here changes.
 
-- **Record:** open on week four. The gate is how it got installed.
-- **Gate:** open on week one. The record is what accumulates.
+The demo **opens on week four** — a platform lead opening a held claim that resolves to the session
+that produced it. The gate is how it got installed, and it is the moment a claim gets caught. It is
+not the opening shot.
 
-Same three moments, same build. Only the first thirty seconds of the demo and the name change.
+The product is named **THE AGENT WORK RECORD WITNESS** (ruled the same day). "Hold" is the name of
+the queue inside it.
 
 ---
 

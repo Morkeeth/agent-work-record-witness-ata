@@ -1,61 +1,56 @@
 # Architecture
 
 **Required submission artifact.** All Things Agentic · Fortified Enterprise Fleet.
-Canonical product doc: [`hack.md`](../hack.md).
+Product: **THE AGENT WORK RECORD WITNESS**. Canonical doc: [`hack.md`](../hack.md).
 
-Two halves of one system. **The gate** decides whether an agent's work claim is true before
-it merges. **The record** remembers what was claimed, whether it held, and whether the work
-survived. The gate is how you install it. The record is why you keep it.
+The product is **the record**: who claimed what, whether the object agreed, whether the work
+survived, and the session behind each claim. **The gate is a feature inside it** · the moment a
+claim gets caught, and the reason a record accumulates at all. The gate is how you install it.
+The record is why you keep it.
 
-Solid lines are live today. Dashed lines are roadmap and are labelled as such on camera.
+*"Hold" in this document is the name of the queue, not the product.*
+
+The boxed region is the product. Everything above it is intake: **the gate exists to fill the
+record**, and it is one branch of one edge. Solid lines are live today. Dashed lines are roadmap and are labelled as such on camera.
 
 ```mermaid
 flowchart TB
-  subgraph Fleet["Agent fleet"]
-    PR["Agent-authored PR<br/>a done-claim in the body"]
-  end
+  PR["Agent-authored PR<br/>a done-claim in the body"]
+  A["GitHub Action<br/>verify-claims<br/><i>advisory today · 'required' is roadmap</i>"]
+  P["outcome_gate.py<br/>probe claim vs OBJECT<br/>git SHA · path · test"]
+  V{"claim survives<br/>its own probe?"}
+  M["merge proceeds"]
+  CL["POST /clearance<br/><i>token required</i>"]
 
-  subgraph Gate["The gate — deterministic, no model veto"]
-    A["GitHub Action<br/>verify-claims (required check)"]
-    P["outcome_gate.py<br/>probe claim vs OBJECT<br/>git SHA · path · test"]
-    V{"claim survives<br/>its own probe?"}
-  end
-
-  subgraph Run["Google Cloud Run — HOLD Gateway"]
-    CL["POST /clearance<br/>token required"]
-    AG["ADK LlmAgent<br/>Vertex Gemini 3.5<br/>explains, cannot overrule"]
-    BG["POST /break-glass<br/>reason required"]
-  end
-
-  subgraph Store["Firestore"]
-    FS[("decisions · holds<br/>break-glass reasons")]
-  end
-
-  subgraph Record["The record"]
-    T["Transcripto corpus<br/>local-first, org opt-in"]
-    H["Authorship gate<br/>which turns a human typed"]
-    SV["Survival<br/>did the work stay?"]
-  end
-
-  subgraph Surfaces["What people open"]
-    Q["/hold/ console<br/>the hold queue"]
+  subgraph Product["THE RECORD · this is the product"]
+    direction TB
+    FS[("Firestore<br/>every claim · its verdict<br/>every break-glass reason")]
+    Q["/hold/ console · the Hold queue"]
+    JOIN["the join<br/>a held claim opens back<br/>to the session that produced it"]
     EX["GET /audit/export<br/>the compliance artifact"]
+    BG["POST /break-glass<br/><i>reason required</i>"]
+    FS --> Q --> JOIN
+    FS --> EX
+    Q --> BG --> FS
   end
+
+  AG["ADK LlmAgent constructed<br/>Vertex Gemini 3.5<br/>explains, never overrules"]
+  SV["Transcripto corpus → authorship gate → survival<br/><i>did the work stay?</i>"]
 
   PR --> A --> P --> V
-  V -- "no" --> CL
-  V -- "yes" --> M["merge proceeds"]
-  CL --> AG --> FS
-  BG --> FS
-  FS --> Q --> BG
-  FS --> EX
-  T --> H --> SV
+  V -- "yes" --> M
+  V -- "no · the gate is the intake" --> CL
+  CL --> FS
+  CL -.-> AG
+  JOIN -.-> SV
   SV -.-> Q
-  Q --> TR["open the session<br/>that produced the claim"]
-  TR -.-> T
 ```
 
 ## Why this shape
+
+**The record is the product, the gate is its intake.** A gate that greps a PR body for a SHA is a
+weekend build. What compounds is what accumulates behind it: a queryable answer to *what did our
+agent workforce actually do, and how much of it was true.*
 
 **The model gets no veto.** Release authority is a deterministic object probe. The ADK agent
 explains a decision and never overrules one, so a prompt-injected report cannot talk its way
@@ -78,19 +73,23 @@ can answer "what actually happened before this claim was written."
 | Google Agent Framework | `cloud/agent.py` `build_agent()` → ADK `LlmAgent` | MET 2 |
 | Google Cloud infrastructure | Firestore default store · Cloud Run `fleet-wedge` | MET 3 · `.cloud_run_url` |
 
-**Eligibility honesty:** 3 of 3 holds via the live URL or with GCP credentials present. A cold
-local clone with no credentials reads **1 of 3** (ADK only), by design. Say that on camera.
+**Eligibility honesty, re-run 2026-08-27:** `contract/eligibility.py` prints **3 OF 3 MET** and
+exits **0** with ADC on the `hack-fleet` project. The same script with no credentials prints
+**1 OF 3 MET** (ADK only) and exits **1**. Both were run today; neither is quoted from a note.
+Say the cold number on camera.
 
 **Smoke note:** use `GET /health` or `GET /`. GFE returns HTML 404 for `/healthz`. The video
 must show the `*.run.app` URL.
 
 ## Live vs roadmap
 
-**Live:** the required check · the object probe · `/clearance` with token · ADK + Vertex ·
-Firestore · the hold queue · break-glass with a reason · `/audit/export` · enforce mode.
+**Live:** the object probe · `/clearance` with token · `/break-glass` with a reason · Firestore ·
+the Hold queue · `/audit/export` · enforce mode · the join from a held claim to its session.
 
-**Roadmap, dashed above, must not be claimed as built:** survival on the queue · GEAP Memory Bank (Firestore is the live path) · cross-harness ingestion beyond Claude
-Code and Codex.
+**Roadmap · dashed above, must not be claimed as built:** the check as a *required* check ·
+Gemini invoked inside the container (the ADK agent is constructed and visible in `/health`, and
+is not called on the request path today) · survival on the queue · GEAP Memory Bank · cross-harness
+ingestion beyond Claude Code and Codex.
 
 ## What is NOT claimed
 
@@ -98,11 +97,18 @@ Code and Codex.
 - Population lift across an org from a single-builder corpus.
 - Adjacency precision as "accurate." Measured base rate is **0.13%**, 6 of 4,785, two shapes unmeasured.
 - Any install by a person who is not the author. That count is **zero**.
+- Any real agent claim in the record. Measured 2026-08-27: **4 clearances, all four staged by us,
+  `clear: 0`.** Nothing has ever passed the gate, because nothing real has ever gone through it.
 
 ## Run
 
 ```bash
-python3 contract/eligibility.py         # 3 of 3 with GCP, 1 of 3 cold
-./tests/test_auth_gate.sh               # every mutating route rejects anon
+python3 contract/eligibility.py         # 3 of 3 with GCP, 1 of 3 cold (exit 1)
+./tests/test_auth_gate.sh               # every mutating route rejects anon · LOCALLY
 curl -sS "$(cat .cloud_run_url)/health"
 ```
+
+> **Read the second line honestly.** `test_auth_gate.sh` is green against a local server. Probed
+> against the deployed service on 2026-08-27, anonymous `POST /prove` returned **201**, not 401.
+> The gate is correct in `cloud/service.py`; the running revision is behind it on that one route.
+> A green local test is not a statement about production.
