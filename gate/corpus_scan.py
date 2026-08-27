@@ -115,7 +115,7 @@ def render(r: dict) -> str:
     L.append("  of what remains above is still citations rather than claims. n=13 is far")
     L.append("  too small to state a rate, and this tool will not print one.")
     L.append("")
-    L.append("  Run it on yours:  python3 gate/corpus_scan.py --db <your.db> --code-root <dir>\n")
+    L.append("  Run it on yours:  witness-corpus --db <your.db> --code-root <dir>\n")
     return "\n".join(L)
 
 
