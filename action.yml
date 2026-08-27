@@ -1,0 +1,75 @@
+name: 'Agent Work Record Witness'
+description: 'Probe an agent PR done-report against the repo object, hold what is false, and record the decision.'
+author: 'Morkeeth'
+branding:
+  icon: 'shield'
+  color: 'green'
+
+inputs:
+  pr-body:
+    description: 'The agent done-report to probe. Normally github.event.pull_request.body.'
+    required: true
+  policy-url:
+    description: 'Witness gateway base URL. Unset means enforce the local probe only and record nothing.'
+    required: false
+    default: ''
+  api-token:
+    description: 'Gateway token. Unset is allowed only when the gateway runs open.'
+    required: false
+    default: ''
+  pr-number:
+    description: 'PR number, recorded on the decision.'
+    required: false
+    default: ''
+  repo:
+    description: 'owner/name, recorded on the decision.'
+    required: false
+    default: ''
+
+outputs:
+  gate:
+    description: 'PASS, HOLD or BLOCK from the local probe.'
+    value: ${{ steps.probe.outputs.gate }}
+
+runs:
+  using: composite
+  steps:
+    # The gate ships WITH the action. The workflow used to call `python3
+    # gate/outcome_gate.py`, which exists only in the vendor's repo, so an installed
+    # workflow died with Errno 2 on its first PR — and `|| true` swallowed that into
+    # a JSONDecodeError from the next step. $GITHUB_ACTION_PATH is this action's own
+    # checkout; the probes still run against the CALLER's working directory.
+    - id: probe
+      shell: bash
+      env:
+        PR_BODY: ${{ inputs.pr-body }}
+      run: |
+        set -uo pipefail
+        FINDINGS="${RUNNER_TEMP:-/tmp}/hold-findings.json"
+        echo "HOLD_FINDINGS=$FINDINGS" >> "$GITHUB_ENV"
+
+        # The gate exits non-zero when it BLOCKS, which is a verdict, not a crash.
+        # So the exit code is captured rather than trusted, and the findings file is
+        # what decides: a missing or unparseable file means the gate did not run, and
+        # the post step says so loudly instead of continuing.
+        set +e
+        printf '%s' "$PR_BODY" | python3 "$GITHUB_ACTION_PATH/gate/outcome_gate.py" --json > "$FINDINGS"
+        gate_rc=$?
+        set -e
+        echo "gate exit ${gate_rc}"
+
+        if [ ! -s "$FINDINGS" ]; then
+          echo "::error title=Witness gate did not run::The gate produced no findings (exit ${gate_rc}). This is a broken install, not a clean PR."
+          exit 1
+        fi
+        echo "gate=$(python3 -c 'import json,os;print(json.load(open(os.environ["HOLD_FINDINGS"]))["gate"])')" >> "$GITHUB_OUTPUT"
+
+    - id: record
+      shell: bash
+      env:
+        HOLD_POLICY_URL: ${{ inputs.policy-url }}
+        HOLD_API_TOKEN: ${{ inputs.api-token }}
+        PR_BODY: ${{ inputs.pr-body }}
+        PR_NUMBER: ${{ inputs.pr-number }}
+        REPO: ${{ inputs.repo }}
+      run: python3 "$GITHUB_ACTION_PATH/gate/post_clearance.py"

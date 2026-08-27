@@ -408,23 +408,39 @@ class Handler(BaseHTTPRequestHandler):
                 actor = (body.get("actor") or "break-glass").strip()
                 if not cid or not reason:
                     return self._send(400, {"error": "clearance_id and reason required"})
-                # mark clearance closed if present
+                # An exception must name what it let through. Read the clearance FIRST
+                # so pr/repo/session are inherited from it: an auditor reading the
+                # exceptions alone could not otherwise see which PR was merged past a
+                # hold without joining back on clearance_id, and the break-glass caller
+                # has no reason to retype what the record already knows.
+                held = None
+                try:
+                    for row in _store().all():
+                        if row.get("id") == cid and row.get("kind") == "clearance":
+                            held = row
+                            break
+                except Exception:
+                    held = None
                 rec = make_exception_record(
                     clearance_id=cid,
                     reason=reason,
                     actor=actor,
-                    pr=body.get("pr"),
-                    repo=body.get("repo"),
+                    pr=body.get("pr") or (held or {}).get("pr"),
+                    repo=body.get("repo") or (held or {}).get("repo"),
                 )
+                if held is not None:
+                    rec["session"] = (held.get("session") or None)
+                    rec["traceable"] = bool(held.get("session"))
+                    rec["excepted_decision"] = held.get("decision")
+                else:
+                    rec["clearance_missing"] = True
                 try:
-                    for row in _store().all():
-                        if row.get("id") == cid and row.get("kind") == "clearance":
-                            closed = dict(row)
-                            closed["open"] = False
-                            closed["kind"] = "clearance"
-                            closed["closed_by_exception"] = True
-                            _store().put(closed)
-                            break
+                    if held is not None:
+                        closed = dict(held)
+                        closed["open"] = False
+                        closed["kind"] = "clearance"
+                        closed["closed_by_exception"] = True
+                        _store().put(closed)
                     sid = _store().put(rec)
                     rec["store_id"] = sid
                 except Exception as e:

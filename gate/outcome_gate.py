@@ -57,8 +57,22 @@ def check_report(report: str, repo: str = "."):
                                 f"git cat-file -t {sha}",
                                 "is a commit" if ok else "NOT a commit in this repo"))
 
-    # 2. Claimed file paths — "wrote/added/created/updated <path.ext>" or a backticked path
-    for m in re.finditer(r'(?:wrote|added|created|updated|added the file|notes? (?:at|to))\s+`?([\w./-]+\.\w{1,6})`?', report, re.I):
+    # 2. Claimed file paths — "wrote/added/created/updated <path.ext>", including the
+    #    natural-English forms an agent actually writes: "added the case to tests/x.py".
+    #
+    #    THE PERVERSE INCENTIVE THIS CLOSES. The pattern used to require the path to
+    #    follow the verb immediately, so "wrote foo.py" was probed and "added the case
+    #    to foo.py" was not. An agent whose report was loosely worded therefore got
+    #    FEWER probes than one that was precise — the gate rewarded vagueness. Found on
+    #    the Northwind end-to-end run 2026-08-27, where a true claim went unprobed.
+    #
+    #    The filler is a closed whitelist, not \w+, so the match cannot leap across a
+    #    sentence and attribute an unrelated path to this verb. A wrongly-probed path
+    #    is a false BLOCK on someone's good PR, which costs more than a missed probe.
+    _FILLER = (r"(?:(?:the|a|an|new|another|case|cases|test|tests|file|files|line|lines|"
+               r"note|notes|entry|section|coverage|it|to|in|into|at|for|of|and)\s+){0,4}")
+    for m in re.finditer(r'(?:wrote|added|created|updated|extended)\s+' + _FILLER +
+                         r'`?([\w./-]+\.\w{1,6})`?', report, re.I):
         path = m.group(1)
         ok = os.path.exists(os.path.join(repo, path))
         findings.append(Finding(f"wrote {path}", PASS if ok else BLOCK,
