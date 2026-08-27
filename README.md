@@ -1,263 +1,247 @@
 # THE AGENT WORK RECORD WITNESS
 
-**The system of record for what your agent workforce actually did** — who claimed what, whether
-the object agreed, whether the work survived, and the session behind every claim.
+**Run your agents. Check the math.**
 
-Built for **All Things Agentic** (Devpost · **Aug 31 2026, 5:00pm PT**) · Track: **Fortified Enterprise Fleet**.
+Every company can now run hundreds of coding agents. Not one of them can check the math
+afterwards. They can see seats and spend. They cannot see whether the work an agent said it did,
+it did.
 
-> You can see how many agent seats you bought. You cannot see what those agents actually did,
-> or how much of what they reported was true. Now you can.
+This is the record of what an agent workforce actually did: **who claimed what, whether the
+object agreed, who overrode a hold and why, and the session behind every entry.**
 
-**Console (Cloud Run):** https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/
-**Gateway health:** https://fleet-wedge-33kamss2jq-uc.a.run.app/health
-
-```bash
-curl -s https://fleet-wedge-33kamss2jq-uc.a.run.app/health
-curl -s https://fleet-wedge-33kamss2jq-uc.a.run.app/queue
-open "https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/"
-```
-
-> **Naming.** The product is THE AGENT WORK RECORD WITNESS. **"Hold" is the name of the queue
-> inside it** — the list of claims that did not survive their own probe. It is a route and a
-> screen, not the product.
-
-> **Deploy note:** the live URL serves the Gateway and the console. Re-deploy with
-> `./scripts/deploy_cloud_run.sh` after local changes (needs `.hold_api_token`).
+Built for **All Things Agentic**, Fortified Enterprise Fleet track.
+Live: https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/
 
 ---
 
 ## The problem
 
-Enterprises bought coding-agent seats. They see spend. They cannot govern whether agent work is
-**true** — before it merges, and after. An agent reports *"Fixed the race. 214 tests pass.
-Committed as `deadbee`. Deployed."* — and today the only way to know is to open the repo by hand.
-With overnight fleets and auto-merge, that prose is an ungoverned production surface, and once it
-scrolls past, nothing remembers it.
+An agent writes a sentence about work it did. **Nothing checks the sentence against the work.**
 
-Four different people arrive at the same question from four directions — the regulator, the VP Eng
-after an incident, the CFO at renewal, and your own customer's procurement. See
-[`docs/WHY-THIS-MATTERS.md`](docs/WHY-THIS-MATTERS.md); each force is stated with its weakness.
+> *Fixed the auth race and shipped. Committed as `a41c9f2`. Wrote `src/cache.py`. Updated
+> `src/validators.py`. All 14 tests pass.*
 
-## What it is
+Real SHA was different. The repo has `validate.py`, not `validators.py`. The suite is 9 tests and
+was never run. **Every word around the false parts is plausible**, and a human reviewer reads the
+sentence, not the hash.
 
-**A record, with a gate as its intake.**
+Spend dashboards count tokens. Trace tools score reasoning. Diff review reads code. **None of
+them checks a claim against the object.**
 
-| Surface | Job |
+## Why four different people are asking for this
+
+| Who asks | Their sentence |
 |---|---|
-| **The record** Firestore | Every claim, its verdict, its break-glass reason. The thing that accumulates. |
-| **The join** | A held claim opens back to the session that produced it. Nobody else holds the transcript. |
-| **Console** `/hold/` | The Hold queue. Empty = calm. Break-glass + audit when not. |
-| **Gateway** `POST /clearance` | Claim vs object (`git cat-file` / path). CLEAR or HOLD. |
-| **Action** `.github/workflows/outcome-gate.yml` | Agent-scoped check → posts to the Gateway. |
-| **Export** `GET /audit/export` | The compliance artifact an auditor asks for. |
+| The regulator | *prove no agent shipped unverified code to production* |
+| The VP Eng, after an incident | *what did the agent think it was doing?* |
+| The CFO | *we bought 10x, where did it go?* |
+| Your own customer, mid-deal | *did AI write this, and who checked it?* |
 
-Journey: [`docs/USER-JOURNEY.md`](docs/USER-JOURNEY.md) · Architecture: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) ·
-Pitch: [`SUBMISSION-PACK.md`](SUBMISSION-PACK.md) · Product: [`hack.md`](hack.md) **(canonical)**
-
-**The twist — not stageable:** the verification demo includes confident "done" claims **this fleet
-made building it** — blocked against the real object. The tool catches its own makers.
-
-```bash
-python3 -m gate.tonight_cases   # the logged case series: agents confidently wrong, the object right
-```
+Four buyers, four unrelated forces, **one missing artifact**. Full argument with each weakness
+stated: [`docs/WHY-THIS-MATTERS.md`](docs/WHY-THIS-MATTERS.md).
 
 ---
 
-## Quickstart
+## How a person actually uses it
 
-### Prerequisites
+Full journey: [`docs/USER-JOURNEY.md`](docs/USER-JOURNEY.md). Three moments, and only three.
 
-Python 3.11+, then **one of two credential paths** — `wedge` and `prove` need a Gemini call and
-will not run without either.
+**Week one, the engineer.** Their agent opens a pull request. A required check probes each claim
+against the repo. `a41c9f2` is not a commit. The merge stops. They see a red check with two lines
+under it, fix it in four minutes, and never think about it again. **That is their entire
+relationship with this product, forever**, which is why it survives contact.
 
-| Path | Set up | You also get |
-|---|---|---|
-| **A · Google Cloud (tried first)** | `gcloud auth application-default login` on a project with Vertex + Firestore | eligibility **3 of 3**. Nothing to place on disk. Billed, ~$0.0001 per classification. |
-| **B · AI Studio key (free fallback)** | Free key from [aistudio.google.com/apikey](https://aistudio.google.com/apikey) → save it alone into `~/.config/keys/gemini.key` | eligibility stays **1 of 3**. Free tier is 20 requests/day/model. |
+**Week four, the platform lead.** They open the console and see what no tool they have bought can
+show them: how many claims the fleet made, how many the object disagreed with, **which of those
+open back to the session that produced them**, and who overrode a hold with the reason they typed.
 
-`contract/gemini_impl.py` tries Vertex first and drops to the key file only if that fails, so
-path A alone is enough and the key file is never required when ADC is present.
+**Week twelve, the export.** An append-only record, per claim, with the run behind each entry.
+**That is the answer to "prove no agent shipped unverified", and it is a document.**
 
-⚠️ **With neither, `fleet_cli.py wedge` exits 1 with `{"error": "no rankable prompt in corpus"}`.**
-Measured on a cold clone 2026-08-27. The corpus is fine — the message is misleading: nothing was
-rankable because no Gemini call could be made. Set up A or B first.
+**The join is moment two, and it is the part no CI product can copy.** Zenity governs agent
+actions. Norm Ai does content compliance. Qodo reviews the diff. Langfuse scores the trace.
+**None of them holds the agent's transcript.**
 
-```bash
-git clone https://github.com/Morkeeth/hack-fleet-ata
-cd hack-fleet-ata
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+---
 
-# path A (preferred):
-gcloud auth application-default login
-# ...or path B:
-mkdir -p ~/.config/keys && printf '%s' "YOUR_AI_STUDIO_KEY" > ~/.config/keys/gemini.key
+## Try it in 30 seconds, with no GitHub and no account
 
-python3 fleet_cli.py wedge                      # field of 2 · operator a · VERIFIED-BY-REPO
-python3 fleet_cli.py prove && open surface/org-proof.html
-```
-
-### Google eligibility — read the two numbers
-
-`contract/eligibility.py` **calls** all three services on the path a judge runs. Import is not
-call, and credentials you do not have do not count, so it reports two different honest answers:
-
-| You run it | It prints | Exit |
-|---|---|---|
-| With ADC on a project with Firestore + Vertex | **3 OF 3 MET** | 0 |
-| Cold clone, no GCP credentials | **1 OF 3 MET** (ADK only) | **1** |
-
-Both were run on 2026-08-27. **A judge who clones this cold and runs it will see 1 of 3 and a
-non-zero exit — that is the designed, honest result, not a broken build.** The same
-object-over-claim rule this product enforces is applied to its own eligibility check.
-
-**Two of the three are verifiable with no credentials at all**, against the running deployment —
-Firestore as the live store, and the ADK agent constructed:
+The gate is one standard-library Python file. It reads an agent's done-report on stdin and probes
+every claim in it against the repository you are standing in.
 
 ```bash
-curl -s https://fleet-wedge-33kamss2jq-uc.a.run.app/health
-# {"ok":true,"store":"firestore","agent":{"class":"...LlmAgent","constructed":true,
-#  "invoked":true,"last_run":{...}}, ...}
+git clone https://github.com/Morkeeth/agent-work-record-witness-ata && cd agent-work-record-witness-ata
+pip install .
+
+cd any-repo-you-have
+echo "Fixed the race. Committed as deadbee. Wrote docs/auth.md." | witness
 ```
 
-**Read the `agent` field carefully — it is the honest one.** Until `bd436e5` this service reported
-`"agent": "google.adk.agents.llm_agent.LlmAgent"`, a flat string produced by an *import*, while no
-model had reasoned about anything. It now reports a run receipt: `constructed`, `invoked`, and the
-`last_run` itself. A real run is `POST /agent/run` and it leaves a record.
+Or with no install at all, from that clone: `python3 -m gate.outcome_gate --json`.
 
-⚠️ **The deployed revision is behind the repo on this.** Curling the live URL on 2026-08-27 still
-returned the flat string. The receipt shape is in `cloud/service.py` and is not deployed yet.
+> **On PyPI:** the wheel builds, installs into a clean environment and the `witness` command works
+> from an unrelated repository — all verified. The name `agent-work-record-witness` is unclaimed.
+> **It is not published yet**, so this README does not print `pip install <name>`: that line would
+> 404, and writing a command we have not run is the defect this tool exists to catch.
 
-`/health` does **not** evidence the Gemini requirement — no Gemini call happens on that path, and
-today none happens inside the container at all. Requirement 1 is exercised by
-`contract/eligibility.py`, which calls Vertex directly. Do not read a `/health` 200 as 3 of 3.
-
-```bash
-# To see 3 of 3 locally:
-gcloud auth application-default login
-gcloud config set project hack-fleet
-python3 contract/eligibility.py
 ```
+  BLOCK         committed as deadbee
+                probe: git cat-file -t deadbee  ->  NOT a commit in this repo
+  BLOCK         wrote docs/auth.md
+                probe: stat docs/auth.md  ->  NO SUCH PATH in the repo
+  GATE: BLOCK — 2 claim(s) the repo disproves. Do not auto-merge.
+```
+
+**Exit code is the verdict, not an error channel:** `0` PASS, `1` BLOCK, `2` HOLD. A crash is a
+different thing from a claim being false, which is the rule this tool exists to enforce, so it is
+enforced on itself. Pipe `--json` for machine output.
+
+That is the whole product's floor. Everything below adds a record, a queue and an audit trail on
+top of it; nothing below changes what the gate decides.
+
+---
 
 ## Install it in your own repo
 
-Everything above is how you run *this* repo. This is how a customer adopts the product.
-Nothing is vendored — the probe ships inside the action.
-
-> ⚠️ **One blocker, and it is not a code fix.** This repo is **private**. GitHub cannot resolve
-> `uses: Morkeeth/hack-fleet-ata@main` from outside, so no external customer can install the
-> workflow below until the repo is public or the action is published to the Marketplace. The path
-> itself works — it is dogfooded by this repo's own `.github/workflows/outcome-gate.yml` on every
-> agent PR — but adoption by a stranger is gated on that one decision.
-
-**1 · Add the workflow.** Copy [`examples/customer-workflow.yml`](examples/customer-workflow.yml)
-to `.github/workflows/agent-clearance.yml` in your repo. Twelve lines:
+One file. Five minutes. No dashboard for anyone but the platform lead.
 
 ```yaml
+# .github/workflows/witness.yml
+name: Agent Work Record Witness
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+jobs:
+  verify-claims:
+    if: contains(join(github.event.pull_request.labels.*.name, ','), 'agent')
+    runs-on: ubuntu-latest
+    steps:
       - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: Morkeeth/agent-work-record-witness-ata@main
         with:
-          fetch-depth: 0                    # the SHA probe needs history, not a shallow tip
-
-      - uses: Morkeeth/hack-fleet-ata@main
-        with:
-          pr-body:    ${{ github.event.pull_request.body }}
-          policy-url: ${{ vars.HOLD_POLICY_URL }}
-          api-token:  ${{ secrets.HOLD_API_TOKEN }}
-          pr-number:  ${{ github.event.pull_request.number }}
-          repo:       ${{ github.repository }}
+          policy-url: ${{ vars.WITNESS_POLICY_URL }}
+          api-token:  ${{ secrets.WITNESS_API_TOKEN }}
 ```
 
-It scopes itself to agent work — PRs labelled `agent`, or authored by a login containing `[bot]`.
-Human pull requests are never touched. Widen or narrow that `if:` to match how your org labels
-agent PRs.
-
-**2 · Point it at a Gateway.** Repository → Settings → Secrets and variables → Actions.
-
-| Kind | Name | Value |
+| Setting | Where | What it does |
 |---|---|---|
-| **Variable** | `HOLD_POLICY_URL` | your Gateway base URL, e.g. `https://<your-service>.run.app` |
-| **Secret** | `HOLD_API_TOKEN` | the token that Gateway was deployed with |
+| `WITNESS_POLICY_URL` | repo **variable** | the gateway that records decisions |
+| `WITNESS_API_TOKEN` | repo **secret** | writes are gated; without it the check still probes, nothing accumulates |
+| label `agent` | on the PR | scopes the gate to agent-authored work only |
 
-**Both are optional, and they degrade honestly.** With neither, the probe still runs and the check
-still fails on a false claim — you get the gate, and nothing accumulates. If the gate cannot run at
-all, the action fails the check with *"Witness gate did not run — this is a broken install, not a
-clean PR"* rather than passing you green on nothing.
+**Then make it binding, in this order.** Run in `report-only` for a week and watch the queue.
+Only when you are ready, require `verify-claims` in branch protection. **Until you require it,
+it is advisory, and this repo will not call it a required check.**
 
-**3 · Run your own Gateway.** `./scripts/deploy_cloud_run.sh` deploys the service; set
-`HOLD_API_TOKEN` in its environment to the same value as the secret above.
+**Traceability.** Put the session reference in the PR body and a hold opens back to the run that
+produced it. Leave it out and the record says **untraceable**, honestly. **No identifier is ever
+invented for you.**
 
-**4 · Make it binding — optional, and this is the honest order.** Start in report-only
-(`POST /policy {"mode": "report-only"}`) and watch the queue for a week. Only then Settings →
-Branches → **Require status checks to pass** → select **`verify-claims`**, and switch to
-`{"mode": "enforce"}`. Until you do that the check is advisory, and neither the repo nor this
-README will call it a required check.
+### Which agent harnesses does this work with?
 
-**What you see on the first held claim.** An agent opens a PR whose body says it committed
-`deadbee` and wrote `docs/auth-migration.md`. `verify-claims` goes red with the probe output —
-`git cat-file -t deadbee` → not a commit; `stat` → no such path. A row appears in your Hold queue
-at `/hold/` carrying the claim, the probe, the evidence, and the session that produced it, recovered
-from a `claude.ai/code/session_...` URL or a `Claude-Session:` line in the PR body. If neither is
-present the decision is recorded as untraceable and the CI log says so — **no session id is ever
-invented.** Nobody has to read the PR body to know the claim was false. If you must ship anyway,
-break-glass takes a written reason and records it; auditors pull the history from
-`GET /audit/export`.
+Two different answers, and conflating them would overclaim.
 
-## Architecture
+**The gate is harness-agnostic.** It reads a report as text and probes the claims against git and
+the filesystem. It never parses a harness format, never reads a transcript off disk, and never
+executes report text. A done-report from any agent, or typed by a human, gets the same verdict.
 
-[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) (mermaid source) · `docs/architecture.png` (submission
-export) · journey [`docs/USER-JOURNEY.md`](docs/USER-JOURNEY.md) · company thesis
-[`docs/COMPANY.md`](docs/COMPANY.md) · build plan [`hack.md`](hack.md).
+**The session join is Claude Code only, today.** Measured against 427 real session trailers in this
+operator's repositories, every one is the shape `Claude-Session: https://claude.ai/code/session_<id>`.
+Run against other harnesses' conventions, the extractor returns nothing:
 
-Internal process logs (collab protocol, phase tracker, patent memos) are preserved under
-[`docs/internal/`](docs/internal/).
+| Harness | Gate probes claims | Hold opens back to the session |
+|---|---|---|
+| Claude Code | yes | **yes** |
+| OpenAI Codex | yes | no — `Task: task_<id>` is not matched |
+| Cursor | yes | no — `composerId: <uuid>` is not matched |
+| GitHub Copilot | yes | no — emits no session reference at all |
+| Devin | yes | no — `app.devin.ai/sessions/<id>` is not matched |
+| Aider | yes | no — `chat-id: <id>` is not matched |
 
-## Pre-existing code (disclosure)
+So a Codex or Cursor shop gets the gate and the record, and their rows read **untraceable**. That is
+the honest state, not a limitation we discovered on camera. Adding a harness is one regex and a
+fixture; the reason we have not is that we have not seen real trailers from those harnesses to
+match against, and a pattern written against a guessed format is exactly the defect this tool
+reports in other people's tools.
 
-| Source | Role |
-|---|---|
-| [transcripto](https://github.com/Morkeeth/transcripto) | corpus spine / authorship gating |
-| agent-claims-inbox (local) | Cloud Run + ADK shell patterns |
+---
 
-Product logic (episodes, pairwise rank, propagate, org-proof, the claim gate, the join) is **new in
-this repo**.
+## The tech
+
+| Requirement | What it is | How to check |
+|---|---|---|
+| **Gemini 3.5, Vertex** | task-class classification | **6 of 8** on the repo's own control set, source `gemini:vertex:gemini-3.5-flash`. Returns `UNMEASURED` when no credential resolves, and never caches it. |
+| **Google ADK** | the agent genuinely runs | `POST /agent/run` → **7 events, 3 tool calls**, via `google.adk.runners.Runner`. `/health` carries the run receipt. Remove credentials and it returns 502 with no tool calls. |
+| **Google Cloud** | Firestore + Cloud Run | live `/health`, `/audit/export` |
+
+```bash
+python3 contract/eligibility.py          # 3 of 3 with GCP, 1 of 3 cold. Both correct.
+./tests/test_auth_gate.sh                # every mutating route rejects anonymous
+PYTHONPATH=. python3 tests/test_record.py
+curl -sS https://fleet-wedge-33kamss2jq-uc.a.run.app/health
+```
+
+**Do not read a `/health` 200 as 3 of 3.** It evidences Firestore and the agent. It says nothing
+about Gemini.
+
+**The model gets no veto.** Release authority is a deterministic object probe. The agent explains
+a decision and never overrules one, and the gate never executes text from a report.
+
+---
 
 ## Honest state, measured 2026-08-27
 
-These are probes run today, not numbers quoted from a note.
+Written here rather than buried, because a product about false claims does not get to make any.
 
-- **The record holds no real agent claims.** 4 clearances, **all four staged by us**
-  (`demo-seed` ×2, `api`, `eyes-probe`). `GET /audit` reports `clear: 0` — **nothing has ever
-  passed the gate, because nothing real has ever gone through it.**
-- **The check has never fired on a real pull request.**
-- **`GET /audit` returns 31 events; `GET /audit/export` returns 6.** Two judge-facing endpoints
-  disagree about how many events exist. Open defect.
-- **No stranger can install it yet, and the reason is not code.** The composite action fixed the
-  vendored-path defect, but this repo is **private**, so `uses: Morkeeth/hack-fleet-ata@main` does
-  not resolve for anyone outside. Adoption is gated on making the repo public or publishing the
-  action.
-- **The deployed revision is behind the repo on one route.** Anonymous `POST /prove` returns
-  **201** against the live service; it is gated in `cloud/service.py`. `tests/test_auth_gate.sh`
-  is green — against a local server. A green local test is not a statement about production.
-- **The agent is now genuinely invoked, and the record proves it.** `GET /audit` carries an
-  `agent_run` record: `invoked: true`, `framework: google.adk.runners.Runner`, model
-  `gemini-3.5-flash-lite`, three tool calls, `app_name: agent-work-record-witness`. This is the
-  strongest thing in the repo and it is live. What is *not* live is the `/health` receipt shape
-  that reports it — see the caveat above.
-- Demo field size is **2** fixtures — enough for the mechanism; org-population claims need **n≥3**
-  (`org_claim: UNMEASURED_FOR_ORG_CLAIM`).
-- Classifier C1 can stay red — do not seal "8/8" (`scripts/variance_appendix.py`).
-- v1 verifies **checkable code claims** (commit exists, test ran, file changed, deploy serves).
-  Claims with no artifact witness (*"I analyzed the logs"*) return `UNVERIFIABLE` rather than fake
-  a verdict.
-- **A cold clone with no credentials blames the wrong thing.** `python3 fleet_cli.py wedge`
-  with neither ADC nor a key file exits 1 saying `no rankable prompt in corpus`. The corpus is
-  intact; the real cause is that no Gemini call was possible. Separately,
-  `contract/gemini_impl.py` calls `_key()` outside its try block, so the key path can raise an
-  uncaught `FileNotFoundError`. Both open.
-- **Installs by a person who is not the author: zero.** An end-to-end run against a foreign repo
-  was completed on 2026-08-27, and it does not change this number: we wrote the test organisation
-  and scripted its pull requests. What that run proves is the chain, not adoption.
+**Real:** the gate, enforcing. The trace join. The Hold queue. Break-glass with a required reason.
+The audit export. Gemini measured. The ADK Runner invoked. Every mutating route returns 401 to an
+anonymous caller.
+
+**Not real yet:**
+
+- **`clear: 0` in production.** Nothing has ever passed the live gate, because nothing real has
+  ever gone through it.
+- **Installs by anyone who is not the author: zero.** We ran the full chain against a separate
+  test company, false claim held and true claim cleared, then withdrew the headline: **we wrote
+  that company and scripted its pull requests. It proves the chain, not adoption.**
+- **One shared bearer token**, not per-agent identity.
+- **No OpenTelemetry, no Agent Registry, no Model Armor.** Roadmap, never claimed.
+
+**Enterprise surfaces, measured:** Gateway, Observability and Identity are partial. Runtime became
+partial today. Registry and Model Armor are absent and stay on the roadmap. Full measurement:
+[`docs/GEAP-GAP-2026-08-27.md`](docs/GEAP-GAP-2026-08-27.md).
+
+**One finding worth reading**, because it is what this product is about, found in this product:
+the no-credential classifier fallback was **row-for-row identical to this repo's own declared
+negative control**, a stub carrying zero information. It scored 4 of 8 against a 3 of 8 baseline
+**purely by defaulting**. The benchmark was being won by something already labelled meaningless.
+
+---
+
+## The impact, stated at the size it actually is
+
+**What is proven:** a deterministic gate can catch a plausible false claim that a human reviewer
+would sign off, and the decision can be opened back to the run behind it.
+
+**What is not proven:** that anyone other than the author wants it. That number is zero and it is
+the only number that matters next.
+
+**What would change that:** one install by one person who is not us.
+
+---
+
+## Where things are
+
+| | |
+|---|---|
+| [`hack.md`](hack.md) | canonical product doc. If anything disagrees with it, it wins. |
+| [`docs/USER-JOURNEY.md`](docs/USER-JOURNEY.md) | one person, one Monday |
+| [`docs/WHY-THIS-MATTERS.md`](docs/WHY-THIS-MATTERS.md) | four buyers, four forces |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | the system, with roadmap edges dashed |
+| [`docs/TESTCO-RUN-2026-08-27.md`](docs/TESTCO-RUN-2026-08-27.md) | the end-to-end run, both directions |
+| `docs/internal/` | process history, kept for provenance, not current |
 
 ## License
 
-TBD.
+MIT. Full text in [`LICENSE`](LICENSE).

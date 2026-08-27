@@ -146,8 +146,19 @@ def gate(report, repo=".", *, as_json: bool = False):
     return 0
 
 
-if __name__ == "__main__":
-    args = [a for a in sys.argv[1:] if a != "--json"]
-    as_json = "--json" in sys.argv[1:] or os.environ.get("OUTCOME_GATE_JSON") == "1"
+def main(argv: list[str] | None = None) -> int:
+    """Console entry point. Reads a done-report from argv or stdin, returns the exit code.
+
+    Exit codes are the verdict, not an error channel: 0 PASS, 1 BLOCK, 2 HOLD. A crash
+    is a different thing from a claim being false, which is the rule this tool exists
+    to enforce, so it is enforced here too.
+    """
+    argv = sys.argv[1:] if argv is None else argv
+    args = [a for a in argv if a != "--json"]
+    as_json = "--json" in argv or os.environ.get("OUTCOME_GATE_JSON") == "1"
     report = sys.stdin.read() if not args else " ".join(args)
-    sys.exit(gate(report, os.environ.get("GATE_REPO", "."), as_json=as_json))
+    return gate(report, os.environ.get("GATE_REPO", "."), as_json=as_json)
+
+
+if __name__ == "__main__":
+    sys.exit(main())

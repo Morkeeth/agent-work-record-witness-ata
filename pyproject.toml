@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "agent-work-record-witness"
+version = "0.1.0"
+description = "Probe an agent's done-report against the repo object. Hold what the object disproves."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+authors = [{ name = "Oscar Morke" }]
+keywords = ["agents", "verification", "ci", "code-review", "governance"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Software Development :: Quality Assurance",
+]
+# The gate is standard library only, on purpose: it runs in a CI step with no install.
+dependencies = []
+
+[project.optional-dependencies]
+# Only the hosted Gateway needs these. The gate itself never does.
+gateway = ["google-adk>=1.0", "google-cloud-firestore>=2.0", "google-auth>=2.0"]
+
+[project.scripts]
+witness = "gate.outcome_gate:main"
+
+[project.urls]
+Homepage = "https://github.com/Morkeeth/hack-fleet-ata"
+Source = "https://github.com/Morkeeth/hack-fleet-ata"
+
+[tool.setuptools]
+packages = ["gate"]

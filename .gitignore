@@ -2,3 +2,6 @@ __pycache__/
 *.pyc
 .DS_Store
 .hold_api_token
+dist/
+build/
+*.egg-info/
