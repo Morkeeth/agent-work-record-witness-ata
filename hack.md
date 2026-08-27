@@ -182,6 +182,18 @@ Labeled PR → `verify-claims` red → Action POSTs to `/clearance` → row appe
 with a reason → `/audit/export` shows both records. Every part exists. **The chain has run zero times.**
 **Done-when:** one red run and one green run, both witnessed on GitHub. **⚑ opens the PR.**
 
+### Slice 2.5 — the record surface  ✅ BUILT 2026-08-27
+`fleet/record.py` joins gate decisions into a per-actor view: claims, held, honesty rate,
+traceable rate, overrides. Probe noise excluded, thin denominators labelled, practice
+attached and never merged (different population). 23/23 tests.
+
+**🔴 ITS FIRST REAL ANSWER: the store holds ZERO real agent claims.** 48 records; only 4 are
+clearances and all 4 are staged (3 carry `deadbee`, 1 is actor `phase-a`); 20 are `prove`
+probes; 18 have no `kind`. **The Audit tab's headline percentage is computed entirely over
+demo rows.** The record is not broken. The record is telling the truth: nothing real has
+happened yet, because the chain has never run on a real PR. That is Slice 2, and Slice 2
+needs Oscar's click.
+
 ### Slice 3 — survival on the record
 Coach's survival metric per actor in the queue. Turns a gate into a fleet.
 **Done-when:** the queue shows, per actor, what share of their claims survived.
