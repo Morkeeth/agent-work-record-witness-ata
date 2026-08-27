@@ -58,11 +58,32 @@ class JsonlStore:
         self._lock = threading.Lock()
 
     def put(self, record: dict) -> str:
+        """Append, or REPLACE the row that already carries this id.
+
+        FirestoreStore.put does `document(id).set(record)`, which overwrites. This
+        store appended unconditionally, so the two backends disagreed about what an
+        update means: closing a hold via /break-glass wrote a SECOND row with the
+        same H- id, one open and one closed. /audit/export then carried the same
+        clearance twice and any count over the record was inflated. Measured on the
+        Northwind end-to-end run 2026-08-27: 1 hold, 2 rows, 2 HOLDs in the export.
+
+        A record product must not double-count its own rows, and the jsonl path is
+        the one a customer without GCP actually runs.
+        """
         record = dict(record)
         record.setdefault("stored_at", _now())
         with self._lock:
-            n = sum(1 for _ in open(self.path)) if os.path.isfile(self.path) else 0
-            record["id"] = record.get("id") or f"P{n + 1}"
+            rows = self.all()
+            explicit = record.get("id")
+            if explicit and any(r.get("id") == explicit for r in rows):
+                replaced = [record if r.get("id") == explicit else r for r in rows]
+                tmp = self.path + ".tmp"
+                with open(tmp, "w") as f:
+                    for r in replaced:
+                        f.write(json.dumps(r) + "\n")
+                os.replace(tmp, self.path)
+                return explicit
+            record["id"] = explicit or f"P{len(rows) + 1}"
             with open(self.path, "a") as f:
                 f.write(json.dumps(record) + "\n")
         return record["id"]
