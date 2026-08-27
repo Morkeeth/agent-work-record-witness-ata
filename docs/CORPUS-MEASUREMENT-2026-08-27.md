@@ -1,12 +1,22 @@
-# What 144,306 real agent messages say about claim-checking
+# What 78,618 real agent messages say about claim-checking
 
 **Result: we cannot publish a base rate yet, and the reason is the finding.**
-Measured against `~/.trace/trace.db` — 144,306 messages, 2,672 transcripts, 40 repos, 100 sessions.
+Measured against `~/.trace/trace.db`: **78,618 messages examined, of 144,306 in the corpus** —
+2,672 transcripts, 40 repos, 100 sessions.
+
+> **The heading used to say 144,306, and that was our own defect.** 144,306 is `count(*)` across
+> every role. The scan examines
+> `role='assistant' and is_human=0 and text is not null and length(text)>20` — 65,530 user messages
+> and 158 near-empty assistant messages are excluded, leaving 78,618. Quoting the corpus total
+> beside a result computed on 54% of it is an unchecked denominator **in a tool whose entire subject
+> is unchecked denominators**, and a judge who ran the scan after reading the old heading would have
+> caught us on camera. Caught by another lane, verified at the object, and both numbers now travel
+> together everywhere — the scan itself prints them and its filter.
 Denominator fixed in advance: [`CORPUS-PREREGISTRATION-2026-08-27.md`](CORPUS-PREREGISTRATION-2026-08-27.md).
 
 ## The number that looked like a headline
 
-Running the shipped probe, `gate/outcome_gate.py::check_report`, over every assistant message whose
+Running the shipped probe, `gate/outcome_gate.py::check_report`, over every examined message whose
 `cwd` is a git repo that still exists:
 
 ```

@@ -72,9 +72,10 @@ actions. Norm Ai does content compliance. Qodo reviews the diff. Langfuse scores
 
 ## Start here: measure the fleet you already have
 
-The one thing on this page you cannot get anywhere else. We pointed the gate at 144,306 real agent
-messages — a month of one fleet's actual output, not a fixture — and the first thing it found was
-our own defect.
+The one thing on this page you cannot get anywhere else. We pointed the gate at **78,618 real agent
+messages, of 144,306 in the corpus** — a month of one fleet's actual output, not a fixture. Both
+numbers travel together because a result quoted against the wrong denominator is precisely what
+this product exists to catch. The first thing it found was our own defect.
 
 ```bash
 pip install -e .
@@ -82,7 +83,9 @@ witness-corpus --db ~/.trace/trace.db --code-root ~/CODE
 ```
 
 ```
-  78,618 assistant messages · 83 repos on disk
+  78,618 messages examined, of 144,306 in the corpus · 83 repos on disk
+  filter: role='assistant' and is_human=0 and text is not null and length(text) > 20
+  52,878 of those were written in a directory that is still a git repo today
 
   RAW          247 sha claims ·  103 disagree · 41.7%
   CORRECTED    237 sha claims ·   20 disagree · 8.4%

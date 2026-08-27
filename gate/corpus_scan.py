@@ -42,16 +42,29 @@ def git_repos(code_root: str) -> list:
 
 def scan(db_path: str, code_root: str, limit: int | None = None) -> dict:
     db = sqlite3.connect(f"file:{os.path.expanduser(db_path)}?mode=ro", uri=True)
+    # THE DENOMINATOR IS COMPUTED, NOT ASSERTED. The corpus total and the examined
+    # subset are two different numbers and a tool about unchecked denominators does
+    # not get to print only the flattering one. Found by another lane 2026-08-27:
+    # our own writeup was headed with the corpus total while the scan examined 54%
+    # of it.
+    FILTER = "role='assistant' and is_human=0 and text is not null and length(text) > 20"
+    corpus_total = db.execute("select count(*) from messages").fetchone()[0]
+    examined_total = db.execute(f"select count(*) from messages where {FILTER}").fetchone()[0]
     rows = db.execute(
-        "select id, cwd, text from messages "
-        "where role='assistant' and is_human=0 and text is not null "
-        "and length(text) > 20" + (f" limit {int(limit)}" if limit else "")).fetchall()
+        f"select id, cwd, text from messages where {FILTER}"
+        + (f" limit {int(limit)}" if limit else "")).fetchall()
     siblings = git_repos(code_root)
 
     raw_sha = raw_wrong = 0
     fixed_sha = fixed_wrong = elsewhere = 0
     skipped_machinery = 0
     seen_repo = {}
+    messages_with_a_repo = 0
+    # Receipts, not just counts. Every Finding already carries the probe that was
+    # run and what it returned; dropping them meant no surface could show a single
+    # one, and the receipt is the whole point -- a number you can click into
+    # `git cat-file -t deadbee -> NOT a commit in this repo`.
+    claims = []
 
     for _mid, cwd, text in rows:
         if not cwd:
@@ -60,6 +73,7 @@ def scan(db_path: str, code_root: str, limit: int | None = None) -> dict:
             seen_repo[cwd] = os.path.exists(os.path.join(cwd, ".git"))
         if not seen_repo[cwd]:
             continue
+        messages_with_a_repo += 1
 
         # RAW: today's behaviour — whole message, cwd only.
         for f in check_report(text, cwd):
@@ -79,9 +93,26 @@ def scan(db_path: str, code_root: str, limit: int | None = None) -> dict:
                 elsewhere += 1
             if f.verdict == "BLOCK":
                 fixed_wrong += 1
+                claims.append({
+                    "message_id": _mid,
+                    "repo": os.path.basename(cwd.rstrip("/")),
+                    "assertion": f.assertion,
+                    "verdict": f.verdict,
+                    "probe": f.probe,
+                    "evidence": f.evidence,
+                    # Which pass produced this row. RAW is the uncorrected number and
+                    # it is louder; nothing downstream may ship one without knowing
+                    # which it has.
+                    "pass": "corrected",
+                })
 
     skipped_machinery = raw_sha - fixed_sha
     return {
+        # Three populations, all printed, none inferred from another.
+        "corpus_total_messages": corpus_total,
+        "examined_messages": examined_total if limit is None else len(rows),
+        "examined_filter": FILTER,
+        "messages_in_a_live_repo": messages_with_a_repo,
         "messages": len(rows),
         "repos_on_disk": len(siblings),
         "raw_sha_claims": raw_sha,
@@ -90,6 +121,12 @@ def scan(db_path: str, code_root: str, limit: int | None = None) -> dict:
         "corrected_disagree": fixed_wrong,
         "resolved_in_a_sibling_repo": elsewhere,
         "dropped_as_machinery_or_fixture": skipped_machinery,
+        "claims_pass": "corrected",
+        "claims_listed": len(claims),
+        "claims_not_listed": max(0, fixed_wrong - len(claims)),
+        "claims_listing_rule": ("BLOCK rows from the CORRECTED pass only; PASS rows "
+                                "and every RAW-pass row are counted but not listed"),
+        "claims": claims,
     }
 
 
@@ -98,7 +135,11 @@ def render(r: dict) -> str:
         return f"{100*n/d:.1f}%" if d else "n/a"
     L = []
     L.append("\nWhat the gate finds in a real transcript corpus\n")
-    L.append(f"  {r['messages']:,} assistant messages · {r['repos_on_disk']} repos on disk\n")
+    L.append(f"  {r['examined_messages']:,} messages examined, of {r['corpus_total_messages']:,} "
+             f"in the corpus · {r['repos_on_disk']} repos on disk")
+    L.append(f"  filter: {r['examined_filter']}")
+    L.append(f"  {r['messages_in_a_live_repo']:,} of those were written in a directory that is "
+             f"still a git repo today\n")
     L.append(f"  RAW        {r['raw_sha_claims']:>5} sha claims · "
              f"{r['raw_disagree']:>4} disagree · {pct(r['raw_disagree'], r['raw_sha_claims'])}")
     L.append(f"  CORRECTED  {r['corrected_sha_claims']:>5} sha claims · "

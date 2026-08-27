@@ -13,12 +13,14 @@ Not *"does the gate work"* — it does, on a PR body, and that is easy to show. 
 We could not answer that honestly until we pointed the product at a month of real fleet output.
 So we did, and the first thing it found was our own defect.
 
-## 2. Pointed at 144,306 real agent messages
+## 2. Pointed at 78,618 real agent messages
 
 ```
 $ python3 gate/corpus_scan.py --db ~/.trace/trace.db --code-root ~/CODE
 
-  78,618 assistant messages · 83 repos on disk
+  78,618 messages examined, of 144,306 in the corpus · 83 repos on disk
+  filter: role='assistant' and is_human=0 and text is not null and length(text) > 20
+  52,878 of those were written in a directory that is still a git repo today
 
   RAW          247 sha claims ·  103 disagree · 41.7%
   CORRECTED    237 sha claims ·   20 disagree · 8.4%

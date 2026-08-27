@@ -89,8 +89,9 @@ produced it. Zenity governs agent actions. Norm Ai does content compliance. Qodo
 the diff. Langfuse scores the trace. None of them holds the agent's transcript, so none
 of them can answer what actually happened before the claim was written.
 
-Then we pointed it at 144,306 real agent messages — a month of one fleet's actual
-output — and it found our own defect first. Raw, it said 41.7% of commit claims
+Then we pointed it at 78,618 real agent messages — 144,306 sit in the corpus and the
+scan examines the assistant turns; both numbers travel together because a result
+quoted against the wrong denominator is the thing this product catches — and it found our own defect first. Raw, it said 41.7% of commit claims
 disagreed with the repo. Corrected: 8.4%. The whole gap was ours. 73 of 103 "wrong"
 claims were real commits in a DIFFERENT repo on the same disk, because an agent's cwd
 is where it was standing, not where it committed. Ten more were shas inside shell
