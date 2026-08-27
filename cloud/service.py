@@ -148,10 +148,14 @@ def run_clearance(body: dict) -> dict:
     except Exception as e:
         record["store_error"] = f"{type(e).__name__}: {e}"
 
-    # Construct ADK so /health + clearance path both exercise the agent framework
+    # Construct ADK so the clearance path exercises the agent framework. This is an
+    # IMPORT, not a run: it is recorded as `agent_class` with `agent_invoked: False`
+    # so no reader can mistake a class name for a model having reasoned about this
+    # clearance. A real run is POST /agent/run and it leaves a receipt.
     try:
         a = _agent()
-        record["agent"] = type(a).__module__ + "." + type(a).__name__
+        record["agent_class"] = type(a).__module__ + "." + type(a).__name__
+        record["agent_invoked"] = False
     except Exception as e:
         record["agent_error"] = f"{type(e).__name__}: {e}"
 
@@ -269,9 +273,19 @@ class Handler(BaseHTTPRequestHandler):
                 info["store"] = getattr(st, "backend", type(st).__name__)
             except Exception as e:
                 info["store_error"] = f"{type(e).__name__}: {e}"
+            # A class name proves an import, not a run. /health reports the last real
+            # invocation through the ADK Runner, and says so plainly when there has
+            # not been one. `agent_class` stays, labelled as what it is.
             try:
+                from cloud.agent import last_run
                 a = _agent()
-                info["agent"] = type(a).__module__ + "." + type(a).__name__
+                run = last_run()
+                info["agent"] = {
+                    "class": type(a).__module__ + "." + type(a).__name__,
+                    "constructed": True,
+                    "invoked": bool(run and run.get("invoked")),
+                    "last_run": run or "never invoked in this process — POST /agent/run",
+                }
             except Exception as e:
                 info["agent_error"] = f"{type(e).__name__}: {e}"
             info["policy"] = _policy()
@@ -284,6 +298,7 @@ class Handler(BaseHTTPRequestHandler):
                 "auth_required": bool(_api_token()),
                 "demo_seed_enabled": _demo_seed_enabled(),
                 "clearance_url": "/clearance",
+                "agent_run_url": "/agent/run",
                 "workflow": ".github/workflows/outcome-gate.yml",
             })
 
@@ -491,6 +506,20 @@ class Handler(BaseHTTPRequestHandler):
                     except Exception as e:
                         out["store_error"] = f"{type(e).__name__}: {e}"
                 return self._send(201 if out.get("ok") else 422, out)
+
+            if path == "/agent/run":
+                # The one endpoint where a model actually reasons. Gated with the
+                # other mutating routes: it spends tokens and writes a receipt.
+                if not self._require_token():
+                    return
+                from cloud.agent import run_agent
+                receipt = run_agent(prompt=(body.get("prompt") or None),
+                                    session_id=(body.get("session_id") or "witness-run"))
+                try:
+                    _store().put(dict(receipt, kind="agent_run", product="HOLD"))
+                except Exception as e:
+                    receipt["store_error"] = f"{type(e).__name__}: {e}"
+                return self._send(201 if receipt.get("invoked") else 502, receipt)
 
             if path == "/prove":
                 # Writes a record to the store, so it is gated with the other mutating routes.
