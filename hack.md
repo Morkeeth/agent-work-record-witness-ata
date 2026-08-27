@@ -136,6 +136,16 @@ January has no history. That corpus cannot be bought.
 
 ## 🚨 BLOCKERS FOUND 2026-08-27 (fix before anything else)
 
+7. **⚠️ THE LIVE SERVICE IS NOT THE FIXED SERVICE.** Probed 2026-08-27: anonymous
+   `POST /prove` against the live Cloud Run URL still returns **201**. The auth fix is
+   committed locally and **not deployed**. Do not film the live URL and claim writes are
+   locked until it is redeployed. This is now the inverse of blocker 1: the repo is ahead
+   of production instead of behind it.
+8. **Half the store is probe noise.** 48 records, of which **24 are `kind=prove`** left by
+   testing, including two from a review agent and one from my own probe today. The Audit
+   tab computes its headline percentage over these. `scripts/purge_demo_rows.py --kind prove`
+   lists them. Still a dry run, nothing deleted.
+
 1. **The product is not in git.** `cloud/hold_api.py`, `surface/hold/index.html` untracked; `service.py`, the workflow, Dockerfile, README modified and uncommitted. `origin/main` is 2 commits behind and contains no HOLD. **Cloud Run serves code that exists in no repository.**
 2. **Open write routes.** `POST /wedge` and `POST /prove` call no token check (`cloud/service.py:461,477`). `/wedge` takes an arbitrary `target` path with `apply` defaulting **True**. "Writes locked" is false, on a track called Fortified.
 3. **`docs/ARCHITECTURE.md` diagrams the wrong product** and is the designated artifact for the 30% Architecture score.

@@ -22,8 +22,15 @@ DEV_ACTORS = {"phase-a", "phase-b", "demo", "seed", "test", "fixture"}
 DEV_MARKERS = ("deadbee", "cafebabe", "/tmp/pwned", "lorem", "example.com")
 
 
-def looks_staged(rec: dict, extra_actors: set) -> tuple[bool, str]:
+def looks_staged(rec: dict, extra_actors: set, ids: set = frozenset(),
+                 kinds: set = frozenset()) -> tuple[bool, str]:
     """Return (is_staged, why). Conservative: a record must announce itself as dev."""
+    rid = str(rec.get("id") or rec.get("_id") or "")
+    if rid and rid in ids:
+        return True, "explicit --id"
+    kind = str(rec.get("kind") or "").strip().lower()
+    if kind and kind in kinds:
+        return True, f"kind={kind}"
     actor = str(rec.get("actor") or rec.get("author") or "").strip().lower()
     if actor in (DEV_ACTORS | extra_actors):
         return True, f"actor={actor}"
@@ -40,6 +47,13 @@ def main() -> int:
                     help="actually delete. Without this it is a dry run.")
     ap.add_argument("--actor", action="append", default=[],
                     help="extra actor name to treat as staged (repeatable)")
+    ap.add_argument("--id", action="append", default=[],
+                    help="remove exactly this record id (repeatable). Use for a probe you "
+                         "know you created, where no heuristic should be trusted.")
+    ap.add_argument("--kind", action="append", default=[],
+                    help="also treat every record of this kind as staged, e.g. --kind prove. "
+                         "The store holds 20 'prove' records (2026-08-27) and most are probe "
+                         "noise from testing, not real usage. Review the dry run first.")
     a = ap.parse_args()
 
     try:
@@ -56,7 +70,10 @@ def main() -> int:
 
     records = list(store.all())
     extra = {x.strip().lower() for x in a.actor}
-    staged = [(r, why) for r in records for ok, why in [looks_staged(r, extra)] if ok]
+    ids = {x.strip() for x in a.id}
+    kinds = {x.strip().lower() for x in a.kind}
+    staged = [(r, why) for r in records
+              for ok, why in [looks_staged(r, extra, ids, kinds)] if ok]
 
     print(f"store        : {type(store).__name__}")
     print(f"total records: {len(records)}")
