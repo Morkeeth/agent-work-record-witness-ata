@@ -1,7 +1,13 @@
-# The first run by an organisation that is not the author
+# End to end on a repo that is not this one: install, false claim held, true claim cleared
+
+> **This is not an adoption.** Northwind Parcel is a test company this lane wrote, and the agent PRs
+> were scripted by the same author as the product. `Installs by a person who is not the author`
+> stays **zero**. What this run proves is the CHAIN — that the product installs into a foreign repo,
+> holds a false done-claim at exit 1, and clears a true one at exit 0. Calling it a customer would
+> be exactly the class of claim this product exists to block.
 
 **Lane:** T4 · **Date:** 2026-08-27 · **Test company:** `~/CODE/testco-northwind-parcel` (local git, no remote)
-**Status:** the chain ran end to end, both directions. `clear` is no longer 0.
+**Status:** the chain ran end to end, both directions, on a repo outside this one. `clear` is no longer 0.
 **Not done, and it is Oscar's click:** no GitHub repo, no push, no deploy, no GitHub-hosted Action run.
 
 ---
@@ -9,9 +15,10 @@
 ## What was run
 
 Northwind Parcel is a small parcel-rating service with its own git history, 9 passing tests, and no
-relationship to this repo. The product was installed into it the way a customer would, an agent
-opened a pull request whose done-report was false, and the same path was run again with a report
-that was true.
+code relationship to this repo. The product was installed into it the way a customer would, a pull
+request was opened whose done-report was false, and the same path was run again with a report that
+was true. The org, the PRs and the reports were all authored by this lane — the foreignness being
+tested is the REPO, not the operator.
 
 | | PR #41 `agent/rate-cache` | PR #42 `agent/freight-label` |
 |---|---|---|
