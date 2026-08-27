@@ -116,10 +116,23 @@ class FirestoreStore:
 
 
 def get_store():
-    """Default = firestore when ADC exists; jsonl fallback for strangers."""
+    """Default = firestore when ADC exists; jsonl fallback for strangers.
+
+    AN EXPLICIT LOCAL PATH OUTRANKS ADC. Until 2026-08-27 this function consulted
+    only FLEET_STORE and ADC, and never FLEET_STORE_PATH -- so setting
+    FLEET_STORE_PATH to a scratch file on a credentialed machine still wrote to the
+    PRODUCTION Firestore. Measured: a local probe pointed at a scratch file landed
+    row aMJIkhk7jcaSF7nUVmiq in prod. That is the source of the polluted audit
+    store, which reached 80% probe noise while every writer believed it was local.
+
+    Naming a file is an unambiguous statement of local intent. It wins over an
+    ambient credential, and only an explicit FLEET_STORE=firestore can override it.
+    """
     kind = os.environ.get("FLEET_STORE", "").lower().strip()
     if not kind:
-        kind = "firestore" if _adc_ready() else "jsonl"
+        # An operator who named a path asked for that path.
+        kind = "jsonl" if os.environ.get("FLEET_STORE_PATH", "").strip() \
+            else ("firestore" if _adc_ready() else "jsonl")
     if kind == "firestore":
         try:
             return FirestoreStore()
