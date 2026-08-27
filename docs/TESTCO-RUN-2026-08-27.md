@@ -10,6 +10,10 @@
 **Status:** the chain ran end to end, both directions, on a repo outside this one. `clear` is no longer 0.
 **Not done, and it is Oscar's click:** no GitHub repo, no push, no deploy, no GitHub-hosted Action run.
 
+> **`clear` is still 0 on every judge-facing surface, and must stay that way.** The CLEAR below went
+> to a scratch `FLEET_STORE_PATH`, which is what `0c54850` exists to make happen. Live Firestore
+> still reads `clear: 0, hold: 4, exception: 2`. A local result is not a live fact.
+
 ---
 
 ## What was run
@@ -70,9 +74,9 @@ exported_at 2026-08-27T17:30:48+00:00  ·  3 events
 
 ---
 
-## What the run found — six defects, three fixed
+## What the run found — six defects, five fixed, one residual limit stated
 
-### 1. BLOCKER · The product cannot be installed as documented
+### 1. FIXED (`74bd71c`) · The product could not be installed as documented
 
 The installed workflow's first command is `python3 gate/outcome_gate.py --json`. **That file ships
 only in the vendor's repo.** A customer who installs the workflow gets:
@@ -92,13 +96,17 @@ A customer sees a JSON parse error, not "the gate is missing". Vendoring `gate/`
 repo was the only way to make the installed workflow run, and that is what this run did.
 **The gate needs to ship as a published action or a pip package.**
 
-### 2. BLOCKER · The README has no install section
+### 2. STILL OPEN · The README has no install section
 
 Measured: **0 mentions of `HOLD_POLICY_URL`, 0 of `secrets.`/`vars.`/"required check"/"branch
 protection".** The Quickstart explains how to run *this* repo, not how to adopt the product. There
 is no documented step for the workflow file, the `HOLD_POLICY_URL` variable, the `HOLD_API_TOKEN`
 secret, or making the check required. Every value used in this run was read out of the workflow's
 own YAML, which is not a thing a customer should have to do.
+
+`examples/customer-workflow.yml` now carries those four steps in its header comment, so the
+instructions exist — they are just not in the README, which is where someone looks. Re-verified
+after T3's rewrite: still 0 mentions. **`README.md` is T3's; this row stays open until T3 lands it.**
 
 ### 3. FIXED · The jsonl store duplicated rows instead of updating them
 
@@ -113,20 +121,74 @@ with no duplicate ids.
 `get_store()` never consulted `FLEET_STORE_PATH`, so naming a scratch file on a credentialed machine
 still wrote to production Firestore. Fixed in `0c54850`.
 
-### 5. OPEN · The session join is never populated by the real install path
+### 5. WITHDRAWN · "The session join is never populated by the real install path"
 
-`f35e54b` added the join so a held claim opens back to the session that produced it. The Action's
-payload is `report / findings / pr / repo / actor / source` — **there is no `session` field**, so
-every clearance a real customer files records `session: None`. The feature exists and the shipped
-caller cannot reach it.
+**This finding was wrong, and it was mine.** `cloud/hold_api.make_clearance_record` already does
+`session_ref = (session or "").strip() or extract_session_ref(report)`. The Action sends `report` —
+the PR body — and the server recovers the session from it. No `session` key in the payload is needed
+and never was.
 
-### 6. OPEN · Two smaller gaps
+`session: None` in the first run was a property of **my fixture**: I wrote two PR bodies with no
+session reference in them, then reported that absence as a shipped defect. Posting the exact Action
+payload shape (`report / findings / pr / repo / actor / source`, no session key):
 
-- The exception record carries `pr: None, repo: None`. An auditor reading exceptions alone cannot
-  see which PR was let through without joining back on `clearance_id`.
-- The gate's path parser did not probe *"Added the case to tests/test_rates.py"* — it matches
-  `added <path>`, not `added the case to <path>`. Not a false pass: an unprobed claim. Worth
-  knowing, because an agent that words its report loosely gets fewer probes, not more.
+```
+A · body with no session reference        session=None                        traceable=False
+B · body carries claude.ai/code/session_… session='01MS5iomniNWozqMjFTkLfUz'  traceable=True
+C · body carries "Claude-Session: …"      session='01MS5iomniNWozqMjFTkLfUz'  traceable=True
+```
+
+Building the "fix" would have made it worse: extracting the session client-side puts the parser on
+**both sides of the wire**, which is the drift it was supposed to prevent. One parser, server side,
+reading the report the Action already sends, is the right design and it shipped.
+
+What *was* missing is smaller: nothing tells anyone to put a session reference in the body, and
+nothing said when the join failed. `gate/post_clearance.py` now prints it:
+
+```
+RED   · no session → UNTRACEABLE — no session reference in the PR body, so this decision cannot be
+                     opened back to the run that produced it. … No id is ever invented for you.
+GREEN · session    → TRACEABLE — this HOLD opens back to session 01MS5iomniNWozqMjFTkLfUz
+```
+
+The queue shows both states side by side:
+
+```
+H-658f42ee78  HOLD  pr=43  ->  session 01MS5iomniNWozqMjFTkLfUz
+H-c762de433e  HOLD  pr=41  ->  UNTRACEABLE — no session in the report
+```
+
+### 6. FIXED (`74bd71c`) · An exception did not name what it let through
+
+The exception record carried `pr: None, repo: None`. It now inherits `pr`, `repo`, `session` and
+`excepted_decision` from the clearance it excepts, rather than expecting the break-glass caller to
+retype what the record already knows. Verified at the surface that matters — `/audit/export`, read
+alone, with no join:
+
+```
+clearance_id      = 'H-d215e8d12e'
+excepted_decision = 'HOLD'
+pr                = '43'
+repo              = 'northwind-parcel/northwind-parcel'
+session           = '01MS5iomniNWozqMjFTkLfUz'
+actor             = 'platform-lead@northwind'
+reason            = 'Report errors, not code errors. Merging under exception.'
+```
+
+### 7. FIXED, with a residual limit stated (`74bd71c`) · The gate rewarded vague reports
+
+The path parser matched `wrote foo.py` but not `added the case to foo.py`. **A loosely-worded report
+therefore got FEWER probes than a precise one** — the gate rewarded vagueness. A closed whitelist of
+up to four connective words now bridges the verb and the path.
+
+It is a whitelist and not `\w+` on purpose. A match that leaps across a sentence attributes an
+unrelated path to a verb and produces a **false BLOCK on someone's good pull request**, and a false
+BLOCK costs more than a missed probe.
+
+**The residual limit, stated rather than discovered later:** `added coverage for the parser in
+tests/test_gate.py` is still not probed — five filler words including a noun the whitelist does not
+carry. *The gate probes what a report states plainly and says nothing about what it states vaguely.
+It no longer rewards vagueness, but it cannot punish it either.*
 
 ### Also stale after R3
 
@@ -139,12 +201,26 @@ flat string. Since `bd436e5` that field is an object carrying the run receipt. N
 ## Reproduce
 
 ```bash
-cd ~/CODE/testco-northwind-parcel && git checkout agent/rate-cache
+# 1. the gateway, writing to a scratch store — never production
 HOLD_API_TOKEN=nw-testco FLEET_STORE_PATH=/tmp/nw.jsonl \
-  GATE_REPO=$HOME/CODE/testco-northwind-parcel PORT=8796 \
+  GATE_REPO=$HOME/CODE/testco-northwind-parcel PORT=8801 \
   python3 ~/CODE/hack-fleet-ata/cloud/service.py &
-python3 gate/outcome_gate.py --json < the-pr-body.md    # BLOCK, exit 1
-# POST findings to localhost:8796/clearance with source=github-action
+
+# 2. what the composite action runs, from the customer's working directory.
+#    Note the customer repo has NO gate/ — the action carries it.
+cd ~/CODE/testco-northwind-parcel
+export GITHUB_ACTION_PATH=$HOME/CODE/hack-fleet-ata
+export HOLD_POLICY_URL=http://localhost:8801 HOLD_API_TOKEN=nw-testco
+export HOLD_FINDINGS=/tmp/hold-findings.json PR_NUMBER=43 REPO=northwind-parcel/northwind-parcel
+export PR_BODY="$(cat the-pr-body.md)"
+
+printf '%s' "$PR_BODY" | python3 "$GITHUB_ACTION_PATH/gate/outcome_gate.py" --json > "$HOLD_FINDINGS"
+python3 "$GITHUB_ACTION_PATH/gate/post_clearance.py"
 ```
+
+**Never verified, and it is inside Oscar's push:** `uses: Morkeeth/hack-fleet-ata@main` cannot
+resolve until the repo is pushed with `action.yml` at its root. Everything the action *runs* was run
+exactly as the action runs it; that GitHub resolves the reference is not something this lane can
+test. No GitHub-hosted Action has ever run this.
 
 *T4. Local git only. No remote, no push, no deploy, no GitHub Action run — that step needs Oscar.*
