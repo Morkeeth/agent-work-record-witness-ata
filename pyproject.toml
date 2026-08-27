@@ -27,6 +27,9 @@ gateway = ["google-adk>=1.0", "google-cloud-firestore>=2.0", "google-auth>=2.0"]
 
 [project.scripts]
 witness = "gate.outcome_gate:main"
+# Value before adoption: point it at the transcripts you already have,
+# before you install anything.
+witness-corpus = "gate.corpus_scan:main"
 
 [project.urls]
 Homepage = "https://github.com/Morkeeth/hack-fleet-ata"

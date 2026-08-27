@@ -12,7 +12,7 @@ _Film checklist: [`docs/ATA-FILM-AND-SHIP.md`](docs/ATA-FILM-AND-SHIP.md) · Pro
 - **Deadline:** Aug 31 2026 · **17:00 PDT** (≤4:00 unedited video)
 - **Devpost:** https://allthingsagentichackathon.devpost.com/
 - **Track:** **Fortified Enterprise Fleet**
-- **Repo (private):** https://github.com/Morkeeth/hack-fleet-ata — share with `testing@devpost.com` **and** `cloudhackathons@google.com`
+- **Repo (public):** https://github.com/Morkeeth/agent-work-record-witness-ata — also share with `testing@devpost.com` **and** `cloudhackathons@google.com`
 - **Console:** https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/
 - **Judging:** Innovation & Operational Utility 40% · Architecture 30% · Demo readiness 30%
 
@@ -27,7 +27,7 @@ _Film checklist: [`docs/ATA-FILM-AND-SHIP.md`](docs/ATA-FILM-AND-SHIP.md) · Pro
 | `GET /audit/export` | JSON download |
 | Anon `POST /clearance` | **401** |
 | Anon `POST /break-glass` | **401** |
-| Anon `POST /prove` | **401** — ⚠️ returns **201** on the deployed revision as of 2026-08-27. Open. |
+| Anon `POST /prove` | **401** (was 201 before the 2026-08-27 redeploy — re-probe it) |
 | `POST /demo/seed-hold` | **403** (film uses a real agent PR) |
 | `python3 contract/eligibility.py` **with ADC** | **3 OF 3 MET**, exit 0 |
 | `python3 contract/eligibility.py` **cold, no GCP creds** | **1 OF 3 MET** (ADK only), **exit 1** — by design |
@@ -66,7 +66,7 @@ Also: `GET /health` · `POST /clearance` (token) · `GET /audit/export` · `POST
 
 ### Repository URL
 ```
-https://github.com/Morkeeth/hack-fleet-ata
+https://github.com/Morkeeth/agent-work-record-witness-ata
 ```
 
 ### What it does
@@ -88,6 +88,21 @@ The part nobody else can build is the join: a held claim opens back to the sessi
 produced it. Zenity governs agent actions. Norm Ai does content compliance. Qodo reviews
 the diff. Langfuse scores the trace. None of them holds the agent's transcript, so none
 of them can answer what actually happened before the claim was written.
+
+Then we pointed it at 144,306 real agent messages — a month of one fleet's actual
+output — and it found our own defect first. Raw, it said 41.7% of commit claims
+disagreed with the repo. Corrected: 8.4%. The whole gap was ours. 73 of 103 "wrong"
+claims were real commits in a DIFFERENT repo on the same disk, because an agent's cwd
+is where it was standing, not where it committed. Ten more were shas inside shell
+commands, six of them our OWN test fixture, found in transcripts about building this
+gate. "42% of agent claims are wrong" was a real number from a real corpus and it was
+false by 5x; the only reason it did not ship is that we wrote the denominator down
+before we looked. Neither figure is an incidence rate and we do not present one: hand
+labelling put extractor precision at 13 of 40 on conversational prose, n=13, and the
+labelled sample ships so you can disagree.
+
+That is also how you use it: measure the transcripts you already have BEFORE you install
+anything. `witness-corpus --db <yours>`. Value first, adoption second.
 
 Not observability. Not code review. Not a claims inbox.
 Install shape: GitHub Action to Cloud Run policy.
@@ -116,7 +131,15 @@ rows to 30 audit events and produced a ratio that is true under no denominator, 
 in three documents before a lane probed it. Then the gateway that blocks false done claims
 turned out to be running out of a working tree that existed in no repository.
 
-The gate that blocks false "done" is the product. Catching ourselves with it three times in
+Then the hardest one: pointed at a real corpus, the gate reported 41.7% of agent commit
+claims wrong. The number was ours, not theirs — the probe only ever asked the agent's cwd,
+so a commit made in a sibling repo read as a lie, and 73 of 103 failures evaporated when we
+asked the other repos. Building the control for that fix surfaced a second defect nobody was
+looking for: when an agent's recorded working directory no longer exists, the probe
+short-circuited to BLOCK before running at all. An agent was being called a liar by a check
+that never ran.
+
+The gate that blocks false "done" is the product. Catching ourselves with it four times in
 one day is the honesty beat, not an apology — and every one of those catches came from
 opening the object, never from re-reading the note.
 
@@ -127,6 +150,12 @@ UNMEASURED_FOR_ORG_CLAIM.
 
 ### What's next
 ```
+Separate a citation from a claim. "Commit X landed" and "Committed as X" are the same
+string; only the speech act differs, and that is why precision on prose is 13 of 40. We
+shipped the two cheap halves — scope to a declared report region, drop machinery — and
+refused to build a classifier, because the labelled set does not exist and inventing one is
+the failure this product exists to catch. It is the first contribution we are asking for.
+
 One real agent pull request — ten minutes, and it turns three demo gaps into a product.
 GitHub App with Check Runs, so install is a click and the check can honestly be called
 required. Transcripto as silent provenance on every claim. Survival scoring per actor:
@@ -179,8 +208,8 @@ Measured 2026-08-27 by probing the live service, not quoted from a note.
 | Endpoint disagreement | `/audit` returns 31 events, `/audit/export` returns 6 | open defect |
 | Deployed revision behind repo | anon `POST /prove` → **201** live, gated in `cloud/service.py` | open defect, not a claim |
 | Agent genuinely invoked | `GET /audit` carries an `agent_run`: `invoked: true`, `google.adk.runners.Runner`, `gemini-3.5-flash-lite`, 3 tool calls | **claim this — it is live and recorded** |
-| `/health` still advertises the old flat `agent` string | receipt shape (`constructed`/`invoked`/`last_run`) is in `cloud/service.py`, not deployed | open defect |
-| No stranger can install it | composite action fixed the vendored-path defect; the repo is **private**, so `uses: Morkeeth/hack-fleet-ata@main` does not resolve externally | **blocker — a decision, not a code fix** |
+| `/health` reports a run receipt | deployed: `constructed: true`, `invoked: false`, `last_run: never invoked in this process` on a fresh container | **claim the receipt, not a run** |
+| Install path | repo is public, action ships the probe, `uses:` resolves from a foreign repo | works — but zero non-author installs |
 | Non-author installs | **zero** | roadmap. The 2026-08-27 foreign-repo run does not count: we wrote the test organisation and scripted its PRs. It proves the chain, not adoption. |
 | Org lift | field of 2 → `UNMEASURED_FOR_ORG_CLAIM` | never claim a population effect |
 

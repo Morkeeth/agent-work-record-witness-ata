@@ -44,7 +44,13 @@ stated: [`docs/WHY-THIS-MATTERS.md`](docs/WHY-THIS-MATTERS.md).
 
 ## How a person actually uses it
 
-Full journey: [`docs/USER-JOURNEY.md`](docs/USER-JOURNEY.md). Three moments, and only three.
+Full journey: [`docs/USER-JOURNEY.md`](docs/USER-JOURNEY.md). Four moments, and the first one
+installs nothing.
+
+**Week zero, before you adopt anything.** Point it at the transcripts your agents have already
+written. You get a number about your own fleet before you have changed a single workflow file —
+and if that number is boring, you have learned something for free and you stop here. **Value
+first, adoption second.** This is the opening move, not the install.
 
 **Week one, the engineer.** Their agent opens a pull request. A required check probes each claim
 against the repo. `a41c9f2` is not a commit. The merge stops. They see a red check with two lines
@@ -64,7 +70,50 @@ actions. Norm Ai does content compliance. Qodo reviews the diff. Langfuse scores
 
 ---
 
-## Try it in 30 seconds, with no GitHub and no account
+## Start here: measure the fleet you already have
+
+The one thing on this page you cannot get anywhere else. We pointed the gate at 144,306 real agent
+messages — a month of one fleet's actual output, not a fixture — and the first thing it found was
+our own defect.
+
+```bash
+pip install -e .
+witness-corpus --db ~/.trace/trace.db --code-root ~/CODE
+```
+
+```
+  78,618 assistant messages · 83 repos on disk
+
+  RAW          247 sha claims ·  103 disagree · 41.7%
+  CORRECTED    237 sha claims ·   20 disagree · 8.4%
+
+      10 dropped — shell commands, fenced output, and this repo's own test fixtures
+      73 resolved in a SIBLING repo — the agent was right, the probe was aimed at the wrong repo
+```
+
+**41.7% → 8.4%, and the whole gap was ours.** 73 of 103 "wrong" commit claims were real commits in
+a *different repo on the same disk* — an agent's `cwd` is where it was standing, not where it
+committed, and the check was aimed at the wrong object. Ten more were machinery: a SHA inside a
+command the agent was running, or inside git output it was reading. Six of those, across the
+sample, were **`deadbee` — this repo's own test fixture**, found in transcripts about building this
+gate. The tool for catching false claims about work counted its own test data as agent claims.
+
+**"42% of agent commit claims are wrong" was a real number from a real corpus, and it was false by
+5x.** The only reason it did not become a slide is that the denominator was written down *before
+anyone looked at a claim*:
+[`docs/CORPUS-PREREGISTRATION-2026-08-27.md`](docs/CORPUS-PREREGISTRATION-2026-08-27.md). **That
+document is the method, and the method is the product.**
+
+**Neither number is an incidence rate.** Hand-labelling a random sample of 40 extractions put
+precision on conversational prose at **13/40**; of those 13 real claims, 6 disagreed with the repo.
+**n = 13** — a direction, not a measurement. The sample and its labels ship in
+`fixtures/corpus-sample-40.json` so you can re-label them and disagree. Full working:
+[`docs/CORPUS-MEASUREMENT-2026-08-27.md`](docs/CORPUS-MEASUREMENT-2026-08-27.md) ·
+[`docs/ENTERPRISE-CASE-2026-08-27.md`](docs/ENTERPRISE-CASE-2026-08-27.md).
+
+---
+
+## Then try the gate itself, in 30 seconds, with no GitHub and no account
 
 The gate is one standard-library Python file. It reads an agent's done-report on stdin and probes
 every claim in it against the repository you are standing in.
