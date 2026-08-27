@@ -38,7 +38,56 @@ def _sh(args, repo):
         return _R()
 
 
-def check_report(report: str, repo: str = "."):
+# Regions of a message that are MACHINERY, not a report. Measured on 144,306 real
+# agent messages (docs/CORPUS-MEASUREMENT-2026-08-27.md): of 40 randomly sampled
+# extractions, 8 were a sha inside a shell command the agent was running and 6 were
+# TEST FIXTURES -- including this repo's own `deadbee`, found in transcripts about
+# building this gate. Two thirds of what the extractor flagged were not claims.
+_FENCE = re.compile(r"```.*?```|~~~.*?~~~", re.S)
+_SHELL_LINE = re.compile(r"^\s*(?:\$|#|>)?\s*(?:git|echo|cd|cat|ls|grep|sed|awk|"
+                         r"python3?|curl|gh|npm|pytest)\b.*$", re.M)
+# Fixtures this repo ships. A tool that counts its own test data as an agent's
+# claim is the joke that writes itself, and it happened.
+_OWN_FIXTURES = {"deadbee", "deadbee1", "deadbeef"}
+
+# A report region, when the message declares one. An agent's done-report is a
+# section, not a whole conversational turn -- scoping to it is the cheap half of
+# the precision fix, and it needs no model.
+_REPORT_REGION = re.compile(
+    r"^\s{0,3}#{1,4}\s*(?:✅\s*)?(?:done|summary|what i did|final report|result|"
+    r"changes|shipped)\b(.*?)(?=^\s{0,3}#{1,4}\s|\Z)", re.I | re.M | re.S)
+
+
+def strip_machinery(report: str) -> str:
+    """Blank out fenced blocks and shell lines, preserving offsets is unnecessary.
+
+    Replaced with spaces rather than deleted so a claim never accidentally joins
+    two unrelated sentences into a new one.
+    """
+    out = _FENCE.sub(lambda m: " " * len(m.group(0)), report or "")
+    out = _SHELL_LINE.sub(lambda m: " " * len(m.group(0)), out)
+    return out
+
+
+def claim_region(report: str, scope: bool = False) -> str:
+    """The part of a message that is a done-report.
+
+    `scope=False` (default) keeps today's behaviour: the whole message, minus
+    machinery. `scope=True` narrows to a declared report section when the message
+    has one, and is what a caller reading conversational transcripts should use.
+    A message with no such section yields nothing under scope -- refusing to guess
+    is the same rule the rest of this gate runs on.
+    """
+    text = strip_machinery(report)
+    if not scope:
+        return text
+    hits = _REPORT_REGION.findall(text)
+    return "\n".join(hits) if hits else ""
+
+
+def check_report(report: str, repo: str = ".", *, scope: bool = False,
+                 sibling_repos: list | None = None, exclude_fixtures: bool = False):
+    report = claim_region(report, scope=scope)
     findings = []
 
     # 1. Claimed commit SHAs — "committed as abc1234", "as `deadbee`", bare 7-40 hex tokens in context
@@ -46,16 +95,59 @@ def check_report(report: str, repo: str = "."):
         sha = m.group(1)
         if not re.search(r'(commit|sha|as)\b', report[max(0, m.start()-24):m.start()], re.I):
             continue
+        if exclude_fixtures and sha in _OWN_FIXTURES:
+            # Opt-in, and never on by default: `deadbee` MUST still block in the
+            # product's own demo, where it is a deliberately false claim. It is
+            # skipped only when a caller says it is reading a corpus, because
+            # there the same string is this repo's test data appearing in
+            # transcripts about building this gate -- 6 of 40 sampled hits.
+            continue
         r = _sh(["git", "cat-file", "-t", sha], repo)
         if r.returncode == 127:
+            # The primary probe could not run at all — git missing, or the recorded
+            # cwd no longer exists, which is ordinary in a corpus. Siblings are
+            # still worth asking before calling an agent a liar; only if none of
+            # them can answer either is this genuinely unverifiable.
+            elsewhere = ""
+            for alt in (sibling_repos or []):
+                if _sh(["git", "cat-file", "-t", sha], alt).stdout.strip() == "commit":
+                    elsewhere = alt
+                    break
+            if elsewhere:
+                findings.append(Finding(f"committed as {sha}", PASS,
+                                        f"git cat-file -t {sha}",
+                                        f"is a commit, in {elsewhere} (the reported cwd was unreachable)"))
+                continue
             findings.append(Finding(f"committed as {sha}", BLOCK,
                                     f"git cat-file -t {sha}",
                                     "NOT verifiable here (git missing in runtime) — treat as HOLD/BLOCK for safety"))
             continue
         ok = r.stdout.strip() == "commit"
-        findings.append(Finding(f"committed as {sha}", PASS if ok else BLOCK,
-                                f"git cat-file -t {sha}",
-                                "is a commit" if ok else "NOT a commit in this repo"))
+        where = repo
+        if not ok and sibling_repos:
+            # THE REPO-RESOLUTION FIX. Measured on the corpus: 74 of 110 "wrong"
+            # SHAs were real commits in ANOTHER repo on the same disk. An agent's
+            # cwd is where it was standing, not where it committed. Probing only
+            # cwd reports the agent as lying when the check was aimed at the wrong
+            # object -- which is the failure this product is named after.
+            for alt in sibling_repos:
+                if alt == repo:
+                    continue
+                if _sh(["git", "cat-file", "-t", sha], alt).stdout.strip() == "commit":
+                    ok, where = True, alt
+                    break
+        if ok and where != repo:
+            findings.append(Finding(f"committed as {sha}", PASS,
+                                    f"git cat-file -t {sha}",
+                                    f"is a commit, in {where} (not the reported cwd)"))
+        else:
+            findings.append(Finding(f"committed as {sha}", PASS if ok else BLOCK,
+                                    f"git cat-file -t {sha}",
+                                    "is a commit" if ok else
+                                    ("NOT a commit in this repo, nor in any of the "
+                                     f"{len(sibling_repos)} sibling repos checked"
+                                     if sibling_repos else
+                                     "NOT a commit in this repo (no sibling repos were checked)")))
 
     # 2. Claimed file paths — "wrote/added/created/updated <path.ext>", including the
     #    natural-English forms an agent actually writes: "added the case to tests/x.py".
