@@ -238,6 +238,25 @@ def gate(report, repo=".", *, as_json: bool = False):
     return 0
 
 
+HELP = """witness — check an agent's done-report against the repository object.
+
+  witness "Done. Committed as a41c9f2. Wrote src/cache.py."
+  echo "$PR_BODY" | witness
+  witness --json < report.md
+
+  GATE_REPO=<path>   probe against that repo instead of the working directory
+
+Exit code IS the verdict, not an error channel:
+  0  PASS   every falsifiable claim checks out
+  1  BLOCK  the repo disproves a claim
+  2  HOLD   nothing disproved, but something is unverifiable
+
+It never runs a command lifted from a report. A test claim is refused, not guessed.
+
+Measure before you install anything:  witness-corpus --db <your-transcripts.db>
+"""
+
+
 def main(argv: list[str] | None = None) -> int:
     """Console entry point. Reads a done-report from argv or stdin, returns the exit code.
 
@@ -246,6 +265,11 @@ def main(argv: list[str] | None = None) -> int:
     to enforce, so it is enforced here too.
     """
     argv = sys.argv[1:] if argv is None else argv
+    if any(a in ("-h", "--help") for a in argv):
+        # A stranger's first keystroke. Treating it as a done-report and grading it
+        # HOLD is technically consistent and practically a slammed door.
+        print(HELP)
+        return 0
     args = [a for a in argv if a != "--json"]
     as_json = "--json" in argv or os.environ.get("OUTCOME_GATE_JSON") == "1"
     report = sys.stdin.read() if not args else " ".join(args)
