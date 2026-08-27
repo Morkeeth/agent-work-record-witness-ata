@@ -162,5 +162,5 @@ look* · *check the metric against the data* · *does the layout assert a relati
 not hold*. A Gate-2 pass runs only the first.
 
 **Blocked on Oscar, all five his alone:**
-**① GCP + Gemini key by Aug 26 — eligibility, not schedule** · ② direction pick (1 Ledger / 2
+**① GCP + Gemini key by Aug 26 — eligibility, not schedule** · ② direction pick (1 Record / 2
 Marginalia) · ③ hours calibration · ④ Phase 3 design owner · ⑤ may this lane take `fleet/signals.py`.

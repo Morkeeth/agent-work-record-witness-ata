@@ -26,7 +26,7 @@ judge the exact contradiction to point at.
 worth the iteration when D2 is stronger. Ground is also near-black with a lone accent pair, which
 sits close to a named AI cluster.*
 
-### D1 · LEDGER — passes, with three defects visible only on screen
+### D1 · RECORD — passes, with three defects visible only on screen
 - **Half a screen of dead space below the fold at 1440×1150.** On an unedited take that is a long
   hold on nothing.
 - The lede orphans *"cold."* onto its own line; `.sub` wraps two words early.

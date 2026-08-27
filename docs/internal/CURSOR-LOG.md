@@ -1356,3 +1356,20 @@ open surface/org-proof.html
 
 ### Oscar-only remaining
 Gate 1 pick · one-take video (`python3 scripts/video_beat_sheet.py`) · Devpost submit · share private repo with testing@devpost.com
+
+---
+
+## 2026-08-26 evening — free lane: ATA submit pack (Cursor)
+
+**Intent:** Only free builder lane; Kaggle + ZUP occupied. Ambitious non-colliding work = make Aug 31 one-sitting for Oscar.
+
+**Probed:**
+- `eligibility.py` → 3 OF 3 MET
+- Cloud Run `/health` → 200 (first curl can cold-timeout; retry)
+- `POST /prove` → A 0 vs B 2 · VERIFIED-BY-REPO · HTTP 201
+
+**Shipped (local, uncommitted):**
+- `OSCAR-SUBMIT.md` — Devpost paste · film beats · kill list · share both Google emails
+- `NEXT-STEPS.md` — critical path = video+submit; note PITCH/CLOSE drift
+
+**Oscar remaining:** share repo · film · YouTube/Vimeo · Devpost click · receipt URLs

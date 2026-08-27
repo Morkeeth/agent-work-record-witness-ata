@@ -2,7 +2,7 @@
 """The demo reel is real: four confident 'done' claims from ONE night, each caught by the gate.
 
 These are not invented fixtures. Every one happened in this fleet on 2026-08-22 and is in
-CURSOR-LOG.md with its commit. That is the pitch a competitor cannot fake: the gate's test suite
+docs/internal/CURSOR-LOG.md with its commit. That is the pitch a competitor cannot fake: the gate's test suite
 IS a logged case series of agents and tools being confidently wrong, and the object being right.
 """
 from gate.claim_gate import (probe_power, probe_exercise, probe_right_object)
