@@ -206,7 +206,7 @@ Measured 2026-08-27 by probing the live service, not quoted from a note.
 |---|---|---|
 | The record is empty of real work | 4 clearances, **all four staged by us**; `GET /audit` → **`clear: 0`** | "Nothing has ever passed the gate, because nothing real has ever gone through it." |
 | The check has never fired on a real PR | zero | roadmap — one real PR moves it |
-| `/audit` vs `/audit/export` counts | **by design, not a defect.** `/audit` → 31 events; `/audit/export` → 7 (clearance/exception/policy only); `/audit/export?include_prove=1` → 31. Re-probed live 2026-08-28. | explain the filter, do not call it a bug |
+| `/audit` vs `/audit/export` counts | **by design, not a defect.** `/audit` returns every event; `/audit/export` returns clearance/exception/policy only and drops prove-only rows; `?include_prove=1` returns the full set and the two agree exactly. Re-probed live 2026-08-28 (31 vs 7 at that moment, 32 vs 8 an hour later — **these are live counters, do not pin a number to them on camera**). | explain the filter, never quote the count |
 | Deployed revision behind repo | **closed 2026-08-28.** anon `POST /prove` → **401** `HOLD_API_TOKEN required`, probed against the live service. (That is what was probed; the running revision is not claimed to be byte-identical to `main`.) | fixed — the auth gate is live |
 | Agent genuinely invoked | `GET /audit` carries an `agent_run`: `invoked: true`, `google.adk.runners.Runner`, `gemini-3.5-flash-lite`, 3 tool calls | **claim this — it is live and recorded** |
 | `/health` reports a run receipt | deployed: `constructed: true`, `invoked: false`, `last_run: never invoked in this process` on a fresh container | **claim the receipt, not a run** |
