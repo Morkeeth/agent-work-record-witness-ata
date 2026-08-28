@@ -26,7 +26,9 @@ flowchart TB
 
   subgraph Product["THE RECORD · this is the product"]
     direction TB
+    CR["Cloud Run<br/>the gateway service<br/><i>us-central1 · public URL</i>"]
     FS[("Firestore<br/>every claim · its verdict<br/>every break-glass reason")]
+    CR --> FS
     Q["/hold/ console · the Hold queue"]
     JOIN["the join<br/>a held claim opens back<br/>to the session that produced it"]
     EX["GET /audit/export<br/>the compliance artifact"]
@@ -37,12 +39,12 @@ flowchart TB
   end
 
   AG["ADK LlmAgent constructed<br/>Vertex Gemini 3.5<br/>explains, never overrules"]
-  SV["Transcripto corpus → authorship gate → survival<br/><i>did the work stay?</i>"]
+  SV["Transcripto corpus → authorship gate → survival<br/><i>ROADMAP — not in this submission;<br/>needs a corpus a judge cannot verify</i>"]
 
   PR --> A --> P --> V
   V -- "yes" --> M
   V -- "no · the gate is the intake" --> CL
-  CL --> FS
+  CL --> CR
   CL -.-> AG
   JOIN -.-> SV
   SV -.-> Q
