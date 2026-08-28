@@ -2,7 +2,7 @@
 
 _Product home: this repo only. Brand on camera: **THE AGENT WORK RECORD WITNESS**, said in full.
 `agent-claims-inbox` = disclosure, not a second entry._
-_Film checklist: [`docs/ATA-FILM-AND-SHIP.md`](docs/ATA-FILM-AND-SHIP.md) · Product: [`hack.md`](hack.md) **(canonical)** · Why: [`docs/WHY-THIS-MATTERS.md`](docs/WHY-THIS-MATTERS.md)_
+_Film checklist: [`docs/ATA-FILM-AND-SHIP.md`](docs/ATA-FILM-AND-SHIP.md) · **Oscar start here:** [`docs/PITCH-WHEN-YOU-ARE-BACK.md`](docs/PITCH-WHEN-YOU-ARE-BACK.md) · Product: [`hack.md`](hack.md) **(canonical)** · Why: [`docs/WHY-THIS-MATTERS.md`](docs/WHY-THIS-MATTERS.md)_
 
 > **Naming discipline.** The product is **THE AGENT WORK RECORD WITNESS** — long and descriptive on
 > purpose, in a research-paper register (ruled by Oscar 2026-08-27). **Do not shorten it in

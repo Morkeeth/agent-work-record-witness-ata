@@ -42,6 +42,10 @@ EOF
   exit 0
 fi
 
+if ! gh label list --json name -q '.[].name' 2>/dev/null | grep -qx agent; then
+  gh label create agent --color "0E8A16" --description "Agent-authored PR — runs verify-claims" 2>/dev/null || true
+fi
+
 git fetch origin 2>/dev/null || true
 git checkout -b "$BRANCH" 2>/dev/null || git checkout "$BRANCH"
 # Ensure PR has a file change
