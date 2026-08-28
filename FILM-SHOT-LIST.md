@@ -1,3 +1,5 @@
+> **SUPERSEDED 2026-08-28 → [`FILM-SHOT-LIST-2026-08-28.md`](FILM-SHOT-LIST-2026-08-28.md).** Verified at an earlier commit; five commits have landed since. Do not film from this file.
+
 # Film shot list — eight shots, every output pasted from a real run
 
 **Rule for this document: nothing illustrative.** Every block below was executed and its output
