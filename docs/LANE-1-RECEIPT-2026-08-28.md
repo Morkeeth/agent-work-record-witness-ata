@@ -24,7 +24,7 @@ no network call, and no file read outside the clone.
 | README's first command read the author's corpus | `witness-corpus --db ~/.trace/trace.db` | `./demo.sh` is the opening move; corpus run retitled as our run on a corpus you do not have |
 | No cold-clone demo existed | — | `demo.sh` + `tests/test_demo.sh` |
 | `8.4%` in SUBMISSION-PACK + ENTERPRISE-CASE | canonical is 19/236 | `8.1%`, no `8.4%` left in any `.md` |
-| "anon `POST /prove` → 201, open defect" | `curl -X POST <live>/prove` → **401** `HOLD_API_TOKEN required` | row closed |
+| "anon `POST /prove` → 201, open defect" — in **3** docs (SUBMISSION-PACK, ARCHITECTURE, GEAP-GAP) | every mutating route probed anonymously on the live service: `/prove` **401** · `/clearance` **401** · `/break-glass` **401** · `/agent/run` **401** · `/seed` **404** (disabled) | closed in all three; GEAP-GAP F1 closed. The remaining identity gap is one shared bearer token — a design limit, not a broken deployment |
 | "`/audit` 31 vs `/audit/export` 6, open defect" | live: `/audit` **31**, `/audit/export` **7**, `?include_prove=1` **31** | not a defect — the prove-only filter working as designed; both rows rewritten |
 | `docs/internal` said the repo is private, invite the judges | `gh repo view` → `visibility: PUBLIC` | corrected; no invite step |
 | Workflow + docs pointed `uses:` at the pre-rename repo | `git diff` | `Morkeeth/agent-work-record-witness-ata` everywhere |
@@ -48,6 +48,10 @@ already public. Flagging it, not changing it.
 gate is already correct (401 verified today). The deployed revision does not carry `3093a3e`.
 
 **`HANDOVER-T4-TO-T3.md` was left untracked** — internal fleet handover, not judge-facing.
+
+## Live service, probed 2026-08-28
+
+`/health` → `ok:true · store:firestore · auth_required:true · demo_seed_enabled:false` · `/hold/` → 200.
 
 ## Still Oscar's
 

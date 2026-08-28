@@ -150,7 +150,9 @@ python3 contract/eligibility.py         # 3 of 3 with GCP, 1 of 3 cold (exit 1)
 curl -sS "$(cat .cloud_run_url)/health"
 ```
 
-> **Read the second line honestly.** `test_auth_gate.sh` is green against a local server. Probed
-> against the deployed service on 2026-08-27, anonymous `POST /prove` returned **201**, not 401.
-> The gate is correct in `cloud/service.py`; the running revision is behind it on that one route.
-> A green local test is not a statement about production.
+> **Read the second line honestly.** `test_auth_gate.sh` is green against a local server, and a
+> green local test is never a statement about production — so production gets probed separately.
+> On 2026-08-27 anonymous `POST /prove` returned **201** there, and the deployed revision was
+> behind `cloud/service.py` on that one route. **Re-probed 2026-08-28: it returns 401
+> `HOLD_API_TOKEN required`. Closed.** The rule stands even though this instance of it is fixed:
+> probe the deployment, not the test.

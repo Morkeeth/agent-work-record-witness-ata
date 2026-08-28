@@ -207,7 +207,7 @@ Measured 2026-08-27 by probing the live service, not quoted from a note.
 | The record is empty of real work | 4 clearances, **all four staged by us**; `GET /audit` → **`clear: 0`** | "Nothing has ever passed the gate, because nothing real has ever gone through it." |
 | The check has never fired on a real PR | zero | roadmap — one real PR moves it |
 | `/audit` vs `/audit/export` counts | **by design, not a defect.** `/audit` → 31 events; `/audit/export` → 7 (clearance/exception/policy only); `/audit/export?include_prove=1` → 31. Re-probed live 2026-08-28. | explain the filter, do not call it a bug |
-| Deployed revision behind repo | **closed 2026-08-28.** anon `POST /prove` → **401** `HOLD_API_TOKEN required`; deployed revision now matches `cloud/service.py` | fixed — the auth gate is live |
+| Deployed revision behind repo | **closed 2026-08-28.** anon `POST /prove` → **401** `HOLD_API_TOKEN required`, probed against the live service. (That is what was probed; the running revision is not claimed to be byte-identical to `main`.) | fixed — the auth gate is live |
 | Agent genuinely invoked | `GET /audit` carries an `agent_run`: `invoked: true`, `google.adk.runners.Runner`, `gemini-3.5-flash-lite`, 3 tool calls | **claim this — it is live and recorded** |
 | `/health` reports a run receipt | deployed: `constructed: true`, `invoked: false`, `last_run: never invoked in this process` on a fresh container | **claim the receipt, not a run** |
 | Install path | repo is public, action ships the probe, `uses:` resolves from a foreign repo | works — but zero non-author installs |
