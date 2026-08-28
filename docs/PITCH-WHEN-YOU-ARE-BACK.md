@@ -64,6 +64,12 @@ Paste from `SUBMISSION-PACK.md`. Repo is public — no judge invite. Submit befo
 
 ---
 
+## Autonomous mode (Oscar away)
+
+Heartbeat every **30 minutes** → `docs/AUTONOMOUS-HEARTBEAT-LOG.md` (probe: demo, PR #1, H-57b130f397, live endpoints).
+
+---
+
 ## Queue context
 
 NeurIPS still #1 (blocked on OpenReview login · Sun deadline). ATA is **film-only** now — no more build.
