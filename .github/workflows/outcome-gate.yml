@@ -3,7 +3,7 @@ name: HOLD Outcome Clearance
 # then posts the decision to the Witness gateway for the org record.
 #
 # This repo dogfoods its own composite action. A customer installs the same twelve
-# lines and points `uses:` at Morkeeth/hack-fleet-ata@main — nothing to vendor.
+# lines and points `uses:` at Morkeeth/agent-work-record-witness-ata@main — nothing to vendor.
 on:
   pull_request:
     types: [opened, edited, synchronize]
@@ -21,7 +21,7 @@ jobs:
         with:
           fetch-depth: 0          # the SHA probe needs history, not a shallow tip
 
-      - uses: ./                  # this repo IS the action; customers use Morkeeth/hack-fleet-ata@main
+      - uses: ./                  # this repo IS the action; customers use Morkeeth/agent-work-record-witness-ata@main
         with:
           pr-body: ${{ github.event.pull_request.body }}
           policy-url: ${{ vars.HOLD_POLICY_URL }}

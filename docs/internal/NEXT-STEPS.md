@@ -20,7 +20,7 @@ _Kept current 2026-08-26 evening. If this disagrees with a chat message, open th
 | `python3 contract/prove_lift.py` | offline deterministic floor **beats no-signal baseline**: clean held-out#2 **5/8** vs always-DIFFERENT 3/8 (+2) / always-SAME 4/8 (+1) · exit 0 · `docs/DETERMINISTIC-FLOOR.md` |
 | Cloud Run | `https://fleet-wedge-33kamss2jq-uc.a.run.app` · smoke **`/health`** (not `/healthz` — GFE 404) · cold start can time out once — retry · `POST /prove` · `POST /wedge` |
 | Variance | N=5 · **7/8** every run · C1 0% · seal forbidden (`docs/VARIANCE-APPENDIX.md`) |
-| Remote | https://github.com/Morkeeth/hack-fleet-ata · **private** — share with `testing@devpost.com` + `cloudhackathons@google.com` before submit |
+| Remote | https://github.com/Morkeeth/agent-work-record-witness-ata · **PUBLIC** (verified 2026-08-28) — no judge invite needed |
 
 ## Column ownership — do not cross
 - **Cursor:** `fleet/**` · `fleet_cli.py` · `fixtures/**` · `cloud/**` · `scripts/**` · `tests/**` · `README.md` · `OSCAR-SUBMIT.md`

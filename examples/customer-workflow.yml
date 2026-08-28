@@ -30,7 +30,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: Morkeeth/hack-fleet-ata@main
+      - uses: Morkeeth/agent-work-record-witness-ata@main
         with:
           pr-body: ${{ github.event.pull_request.body }}
           policy-url: ${{ vars.HOLD_POLICY_URL }}

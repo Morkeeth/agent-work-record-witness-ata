@@ -105,7 +105,7 @@ secret, or making the check required. Every value used in this run was read out 
 own YAML, which is not a thing a customer should have to do.
 
 **Closed by T3, verified at the object.** The README now carries a four-step install: the twelve-line
-workflow with `uses: Morkeeth/hack-fleet-ata@main`, the `HOLD_POLICY_URL` variable and
+workflow with `uses: Morkeeth/agent-work-record-witness-ata@main`, the `HOLD_POLICY_URL` variable and
 `HOLD_API_TOKEN` secret in a table, running your own Gateway, and — the part worth naming — making
 the check binding *last*, in report-only first, with the README refusing to call it a required check
 until the reader actually requires it. It also states the degrade path: with neither variable set the
@@ -224,7 +224,7 @@ printf '%s' "$PR_BODY" | python3 "$GITHUB_ACTION_PATH/gate/outcome_gate.py" --js
 python3 "$GITHUB_ACTION_PATH/gate/post_clearance.py"
 ```
 
-**Never verified, and it is inside Oscar's push:** `uses: Morkeeth/hack-fleet-ata@main` cannot
+**Never verified, and it is inside Oscar's push:** `uses: Morkeeth/agent-work-record-witness-ata@main` cannot
 resolve until the repo is pushed with `action.yml` at its root. Everything the action *runs* was run
 exactly as the action runs it; that GitHub resolves the reference is not something this lane can
 test. No GitHub-hosted Action has ever run this.

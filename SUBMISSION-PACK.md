@@ -92,7 +92,7 @@ of them can answer what actually happened before the claim was written.
 Then we pointed it at 78,618 real agent messages — 144,306 sit in the corpus and the
 scan examines the assistant turns; both numbers travel together because a result
 quoted against the wrong denominator is the thing this product catches — and it found our own defect first. Raw, it said 41.7% of commit claims
-disagreed with the repo. Corrected: 8.4%. The whole gap was ours. 73 of 103 "wrong"
+disagreed with the repo. Corrected: 8.1% (19/236). The whole gap was ours. 73 of 103 "wrong"
 claims were real commits in a DIFFERENT repo on the same disk, because an agent's cwd
 is where it was standing, not where it committed. Ten more were shas inside shell
 commands, six of them our OWN test fixture, found in transcripts about building this
@@ -206,8 +206,8 @@ Measured 2026-08-27 by probing the live service, not quoted from a note.
 |---|---|---|
 | The record is empty of real work | 4 clearances, **all four staged by us**; `GET /audit` → **`clear: 0`** | "Nothing has ever passed the gate, because nothing real has ever gone through it." |
 | The check has never fired on a real PR | zero | roadmap — one real PR moves it |
-| Endpoint disagreement | `/audit` returns 31 events, `/audit/export` returns 6 | open defect |
-| Deployed revision behind repo | anon `POST /prove` → **201** live, gated in `cloud/service.py` | open defect, not a claim |
+| `/audit` vs `/audit/export` counts | **by design, not a defect.** `/audit` → 31 events; `/audit/export` → 7 (clearance/exception/policy only); `/audit/export?include_prove=1` → 31. Re-probed live 2026-08-28. | explain the filter, do not call it a bug |
+| Deployed revision behind repo | **closed 2026-08-28.** anon `POST /prove` → **401** `HOLD_API_TOKEN required`; deployed revision now matches `cloud/service.py` | fixed — the auth gate is live |
 | Agent genuinely invoked | `GET /audit` carries an `agent_run`: `invoked: true`, `google.adk.runners.Runner`, `gemini-3.5-flash-lite`, 3 tool calls | **claim this — it is live and recorded** |
 | `/health` reports a run receipt | deployed: `constructed: true`, `invoked: false`, `last_run: never invoked in this process` on a fresh container | **claim the receipt, not a run** |
 | Install path | repo is public, action ships the probe, `uses:` resolves from a foreign repo | works — but zero non-author installs |

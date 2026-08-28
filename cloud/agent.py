@@ -16,6 +16,9 @@ returns a RECEIPT of what actually happened — the model that answered, the too
 called, the events it emitted. When the run fails the receipt says `invoked: False`
 and carries the error. A receipt is never synthesised from a successful import.
 """
+
+from __future__ import annotations
+
 import glob
 import os
 import sys

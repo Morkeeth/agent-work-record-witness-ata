@@ -12,6 +12,9 @@ This gate does outcome-based verification: it extracts the falsifiable assertion
 and probes each against the real repo — and REFUSES (UNVERIFIABLE) rather than guessing, and never
 executes a command lifted from the report (that would be an RCE hole wearing a feature costume).
 """
+
+from __future__ import annotations
+
 import os, re, subprocess, sys
 from dataclasses import dataclass
 

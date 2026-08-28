@@ -5,6 +5,9 @@ Default path: Firestore when ADC can resolve a project; else jsonl.
 Strangers without GCP still run. Judges with ADC hit Firestore — no flag required.
 """
 
+from __future__ import annotations
+
+
 import json
 import os
 import threading

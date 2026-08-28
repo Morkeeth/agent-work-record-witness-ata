@@ -74,7 +74,7 @@ product.** A vendor who shows you a number without one is showing you a negotiat
 
 ### What this page will not tell you
 
-**8.4% is not an incidence rate and neither was 41.7%.** Hand-labelling a seeded random sample of 40
+**8.1% is not an incidence rate and neither was 41.7%.** Hand-labelling a seeded random sample of 40
 extractions put the extractor's precision on conversational prose at **13/40** — the rest were
 citations (*"Commit 7b3256d landed on…"*), shell commands, and fixtures. Of those 13 real claims, 6
 disagreed with the repo. **n = 13.** That is a direction, not a measurement, and no number on this

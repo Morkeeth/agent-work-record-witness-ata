@@ -22,6 +22,9 @@ corrected one, because the gap between them IS the result. It never prints an
 incidence rate: the hand-labelled n is 13, and a rate needs a denominator nobody
 on this machine has.
 """
+
+from __future__ import annotations
+
 import argparse
 import json
 import os
@@ -234,6 +237,7 @@ def main():
             "  If you do not have one, nothing is wrong: it is the second thing to\n"
             "  run, not the first.\n\n"
             "  Start here instead, it needs no database and no account:\n\n"
+            "      ./demo.sh          (from a clone of this repository)\n"
             '      echo "Fixed the race. Committed as deadbee." | witness\n\n'
             "  Point this at your own corpus when you have one:\n\n"
             "      witness-corpus --db <your.db> --code-root <dir>\n\n"

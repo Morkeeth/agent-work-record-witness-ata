@@ -7,7 +7,7 @@ _Probed live 2026-08-26 evening. **Company brand: Witness.** Shell repo: this on
 
 **Deadline:** Aug 31 2026 · **17:00 PDT**  
 **Devpost:** https://allthingsagentichackathon.devpost.com/  
-**Repo (private):** https://github.com/Morkeeth/hack-fleet-ata  
+**Repo (public):** https://github.com/Morkeeth/agent-work-record-witness-ata  
 **Cloud Run:** `https://fleet-wedge-33kamss2jq-uc.a.run.app` (also in `.cloud_run_url`)
 
 ---
@@ -40,7 +40,7 @@ _Probed live 2026-08-26 evening. **Company brand: Witness.** Shell repo: this on
 
 ## Oscar click list (order)
 
-1. **Share private repo** with `testing@devpost.com` **and** `cloudhackathons@google.com` (GitHub → Settings → Collaborators, or org invite).
+1. ~~Share private repo with judges~~ — **not needed. The repo is PUBLIC** (verified `gh repo view` 2026-08-28: `visibility: PUBLIC`). Anyone with the link can clone it.
 2. **Warm Cloud Run** before film: `curl -s "$(cat .cloud_run_url)/health"` until JSON (not hang).
 3. **One-take ≤4 min** — run `python3 scripts/video_beat_sheet.py` and follow beats below.
 4. Upload to **YouTube or Vimeo** · public (or unlisted-but-link-works logged out) · English.
@@ -97,9 +97,9 @@ https://fleet-wedge-33kamss2jq-uc.a.run.app
 
 ### Repo URL
 ```
-https://github.com/Morkeeth/hack-fleet-ata
+https://github.com/Morkeeth/agent-work-record-witness-ata
 ```
-Private — shared with `testing@devpost.com` and `cloudhackathons@google.com`.
+**Public.** No collaborator invite needed.
 
 ### Architecture diagram
 Source of truth: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) (mermaid). Export PNG/SVG or screenshot for the form.

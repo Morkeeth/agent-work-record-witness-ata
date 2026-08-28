@@ -70,17 +70,59 @@ actions. Norm Ai does content compliance. Qodo reviews the diff. Langfuse scores
 
 ---
 
-## Start here: measure the fleet you already have
+## Start here: one command, on a cold clone
 
-The one thing on this page you cannot get anywhere else. We pointed the gate at **78,618 real agent
+Nothing to install, no account, no key, no network call, and no file touched outside the
+clone and one throwaway temp directory. Any Python 3.9+ (stock macOS `python3` is fine).
+
+```bash
+git clone https://github.com/Morkeeth/agent-work-record-witness-ata
+cd agent-work-record-witness-ata
+./demo.sh
+```
+
+It builds a real git repository in front of you, writes three agent done-reports about it, and
+probes each one against the object:
+
+```
+  PASS          committed as 39c5e35
+                probe: git cat-file -t 39c5e35  ->  is a commit
+
+  BLOCK         committed as deadbee
+                probe: git cat-file -t deadbee  ->  NOT a commit in this repo
+  BLOCK         wrote docs/auth-migration-2026.md
+                probe: stat docs/auth-migration-2026.md  ->  NO SUCH PATH in the repo
+
+  UNVERIFIABLE  tests pass
+                probe: no probe  ->  a test claim needs the suite RUN; this gate never
+                executes a command lifted from a report
+```
+
+**Three verdicts, three exit codes: `0` PASS, `1` BLOCK, `2` HOLD.** A check that only ever says
+no is not a check, so the demo shows an honest report going through as well as a false one being
+caught — and the SHA it passes on is generated while you watch, not written into a fixture.
+
+`./demo.sh` exits non-zero and says so if any of the three verdicts is not what this README
+claims. It does not pretend to pass.
+
+---
+
+## The number we got, and the defect it caught in us
+
+**You cannot re-run this one and you should not take it on faith.** It reads a transcript
+database that exists on the author's disk, so what follows is a method you can audit, not a
+result you can reproduce. It is here because the method is the part that transfers. We pointed the gate at **78,618 real agent
 messages, of 144,306 in the corpus** — a month of one fleet's actual output, not a fixture. Both
 numbers travel together because a result quoted against the wrong denominator is precisely what
 this product exists to catch. The first thing it found was our own defect.
 
 ```bash
 pip install -e .
-witness-corpus --db ~/.trace/trace.db --code-root ~/CODE
+witness-corpus --db <your-transcripts.db> --code-root <your-code-dir>
 ```
+
+*(Run with no database and it says so in plain words and exits 2. It never invents a number.)*
+Our run, against `~/.trace/trace.db`:
 
 ```
   78,618 messages examined, of 144,306 in the corpus · 83 repos on disk
@@ -119,7 +161,7 @@ precision on conversational prose at **13/40**; of those 13 real claims, 6 disag
 
 ---
 
-## Then try the gate itself, in 30 seconds, with no GitHub and no account
+## The gate on its own, in 30 seconds
 
 The gate is one standard-library Python file. It reads an agent's done-report on stdin and probes
 every claim in it against the repository you are standing in.

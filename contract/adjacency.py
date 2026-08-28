@@ -59,6 +59,9 @@ relationship:
                                        thing (a categorical hole, not the
                                        gradient the percentage implies)
 """
+
+from __future__ import annotations
+
 import re
 
 # "22 of 23", "3 of 4 surfaced"

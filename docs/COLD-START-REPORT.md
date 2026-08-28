@@ -12,7 +12,7 @@ pointed at empty dirs, GCP env stripped) to remove this machine's ambient key/cr
 Do not average this into a mushy yellow. It is two distinct states:
 
 - **RED — as a judge can actually clone it today.** The README's own clone URL
-  (`github.com/Morkeeth/hack-fleet-ata`) serves the **pre-rebrand** repo. `origin/main` is at
+  (`github.com/Morkeeth/agent-work-record-witness-ata`) serves the **pre-rebrand** repo. `origin/main` is at
   `9fc3620`; the WITNESS rebrand is commit `32f78f5`, **local and unpushed** (`git branch -r
   --contains 32f78f5` is empty). A real judge cloning that URL reads a README titled
   `# hack-fleet-ata` / "Nothing governs the prompts" — none of the WITNESS story, none of the clean

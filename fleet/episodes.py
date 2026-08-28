@@ -1,5 +1,8 @@
 """Episode extraction — one human intent opened and closed (SIGNAL-SPEC unit)."""
 
+from __future__ import annotations
+
+
 from fleet.human import human_text, is_human_turn, load_transcript
 from fleet.task_class import DIFFERENT, UNMEASURED, UNDECIDABLE, classify
 

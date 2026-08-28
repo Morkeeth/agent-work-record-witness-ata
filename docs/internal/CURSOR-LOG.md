@@ -803,10 +803,10 @@ reading harder to argue with: the control encoded my assumption and the model ex
 
 ```
 ADC       ~/.config/gcloud/application_default_credentials.json   PRESENT (0600)
-account   omorke@gmail.com
-project   hack-fleet   (568004190078)
+account   <redacted>
+project   hack-fleet   (<redacted>)
 enabled   aiplatform · generativelanguage · run · firestore
-BILLING   billingEnabled: true   account 01F426-A27898-83DB68
+BILLING   billingEnabled: true   account <redacted>
 ```
 
 **Correction to the brief: billing IS attached.** It was reported as unconfirmed. Nothing will fail
@@ -916,7 +916,7 @@ $ python3 -m unittest discover -s tests -> 5/5 OK
 ### Done same session (Oscar: "do it")
 
 - **STRANGER OK** — `./scripts/stranger_wedge.sh` · field_size 2 · operator a · VERIFIED-BY-REPO
-- **Remote:** https://github.com/Morkeeth/hack-fleet-ata · `main` pushed
+- **Remote:** https://github.com/Morkeeth/agent-work-record-witness-ata · `main` pushed
 - **B1 prep:** `scripts/deploy_cloud_run.sh` + `.gcloudignore` (Aug 26: install gcloud, then run script)
 
 ---

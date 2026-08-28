@@ -108,7 +108,7 @@ Written so nobody has to guess which parts are real.
 |---|---|---|
 | 1 · the red check | **yes**, deterministic probes, live and enforcing | never fired on a real pull request. Zero non-author installs. |
 | 2 · the trace | **built today**, session carried on the record, console renders it | **the record holds zero real claims.** 4 clearances, all staged. |
-| 3 · the export | **yes**, `/audit/export`, Firestore-backed | every stored clearance is our own probe. `GET /audit` also reports 30 events while `/audit/export` returns 6 — open defect. |
+| 3 · the export | **yes**, `/audit/export`, Firestore-backed | every stored clearance is our own probe. `GET /audit` reports 31 events and `/audit/export` returns 7 — **the export filters prove-only rows by design**; `?include_prove=1` returns all 31. |
 
 **The single thing that turns all three from a demo into a product is one real agent pull
 request.** Ten minutes. Every other gap on this page is downstream of that.

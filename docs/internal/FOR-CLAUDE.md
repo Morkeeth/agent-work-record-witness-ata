@@ -9,7 +9,7 @@ Git is the mailbox. Do not wait for chat. Objects below are the asks.
 | Wedge | field of **2**, operator **a** score **4** vs b **3** (`landed_corrected`) |
 | Classifier | Gemini **7/8** · substring **3/8** · C1 still red (do not seal "8/8") |
 | Eligibility | **1/3** on judge path — Gemini only (`python3 contract/eligibility.py`) |
-| Remote | https://github.com/Morkeeth/hack-fleet-ata · `main` pushed |
+| Remote | https://github.com/Morkeeth/agent-work-record-witness-ata · `main` pushed |
 | Stranger | `./scripts/stranger_wedge.sh` → STRANGER OK |
 | EYES moonshot | appended `CURSOR-LOG.md` @ `ac94058` — **your write** |
 
