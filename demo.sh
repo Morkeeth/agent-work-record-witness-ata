@@ -5,7 +5,8 @@
 # Needs NOT: pip install, an account, a network call, an API key, a database,
 #            or any file outside this clone and one throwaway temp directory.
 #
-#   ./demo.sh
+#   ./demo.sh           # full walkthrough
+#   ./demo.sh --film    # compact output for screen recording (same verdicts)
 #
 # It builds a real git repository, writes two agent done-reports about it — one
 # honest, one false — and probes both against the repo. You watch a false claim
@@ -19,15 +20,35 @@ PY="${PYTHON:-python3}"
 WORK="$(mktemp -d "${TMPDIR:-/tmp}witness-demo.XXXXXX" 2>/dev/null || mktemp -d /tmp/witness-demo.XXXXXX)"
 trap 'rm -rf "$WORK"' EXIT
 
+FILM=0
+for arg in "$@"; do
+  case "$arg" in
+    --film|--quiet|-q) FILM=1 ;;
+  esac
+done
+[ "${DEMO_QUIET:-}" = "1" ] && FILM=1
+
+LIVE_HOLD="${WITNESS_LIVE_URL:-https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/}"
+LIVE_RECORD="${WITNESS_RECORD_ID:-H-57b130f397}"
+
 b() { printf '\n\033[1m%s\033[0m\n' "$*"; }
 dim() { printf '\033[2m%s\033[0m\n' "$*"; }
-rule() { printf '\033[2m%s\033[0m\n' "──────────────────────────────────────────────────────────────────────────"; }
+rule() {
+  if [ "$FILM" = "1" ]; then return; fi
+  printf '\033[2m%s\033[0m\n' "──────────────────────────────────────────────────────────────────────────"
+}
 
 "$PY" - <<'PYCHK' || { echo "  This needs Python 3.9+. Found: $($PY -V 2>&1)"; exit 3; }
 import sys; sys.exit(0 if sys.version_info >= (3, 9) else 1)
 PYCHK
 
-b "0 · A repository to be honest or dishonest about"
+if [ "$FILM" = "1" ]; then
+  b "THE AGENT WORK RECORD WITNESS · ./demo.sh --film"
+  dim "  Probes decide · no network · same logic as the GitHub Action on PR #1"
+else
+  b "0 · A repository to be honest or dishonest about"
+fi
+
 git init -q "$WORK/shop" 2>/dev/null
 cd "$WORK/shop"
 git config user.email demo@example.com
@@ -38,8 +59,12 @@ printf '# Auth\n\nHow auth works here.\n' > docs/auth.md
 git add -A >/dev/null
 git commit -qm "auth: add validator" >/dev/null
 REAL_SHA="$(git rev-parse --short HEAD)"
-dim "  $WORK/shop"
-dim "  1 commit $REAL_SHA · src/validate.py · docs/auth.md"
+if [ "$FILM" = "1" ]; then
+  dim "  temp repo · 1 commit ${REAL_SHA}"
+else
+  dim "  $WORK/shop"
+  dim "  1 commit $REAL_SHA · src/validate.py · docs/auth.md"
+fi
 cd "$REPO_ROOT"
 
 # ---------------------------------------------------------------- honest ----
@@ -53,8 +78,12 @@ rule
 dim "  exit $HONEST_CODE  (0 PASS · 1 BLOCK · 2 HOLD — the exit code IS the verdict)"
 
 # ------------------------------------------------------------------ false ----
-b "2 · The same agent, same shape of sentence, two false claims"
-dim "  fixtures/agent-false-done-PR-BODY.md — every word around the false parts is plausible"
+b "2 · The same agent shape — two false claims"
+if [ "$FILM" = "1" ]; then
+  dim "  agent PR body: false commit + missing path (same pattern as live PR #1)"
+else
+  dim "  fixtures/agent-false-done-PR-BODY.md — every word around the false parts is plausible"
+fi
 rule
 GATE_REPO="$WORK/shop" "$PY" -m gate.outcome_gate < fixtures/agent-false-done-PR-BODY.md
 FALSE_CODE=$?
@@ -74,8 +103,22 @@ dim "  exit $HOLD_CODE"
 # ------------------------------------------------------------------ result ---
 b "4 · What just happened"
 if [ "$HONEST_CODE" = "0" ] && [ "$FALSE_CODE" = "1" ] && [ "$HOLD_CODE" = "2" ]; then
-  cat <<'TXT'
+  if [ "$FILM" = "1" ]; then
+    cat <<TXT
+  PASS (0) · BLOCK (1) · HOLD (2).
+
+  Finding UNVERIFIABLE → gate HOLD. Nothing disproved, but we refuse to run a test
+  command lifted from agent prose.
+
+  Same probe the Action runs on agent PRs — posted to the live record:
+      ${LIVE_HOLD}  →  row ${LIVE_RECORD}
+TXT
+  else
+    cat <<'TXT'
   Honest report PASSED (0). False report BLOCKED (1). Test claim HELD (2).
+
+  Finding-level verdicts: PASS · BLOCK · UNVERIFIABLE.
+  Gate-level outcomes:    PASS · BLOCK · HOLD (HOLD means UNVERIFIABLE, nothing BLOCKed).
 
   Nothing read the agent's reasoning, its trace, or its diff. Each sentence was
   turned into a probe against the object and run:
@@ -92,11 +135,22 @@ if [ "$HONEST_CODE" = "0" ] && [ "$FALSE_CODE" = "1" ] && [ "$HOLD_CODE" = "2" ]
   mean executing a command lifted from agent prose. A tool that reports false
   claims does not get to make one about itself.
 TXT
+  fi
   STATUS=0
 else
   printf '  UNEXPECTED: honest=%s (want 0), false=%s (want 1), test-claim=%s (want 2).\n' "$HONEST_CODE" "$FALSE_CODE" "$HOLD_CODE"
   printf '  That is itself a real result — this script does not pretend to pass.\n'
   STATUS=1
+fi
+
+if [ "$FILM" = "1" ]; then
+  b "5 · Next"
+  cat <<TXT
+  Live record:  ${LIVE_HOLD}
+  PR #1 chain:  https://github.com/Morkeeth/agent-work-record-witness-ata/pull/1
+  In your repo: echo "Committed as deadbee." | $PY -m gate.outcome_gate
+TXT
+  exit $STATUS
 fi
 
 b "5 · What this demo did not touch"
@@ -106,18 +160,18 @@ cat <<TXT
   the repository it probed was $WORK/shop, created and deleted by this script
 
   Next, in your own repo:      echo "Committed as deadbee." | $PY -m gate.outcome_gate
-  As a required PR check:      README.md § Install it in your own repo
+  As an advisory clearance check (until branch protection):  README.md § Install
   On your own transcripts:     $PY -m gate.corpus_scan --db <your.db> --code-root <dir>
 TXT
 
 b "6 · And the gate is not the product"
-cat <<'TXT'
+cat <<TXT
   What you just watched is the INTAKE. Every verdict above becomes a row in a
   record that outlives the pull request: who claimed what, whether the object
   agreed, who overrode a hold and the reason they typed, and the session behind
   each entry. That record is the product. The gate is how claims arrive in it.
 
-      the console      <deployment>/hold/
+      the console      ${LIVE_HOLD}
       the record       GET /audit          every claim and its verdict
       the artifact     GET /audit/export   the thing you hand a regulator
 

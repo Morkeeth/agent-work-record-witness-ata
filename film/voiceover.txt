@@ -1,7 +1,8 @@
-Your agents write reports about work they did. This keeps the receipt.
-Seats and spend are visible. What the agents actually did is not.
-Open the hold console — a held claim opens back to the session. None of them holds the transcript.
+If the regulator asks what you hand them — today you have a spend graph, not a record.
+Open the hold console. A held claim opens back to the session. None of them holds the transcript.
+Pull request one — verify-claims and witness-findings go red on deadbee. Row H-57b130f397 — same probe, traceable.
 Watch ./demo.sh — a stranger catches a false claim with no account and no network.
-Pull request one — verify-claims goes red on deadbee. Record H-57b130f397 — traceable, by design.
-Four verdicts: PASS, BLOCK, UNVERIFIABLE, HOLD — the gate never runs a command from a report.
+UNVERIFIABLE is the finding; HOLD is what CI does with it. The gate never runs a command from a report.
 78,618 messages audited — 41.7 raw, 8.1 corrected; our probe error. Gemini explains; Python decides.
+Live on Cloud Run — three of three with credentials here; one of three on a cold clone without GCP.
+Run your agents. Check the math.

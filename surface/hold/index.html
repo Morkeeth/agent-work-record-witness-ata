@@ -91,6 +91,9 @@
   .err { color: var(--hold); margin-top: 0.75rem; }
   .ok { color: var(--clear); }
   .hidden { display: none; }
+  tr.clickable { cursor: pointer; }
+  tr.clickable:hover td { background: #1a2229; }
+  a { color: #7eb8ff; }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
@@ -99,7 +102,7 @@
 <header>
   <div>
     <div class="brand" style="font-size:0.78rem;line-height:1.35;letter-spacing:0.04em">THE AGENT WORK RECORD WITNESS</div>
-    <div class="tag" style="margin-top:0.35rem">Hold queue · outcome clearance against the object</div>
+    <div class="tag" style="margin-top:0.35rem">If the regulator asks what you hand them — this is the record.</div>
   </div>
   <div id="apiHint" class="tag"></div>
 </header>
@@ -108,20 +111,19 @@
   <button data-tab="install">Install</button>
   <button data-tab="policy">Policy</button>
   <button data-tab="audit">Audit</button>
-  <button data-tab="registry">Registry</button>
 </nav>
 <main>
   <section id="tab-queue">
     <h1>Hold queue</h1>
-    <p class="lead">Calm default: empty. Humans only see releases the object disproves.</p>
+    <p class="lead">Calm default: empty. Humans only see releases the object disproves. <strong>Reading the queue and audit needs no token.</strong></p>
     <div id="strip" class="strip empty">No agent releases need attention.</div>
     <div class="row">
       <button class="act secondary" id="btnRefresh">Refresh</button>
       <button class="act danger hidden" id="btnSeed">Seed false-done (demo only)</button>
     </div>
     <div id="tokenBar" class="panel" style="margin-top:1rem">
-      <h2>Operator token</h2>
-      <p class="lead" style="margin:0 0 0.5rem">Writes require <code>X-HOLD-Token</code> when the gateway has auth on. Stored only in this browser.</p>
+      <h2>Operator token (writes only)</h2>
+      <p class="lead" style="margin:0 0 0.5rem">Queue and audit are read-only without a token. Paste <code>X-HOLD-Token</code> only for break-glass or policy changes. Stored in this browser only.</p>
       <input id="holdToken" type="password" placeholder="HOLD_API_TOKEN" autocomplete="off" />
     </div>
     <div id="detail" class="panel hidden"></div>
@@ -160,7 +162,7 @@
 
   <section id="tab-audit" class="hidden">
     <h1>Audit</h1>
-    <p class="lead">Append-only clearance decisions. One number enterprises ask for.</p>
+    <p class="lead">Append-only clearance decisions. Click a clearance row to open the full release detail.</p>
     <div class="panel">
       <div class="stat" id="pct">—</div>
       <div style="color:var(--muted);font-size:0.85rem">% of clearance events that were CLEAR (no hold)</div>
@@ -229,9 +231,6 @@ async function loadConfig() {
     const seed = document.getElementById("btnSeed");
     if (cfg.demo_seed_enabled) seed.classList.remove("hidden");
     else seed.classList.add("hidden");
-    if (cfg.auth_required && !tokenInput.value) {
-      showErr("Gateway requires X-HOLD-Token — paste operator token above.");
-    }
   } catch (e) { /* health may still work */ }
 }
 
@@ -253,6 +252,24 @@ document.getElementById("nav").addEventListener("click", (e) => {
 });
 
 let selected = null;
+let queueHolds = [];
+
+function prLinks(h) {
+  if (!h.repo || !h.pr) return "";
+  const repo = esc(h.repo);
+  const pr = esc(String(h.pr));
+  return `<p class="trace">Chain ·
+    <a href="https://github.com/${repo}/pull/${pr}" target="_blank" rel="noopener">PR #${pr}</a>
+    · <a href="https://github.com/${repo}/pull/${pr}/checks" target="_blank" rel="noopener">verify-claims + witness-findings</a>
+  </p>`;
+}
+
+function openClearance(h) {
+  tab("queue");
+  selected = h;
+  showDetail(h);
+  document.getElementById("detail").scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
 
 function renderStrip(holds) {
   const el = document.getElementById("strip");
@@ -289,9 +306,10 @@ function showDetail(h) {
   // "not traceable" is a real state of the world and hiding it would be the same class
   // of dishonesty this gate exists to catch.
   const trace = h.session
-    ? `<p class="trace">Trace · session <code>${esc(h.session)}</code>
-         <a href="https://claude.ai/code/session_${encodeURIComponent(h.session)}"
-            target="_blank" rel="noopener">open the session that produced this claim</a></p>`
+    ? `<p class="trace">Trace · Claude Code session <code>${esc(h.session)}</code>
+         · <a href="https://claude.ai/code/session_${encodeURIComponent(h.session)}"
+            target="_blank" rel="noopener">open the run that produced this claim</a>
+         <span class="muted" style="color:var(--muted);font-size:0.85rem"> (join pattern — not a CI product)</span></p>`
     : `<p class="trace muted">Trace · no session reference in the report. This claim cannot be
          opened back to what the agent actually did.</p>`;
   const sha = h.head_sha
@@ -304,14 +322,13 @@ function showDetail(h) {
       <h2>Gemini explanation <span style="font-weight:400;color:var(--muted)">· probe decided</span></h2>
       <p style="margin:0;white-space:pre-wrap">${esc(explain.text)}</p></div>`;
   } else if (explain && explain.error) {
-    explainBlock = `<p class="trace muted">Explain (not invoked): ${esc(explain.error)}</p>`;
-  } else if (h.agent_invoked === false && h.decision === "HOLD") {
-    explainBlock = `<p class="trace muted">Explain · ADK not invoked on this row (deploy P1 for live explain-on-HOLD).</p>`;
+    explainBlock = `<p class="trace muted">Gemini explain skipped: ${esc(explain.error)}</p>`;
   }
   d.innerHTML = `
     <h2>Release ${esc(h.id)}</h2>
     <p><span class="pill hold">${esc(h.gate || h.decision)}</span>
-       · PR ${esc(h.pr || "—")} · ${esc(h.repo || "—")} · ${esc(h.actor || "")}</p>
+       · ${esc(h.repo || "—")} · ${esc(h.actor || "")}</p>
+    ${prLinks(h)}
     ${trace}
     ${sha}
     ${explainBlock}
@@ -349,7 +366,21 @@ function esc(s) {
 async function loadQueue() {
   try {
     const data = await jfetch("/queue");
-    renderStrip(data.holds || []);
+    queueHolds = data.holds || [];
+    renderStrip(queueHolds);
+    const want = params.get("record");
+    if (want) {
+      const hit = queueHolds.find(h => h.id === want);
+      if (hit) {
+        openClearance(hit);
+      } else {
+        try {
+          const aud = await jfetch("/audit");
+          const fromAudit = (aud.events || []).find(e => e.id === want);
+          if (fromAudit) openClearance(fromAudit);
+        } catch (_) { /* queue already loaded */ }
+      }
+    }
   } catch (e) { showErr(e); }
 }
 
@@ -359,10 +390,12 @@ async function loadAudit() {
     document.getElementById("pct").textContent =
       data.pct_cleared_without_hold == null ? "—" : data.pct_cleared_without_hold + "%";
     const body = document.getElementById("auditBody");
-    body.innerHTML = (data.events || []).slice(0, 40).map(e => {
+    const events = (data.events || []).slice(0, 40);
+    body.innerHTML = events.map(e => {
       const claim = (e.blocks && e.blocks[0] && e.blocks[0].assertion)
         || e.reason || e.report_preview || e.vc || "";
-      return `<tr>
+      const clickable = e.kind === "clearance" && e.id ? "clickable" : "";
+      return `<tr class="${clickable}" data-id="${esc(e.id || "")}" data-kind="${esc(e.kind || "")}">
         <td>${esc(e.stored_at || "")}</td>
         <td>${esc(e.kind || "")}</td>
         <td><span class="pill ${(e.decision === "HOLD" || e.gate === "BLOCK") ? "hold" : "clear"}">${esc(e.decision || e.gate || "")}</span></td>
@@ -370,6 +403,14 @@ async function loadAudit() {
         <td>${esc(e.actor || "")}</td>
       </tr>`;
     }).join("") || `<tr><td colspan="5" style="color:var(--muted)">No events yet.</td></tr>`;
+    body.querySelectorAll("tr.clickable").forEach(tr => {
+      tr.addEventListener("click", () => {
+        const id = tr.dataset.id;
+        const fromQueue = queueHolds.find(h => h.id === id);
+        const fromAudit = events.find(e => e.id === id);
+        openClearance(fromQueue || fromAudit);
+      });
+    });
   } catch (e) { showErr(e); }
 }
 
