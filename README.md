@@ -12,6 +12,16 @@ object agreed, who overrode a hold and why, and the session behind every entry.*
 Built for **All Things Agentic**, Fortified Enterprise Fleet track.
 Live: https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/
 
+### Judge path (60 seconds)
+
+```bash
+git clone https://github.com/Morkeeth/agent-work-record-witness-ata
+cd agent-work-record-witness-ata
+./demo.sh                    # exits 0 · BLOCK + UNVERIFIABLE shown
+curl -sS https://fleet-wedge-33kamss2jq-uc.a.run.app/health | head
+# open https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/  → PR #1 row H-57b130f397
+```
+
 ---
 
 ## The problem
@@ -52,7 +62,7 @@ written. You get a number about your own fleet before you have changed a single 
 and if that number is boring, you have learned something for free and you stop here. **Value
 first, adoption second.** This is the opening move, not the install.
 
-**Week one, the engineer.** Their agent opens a pull request. A required check probes each claim
+**Week one, the engineer.** Their agent opens a pull request. The `verify-claims` clearance check probes each claim
 against the repo. `a41c9f2` is not a commit. The merge stops. They see a red check with two lines
 under it, fix it in four minutes, and never think about it again. **That is their entire
 relationship with this product, forever**, which is why it survives contact.
@@ -287,21 +297,22 @@ a decision and never overrules one, and the gate never executes text from a repo
 
 ---
 
-## Honest state, measured 2026-08-27
+## Honest state, measured 2026-08-29
 
 Written here rather than buried, because a product about false claims does not get to make any.
 
-**Real:** the gate, enforcing. The trace join. The Hold queue. Break-glass with a required reason.
-The audit export. Gemini measured. The ADK Runner invoked. Every mutating route returns 401 to an
-anonymous caller.
+**Real:** the gate, enforcing. PR #1 ran through `verify-claims` → **FAILURE** (red by design).
+Record **`H-57b130f397`** from a real GitHub Action (`source=github-action`, traceable session).
+The trace join. The Hold queue. Break-glass with a required reason. The audit export. Gemini
+measured. ADK Runner invoked on `POST /agent/run`; P1 adds explain-on-HOLD when deployed.
+Every mutating route returns 401 to an anonymous caller.
 
 **Not real yet:**
 
-- **`clear: 0` in production.** Nothing has ever passed the live gate, because nothing real has
-  ever gone through it.
-- **Installs by anyone who is not the author: zero.** We ran the full chain against a separate
-  test company, false claim held and true claim cleared, then withdrew the headline: **we wrote
-  that company and scripted its pull requests. It proves the chain, not adoption.**
+- **`clear: 0` in production.** Nothing has ever passed the live gate — the real row is a HOLD.
+- **Installs by anyone who is not the author: zero.** Northwind proved the chain, not adoption.
+- **Branch protection off** — check is advisory until you require `verify-claims`; this repo will
+  not call it a required check while protection is off.
 - **One shared bearer token**, not per-agent identity.
 - **No OpenTelemetry, no Agent Registry, no Model Armor.** Roadmap, never claimed.
 
@@ -333,6 +344,8 @@ the only number that matters next.
 | | |
 |---|---|
 | [`hack.md`](hack.md) | canonical product doc. If anything disagrees with it, it wins. |
+| [`docs/HANDBOOK-PASS-2026-08-29.md`](docs/HANDBOOK-PASS-2026-08-29.md) | playbook ladder · partner + submit gates |
+| [`docs/SEALED-PREDICTION-2026-08-29.md`](docs/SEALED-PREDICTION-2026-08-29.md) | fill before Devpost button (#72) |
 | [`docs/USER-JOURNEY.md`](docs/USER-JOURNEY.md) | one person, one Monday |
 | [`docs/WHY-THIS-MATTERS.md`](docs/WHY-THIS-MATTERS.md) | four buyers, four forces |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | the system, with roadmap edges dashed |

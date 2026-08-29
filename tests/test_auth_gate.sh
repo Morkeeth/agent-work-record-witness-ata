@@ -8,6 +8,7 @@ set -u
 export HOLD_API_TOKEN=test-token-abc
 export FLEET_STORE=memory
 export HOLD_DEMO_MODE=0
+export HOLD_AGENT_EXPLAIN=0
 export PORT=8791
 python3 -m cloud.service >/tmp/hold_test.log 2>&1 &
 SRV=$!

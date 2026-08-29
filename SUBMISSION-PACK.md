@@ -122,6 +122,11 @@ python3 contract/eligibility.py calls all three services rather than importing t
 With ADC on a Firestore + Vertex project it prints 3 OF 3 MET and exits 0. Cold, with no
 credentials, it prints 1 OF 3 MET and exits 1 — deliberately, because import is not call
 and credentials you do not have do not count.
+
+Integration shape: the GitHub Action runs deterministic probes in the customer's CI —
+no repo read access on our side. Only the verdict and session pointer cross to Cloud Run,
+where Firestore append-only storage and IAM-gated APIs hold the record. ADK + Vertex Gemini
+explain HOLD decisions for humans; they never override a probe.
 ```
 
 ### Challenges
@@ -209,10 +214,10 @@ Measured 2026-08-29 by probing the live service and GitHub PR #1, not quoted fro
 | Nothing has ever cleared | `GET /audit` → **`clear: 0`** | "Nothing has passed — the real row is a HOLD, not a clear." |
 | Check fired on a real PR | PR #1 open · `verify-claims` → **FAILURE** | **claim this — red by design.** The PR body claims false done; the gate BLOCKed, posted `H-57b130f397`, workflow exited 1. A green check would mean the demo broke. |
 | `/audit` vs `/audit/export` counts | **by design, not a defect.** `/audit` returns every event; `/audit/export` returns clearance/exception/policy only and drops prove-only rows; `?include_prove=1` returns the full set and the two agree exactly. Re-probed live 2026-08-28 (31 vs 7 at that moment, 32 vs 8 an hour later — **these are live counters, do not pin a number to them on camera**). | explain the filter, never quote the count |
-| `docs/architecture.png` for Devpost | **not exported** — mermaid source only in `docs/ARCHITECTURE.md` | export before paste; do not claim the PNG exists in the repo |
+| `docs/architecture.png` for Devpost | **exported 2026-08-29** from `docs/ARCHITECTURE.md` mermaid | attach on paste |
 | Deployed revision behind repo | **closed 2026-08-28.** anon `POST /prove` → **401** `HOLD_API_TOKEN required`, probed against the live service. (That is what was probed; the running revision is not claimed to be byte-identical to `main`.) | fixed — the auth gate is live |
 | Agent genuinely invoked | `GET /audit` carries an `agent_run`: `invoked: true`, `google.adk.runners.Runner`, `gemini-3.5-flash-lite`, 3 tool calls | **claim this — it is live and recorded** |
-| `/health` reports a run receipt | deployed: `constructed: true`, `invoked: false`, `last_run: never invoked in this process` on a fresh container | **claim the receipt, not a run** |
+| `/health` reports a run receipt | deployed: `constructed: true`; P1 adds `agent_explanation` on HOLD when redeployed | **claim receipt on `/agent/run`**; explain-on-HOLD after deploy |
 | Install path | repo is public, action ships the probe, `uses:` resolves from a foreign repo | works — but zero non-author installs |
 | Non-author installs | **zero** | roadmap. The 2026-08-27 foreign-repo run does not count: we wrote the test organisation and scripted its PRs. It proves the chain, not adoption. |
 | Org lift | field of 2 → `UNMEASURED_FOR_ORG_CLAIM` | never claim a population effect |

@@ -1,7 +1,19 @@
+@voice bm_george
+@lang b
+@preset demo
+@speed 0.95
+@pause 600
+
 Your agents write reports about work they did. This keeps the receipt.
+
 Seats and spend are visible. What the agents actually did is not.
+
 Open the hold console — a held claim opens back to the session. None of them holds the transcript.
-Watch ./demo.sh — a stranger catches a false claim with no account and no network.
+
+Watch demo dot sh — a stranger catches a false claim with no account and no network.
+
 Pull request one — verify-claims goes red on deadbee. Record H-57b130f397 — traceable, by design.
+
 Four verdicts: PASS, BLOCK, UNVERIFIABLE, HOLD — the gate never runs a command from a report.
+
 78,618 messages audited — 41.7 raw, 8.1 corrected; our probe error. Gemini explains; Python decides.

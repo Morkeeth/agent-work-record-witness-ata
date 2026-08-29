@@ -10,6 +10,10 @@ on:
 
 jobs:
   verify-claims:
+    permissions:
+      checks: write
+      contents: read
+      pull-requests: read
     if: >
       contains(join(github.event.pull_request.labels.*.name, ','), 'agent')
       || contains(github.event.pull_request.user.login, '[bot]')
@@ -28,3 +32,5 @@ jobs:
           api-token: ${{ secrets.HOLD_API_TOKEN }}
           pr-number: ${{ github.event.pull_request.number }}
           repo: ${{ github.repository }}
+          actor: ${{ github.event.pull_request.user.login }}
+          head-sha: ${{ github.event.pull_request.head.sha }}

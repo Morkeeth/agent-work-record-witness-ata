@@ -43,6 +43,23 @@ def load_findings(path: str) -> dict:
                  f"not a clean PR.")
 
 
+def build_payload(findings: dict, *, report: str, pr: str, repo: str,
+                  actor: str, session_id: str, head_sha: str) -> dict:
+    """Build the clearance POST body. Separated for unit tests."""
+    session = (session_id or head_sha or "").strip() or None
+    sha = (head_sha or "").strip() or None
+    return {
+        "report": report,
+        "findings": findings.get("findings"),
+        "pr": pr,
+        "repo": repo,
+        "actor": actor or "github-action",
+        "session": session,
+        "head_sha": sha,
+        "source": "github-action",
+    }
+
+
 def post(url: str, payload: dict, token: str) -> dict:
     if not url.rstrip("/").endswith(CLEARANCE_SUFFIX):
         url = url.rstrip("/") + CLEARANCE_SUFFIX
@@ -67,14 +84,15 @@ def main() -> int:
         print("HOLD_POLICY_URL unset — enforcing local probe only")
         return exit_hint
 
-    payload = {
-        "report": os.environ.get("PR_BODY") or "",
-        "findings": findings.get("findings"),
-        "pr": os.environ.get("PR_NUMBER"),
-        "repo": os.environ.get("REPO"),
-        "actor": "github-action",
-        "source": "github-action",
-    }
+    payload = build_payload(
+        findings,
+        report=os.environ.get("PR_BODY") or "",
+        pr=os.environ.get("PR_NUMBER") or "",
+        repo=os.environ.get("REPO") or "",
+        actor=(os.environ.get("ACTOR") or "github-action").strip(),
+        session_id=(os.environ.get("SESSION_ID") or "").strip(),
+        head_sha=(os.environ.get("HEAD_SHA") or "").strip(),
+    )
     try:
         body = post(url, payload, (os.environ.get("HOLD_API_TOKEN") or "").strip())
     except urllib.error.HTTPError as e:

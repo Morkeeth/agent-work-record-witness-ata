@@ -36,6 +36,20 @@ The 30% breaks into three named sub-checks:
 **Consequence:** the video is one take. No cut may hide a failed run. A deterministic fixture is
 not a shortcut here — it is the only way to satisfy "unedited" honestly.
 
+## Deliverable status (handbook pass 2026-08-29)
+
+| Box above | Status |
+|-----------|--------|
+| Gemini + ADK + GCP | ✅ probed |
+| Track + repo + README | ✅ |
+| Architecture diagram | ✅ `docs/architecture.png` |
+| Video | ⛔ Oscar |
+| Text description | ⛔ Devpost |
+| Hosted URL | ✅ |
+| Deadline | ⛔ Mon 17:00 PDT |
+
+Full ladder: `docs/HANDBOOK-PASS-2026-08-29.md`
+
 ## The track, verbatim
 **The Fortified Enterprise Fleet** — *"Build a scalable network of institutional agents."*
 Event framing: *"agents that run in the background, handle the heavy lifting of massive datasets,

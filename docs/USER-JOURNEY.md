@@ -38,7 +38,7 @@ of them can tell her whether a claim an agent made was true.**
 
 ## Monday, week one. She installs it and nothing happens
 
-She adds a YAML file to one repo. Five minutes. It is a required check on pull requests
+She adds a YAML file to one repo. Five minutes. The `verify-claims` clearance check runs on pull requests
 labelled `agent`.
 
 **Nothing visible changes**, and that is the point. Engineers open pull requests. Most pass.
@@ -100,18 +100,17 @@ Moment 2 is the product. Moment 1 is how it gets installed. Moment 3 is why it g
 
 ---
 
-## Honest state, 2026-08-27
+## Honest state, 2026-08-29
 
-Written so nobody has to guess which parts are real.
+Written so nobody has to guess which parts are real. Synced with `SUBMISSION-PACK.md` §3.
 
 | Moment | Real today | Gap |
 |---|---|---|
-| 1 · the red check | **yes**, deterministic probes, live and enforcing | never fired on a real pull request. Zero non-author installs. |
-| 2 · the trace | **built today**, session carried on the record, console renders it | **the record holds zero real claims.** 4 clearances, all staged. |
-| 3 · the export | **yes**, `/audit/export`, Firestore-backed | every stored clearance is our own probe. `GET /audit` reports 31 events and `/audit/export` returns 7 — **the export filters prove-only rows by design**; `?include_prove=1` returns all 31. |
+| 1 · the red check | **yes** — PR #1 · `verify-claims` **FAILURE** (red by design) | branch protection off · zero non-author installs |
+| 2 · the trace | **yes** — `H-57b130f397` traceable · session on record · console renders join | Claude Code session patterns only today |
+| 3 · the export | **yes**, `/audit/export`, Firestore-backed | **`clear: 0`** — real row is HOLD, not clear |
 
-**The single thing that turns all three from a demo into a product is one real agent pull
-request.** Ten minutes. Every other gap on this page is downstream of that.
+**One real agent PR is in the record.** What remains is adoption beyond the author and a first CLEAR.
 
 ---
 

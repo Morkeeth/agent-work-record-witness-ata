@@ -76,8 +76,8 @@ CFO cannot prove the loss. The renewal conversation is two people trading anecdo
 first number that makes the agent ROI argument falsifiable, and **falsifiable is what a CFO
 actually wants**, including when the answer is unflattering.
 
-**Weakness, stated:** we have never run this on a real fleet. The record currently holds zero
-real claims.
+**Weakness, stated:** we have not run this on a customer fleet at scale. **One real agent PR**
+(`H-57b130f397`) is in the record; zero non-author installs.
 
 ---
 
@@ -127,14 +127,11 @@ Oscar's, said in passing today, and better than anything written in this repo.
 
 ## What is honest to say on camera, and what is not
 
-**True today:** the gate is live and enforcing. A held claim carries the session that produced
-it. The export exists and is Firestore-backed.
+**True today:** the gate is live and enforcing. PR #1 fired `verify-claims` (red by design).
+Record **`H-57b130f397`** from a real GitHub Action. A held claim carries the session that produced
+it. The export exists and is Firestore-backed. ADK Runner invoked on `POST /agent/run`; P1 adds
+Gemini explain-on-HOLD when deployed (**explains, never overrules**).
 
-**Not true today, and must be stated as roadmap:** the record holds **zero real agent claims** —
-4 clearances, all four staged by us, and `GET /audit` reports **`clear: 0`**, so nothing has ever
-passed the gate because nothing real has ever gone through it; the check has never fired on a real
-pull request; the Gemini call does not happen inside the container; the ADK agent is constructed
-and never invoked.
-
-**One real agent pull request moves the first four of those.** The last two need the key mounted
-and a Runner wired.
+**Not true today, and must be stated as roadmap:** **`clear: 0`** — nothing has passed yet; the real
+row is a HOLD. Zero non-author installs. Branch protection is off — the check is advisory until you
+require `verify-claims`; do not call it a required check on camera while protection is off.
