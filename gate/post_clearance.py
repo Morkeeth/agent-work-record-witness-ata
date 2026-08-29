@@ -45,19 +45,25 @@ def load_findings(path: str) -> dict:
 
 def build_payload(findings: dict, *, report: str, pr: str, repo: str,
                   actor: str, session_id: str, head_sha: str) -> dict:
-    """Build the clearance POST body. Separated for unit tests."""
-    session = (session_id or head_sha or "").strip() or None
+    """Build the clearance POST body. Separated for unit tests.
+
+    Session is not copied from head_sha — hold_api.extract_session_ref reads the report.
+    head_sha is commit join metadata only.
+    """
+    session = (session_id or "").strip() or None
     sha = (head_sha or "").strip() or None
-    return {
+    payload = {
         "report": report,
         "findings": findings.get("findings"),
         "pr": pr,
         "repo": repo,
         "actor": actor or "github-action",
-        "session": session,
         "head_sha": sha,
         "source": "github-action",
     }
+    if session:
+        payload["session"] = session
+    return payload
 
 
 def post(url: str, payload: dict, token: str) -> dict:
