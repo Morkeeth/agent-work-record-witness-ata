@@ -181,26 +181,25 @@ Gateway → Firestore · the join back to the session · console and export are 
 
 **Line:** *Run your agents. Check the math.*
 
-**Open on week four, not week one.** A platform lead opens a held claim and it resolves to the
-session that produced it. The red check is the second beat, not the first.
+**Record first.** Open the held claim before the red check. Corpus math is mid-beat, not the close.
 
 | Time | Beat | On camera |
 |------|------|-----------|
-| 0:00–0:30 | Problem | Seats and spend are visible; what the agents did is not |
-| 0:30–1:10 | **The record** | `/hold/` — a held claim, opened, resolving to its session |
-| 1:10–1:35 | How it fills | the gate: agent PR → probe vs object → HOLD |
-| 1:35–2:15 | **Real PR** | agent label + false-done body → red `verify-claims` + Hold row |
-| 2:15–2:40 | Break-glass + audit | reason → recorded; Export JSON |
-| 2:40–3:05 | GCP | `/health` live (say the `*.run.app` URL) · `eligibility.py` → 3/3, **and say cold is 1/3** |
-| 3:05–3:30 | Honest state | PR #1 red · row `H-57b130f397` · still `clear: 0` |
-| 3:30–4:00 | Close | install path + roadmap; the line |
+| 0:00 | Board question | *If the regulator asks what you hand them…* |
+| 0:10 | **Record first** | https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?record=H-a6151a95ac — session join; moat line at click |
+| 0:28 | PR chain | PR #1 checks tab · `verify-claims` + `witness-findings` red on `deadbee` · row `H-a6151a95ac` |
+| 0:52 | Stranger probe | `./demo.sh --film` (compact, readable) |
+| 1:22 | Verdict map | UNVERIFIABLE → HOLD · gate never runs a command from a report |
+| 1:42 | Corpus (mid) | 78,618 · 41.7→8.1 · fixture in repo |
+| 2:08 | Cloud proof | `/health` · `python3 contract/eligibility.py` — **3/3 with ADC and 1/3 cold** |
+| 2:32 | Close | *Run your agents. Check the math.* |
 
 **Say the product name in full at least twice.** Never "HOLD" as the product.
 
 **Do not:** the Seed button · `/healthz` · org lift at n=2 · the words "required check" while
-requiredness is unresolved · Witness / Claims Inbox / hack-fleet-ata as names · the CLI as the product.
+branch protection is off · Witness / Claims Inbox / hack-fleet-ata as names · the CLI as the product.
 
-Pre-roll: `docs/ATA-FILM-AND-SHIP.md` §2.
+Pre-roll: `./film/preflight.sh` · checklist: `docs/OSCAR-FILM-CHECKLIST.md`.
 
 ---
 
@@ -210,9 +209,9 @@ Measured 2026-08-29 by probing the live service and GitHub PR #1, not quoted fro
 
 | Gap | Measured | Say it as |
 |---|---|---|
-| Real agent work in the record | **1 github-action clearance `H-57b130f397`** (PR #1, `source=github-action`, traceable, session `01Lzbh4XPYTAgCKg1dciFS3Q`, BLOCK/HOLD on `deadbee` + missing path) + older staged rows | "One real agent PR went through the gate — it failed on purpose and is in Hold." |
+| Real agent work in the record | **1 github-action clearance `H-a6151a95ac`** (PR #1, `source=github-action`, traceable, session `01Lzbh4XPYTAgCKg1dciFS3Q`, BLOCK/HOLD on `deadbee` + missing path) + older staged rows | "One real agent PR went through the gate — it failed on purpose and is in Hold." |
 | Nothing has ever cleared | `GET /audit` → **`clear: 0`** | "Nothing has passed — the real row is a HOLD, not a clear." |
-| Check fired on a real PR | PR #1 open · `verify-claims` → **FAILURE** | **claim this — red by design.** The PR body claims false done; the gate BLOCKed, posted `H-57b130f397`, workflow exited 1. A green check would mean the demo broke. |
+| Check fired on a real PR | PR #1 open · `verify-claims` → **FAILURE** | **claim this — red by design.** The PR body claims false done; the gate BLOCKed, posted `H-a6151a95ac`, workflow exited 1. A green check would mean the demo broke. |
 | `/audit` vs `/audit/export` counts | **by design, not a defect.** `/audit` returns every event; `/audit/export` returns clearance/exception/policy only and drops prove-only rows; `?include_prove=1` returns the full set and the two agree exactly. Re-probed live 2026-08-28 (31 vs 7 at that moment, 32 vs 8 an hour later — **these are live counters, do not pin a number to them on camera**). | explain the filter, never quote the count |
 | `docs/architecture.png` for Devpost | **exported 2026-08-29** from `docs/ARCHITECTURE.md` mermaid | attach on paste |
 | Deployed revision behind repo | **closed 2026-08-28.** anon `POST /prove` → **401** `HOLD_API_TOKEN required`, probed against the live service. (That is what was probed; the running revision is not claimed to be byte-identical to `main`.) | fixed — the auth gate is live |

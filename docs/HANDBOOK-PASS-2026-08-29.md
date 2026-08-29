@@ -64,7 +64,7 @@ Source: https://allthingsagentichackathon.devpost.com/ · fetched 2026-08-22 · 
 | Gemini 3.5+ Vertex | `contract/eligibility.py` **calls** classify | 3 | ✅ 3/3 ADC · 1/3 cold |
 | Google ADK | `build_agent()` + `POST /agent/run` + P1 explain HOLD | 3–5 | ✅ coded · deploy D1 |
 | Cloud Run | live gateway | 4 | ✅ |
-| Firestore | append-only record `H-57b130f397` | 4 | ✅ |
+| Firestore | append-only record `H-a6151a95ac` | 4 | ✅ |
 | GitHub Actions | `verify-claims` → `/clearance` | 4 | ✅ PR #1 |
 
 **Load-bearing sentence:** *Without Cloud Run + Firestore, the CI probe has nowhere to write the receipt the auditor exports.*

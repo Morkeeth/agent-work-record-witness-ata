@@ -77,7 +77,7 @@ first number that makes the agent ROI argument falsifiable, and **falsifiable is
 actually wants**, including when the answer is unflattering.
 
 **Weakness, stated:** we have not run this on a customer fleet at scale. **One real agent PR**
-(`H-57b130f397`) is in the record; zero non-author installs.
+(`H-a6151a95ac`) is in the record; zero non-author installs.
 
 ---
 
@@ -128,7 +128,7 @@ Oscar's, said in passing today, and better than anything written in this repo.
 ## What is honest to say on camera, and what is not
 
 **True today:** the gate is live and enforcing. PR #1 fired `verify-claims` (red by design).
-Record **`H-57b130f397`** from a real GitHub Action. A held claim carries the session that produced
+Record **`H-a6151a95ac`** from a real GitHub Action. A held claim carries the session that produced
 it. The export exists and is Firestore-backed. ADK Runner invoked on `POST /agent/run`; P1 adds
 Gemini explain-on-HOLD when deployed (**explains, never overrules**).
 

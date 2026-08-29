@@ -21,7 +21,7 @@ supersedes: docs/THIRTY-DAY-PLAN.md (immune-system era — history only)
 | Phase | Gate | Status |
 |-------|------|--------|
 | 5 · Exhibit | `./demo.sh` one-click | ✅ [`STRANGER-PASS`](docs/STRANGER-PASS-2026-08-29.md) |
-| 6 · Freeze | Oscar degraded + film | ⛔ `./film/preflight.sh` |
+| 6 · Freeze | Oscar degraded + film | ✅ `./film/preflight.sh` PASS |
 | 7 · Submit | Devpost + **sealed prediction** | ⛔ [`SEALED-PREDICTION`](docs/SEALED-PREDICTION-2026-08-29.md) |
 
 **#85:** film is the hard-fail artifact. **#72:** seal prediction before button. Full pass: HANDBOOK-PASS.
@@ -140,7 +140,7 @@ P1 deploy + D3 UI = **fourth**, not first.
 | Asset | Status |
 |-------|--------|
 | **Product + pitch one doc** | `docs/SUBMISSION.md` — ten adoption cases §4, Google stack §5, film §7 |
-| **Live proof** | Cloud Run `/health` · Firestore · PR #1 red · record `H-57b130f397` |
+| **Live proof** | Cloud Run `/health` · Firestore · PR #1 red · record `H-a6151a95ac` |
 | **Cold demo** | `./demo.sh` · `tests/test_demo.sh` 8/8 · preflight green |
 | **Corpus honesty** | 41.7→8.1 preregistered · sample in fixtures |
 | **Architecture** | `docs/architecture.png` + `docs/ARCHITECTURE.md` |
@@ -180,7 +180,7 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ### Oscar only (cannot delegate)
 
-- [ ] **0. Film** — `./film/preflight.sh` → record ≤4:00 (SUBMISSION §7 or SUBMISSION-PACK §2)
+- [ ] **0. Film** — `./film/preflight.sh` → record ≤4:00 (`docs/OSCAR-FILM-CHECKLIST.md`)
 - [ ] **0b. Devpost submit** — paste from SUBMISSION-PACK §1 · attach `architecture.png`
 - [ ] **0c. Share repo** — `testing@devpost.com` + `cloudhackathons@google.com`
 - [ ] **0d. Film language** — never "required check" (branch unprotected) · cold eligibility 1/3

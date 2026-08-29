@@ -84,7 +84,7 @@ here carries an invented figure.*
 **1 · The false-done PR, caught at the merge.** *Demonstrated.* An agent opens a PR claiming a
 commit that does not exist, a file that nearly exists, and a test run that never happened. The
 The clearance check returns BLOCK on two, PASS on the one true claim, and UNVERIFIABLE on the test claim
-rather than guessing. Real PR #1 on this repo, record row `H-57b130f397`.
+rather than guessing. Real PR #1 on this repo, record row `H-a6151a95ac`.
 
 **2 · The board question, answered with a document.** *Demonstrated.* "Prove no agent shipped
 unverified." The record is queryable by claim, verdict, author and session. A VP Eng does not buy a
@@ -134,7 +134,7 @@ with.
 | Layer | What runs there | State |
 |---|---|---|
 | **Cloud Run** | The witness service on the request path. `/health` returns 200, product name, `auth_required: true`, `store: firestore` | ✅ live |
-| **Firestore** | The append-only record. Row `H-57b130f397` written by a real GitHub Action, not a seed | ✅ live |
+| **Firestore** | The append-only record. Row `H-a6151a95ac` written by a real GitHub Action, not a seed | ✅ live |
 | **GitHub Actions** | The `verify-claims` check. Runs the local probe, posts the verdict to Cloud Run | ✅ live, PR #1 |
 | **IAM / service account** | Every mutating route returns 401 to an anonymous caller, probed 28 Aug. `demo_seed_enabled: false` in production | ✅ verified |
 
@@ -167,22 +167,24 @@ The preregistration that made the correction possible is
 
 ---
 
-## 7 · The film, 3 minutes
+## 7 · The film (≤4:00)
 
-Align with **`SUBMISSION-PACK.md` §2** (record-first close). Corpus beat is mid, not finale.
+Align with **`docs/FILM-FINAL-RUN-2026-08-29.md`** and **`SUBMISSION-PACK.md` §2** (record-first spine).
+Corpus beat is mid, not finale. Never say "required check" (branch protection off).
 
 | Time | Beat | Shown |
 |---|---|---|
-| 0:00 | Board question + promise | seats/spend visible; claims are not |
-| 0:30 | **The record** | `/hold/` — held claim → session join; moat line at click |
-| 1:10 | `./demo.sh` | stranger, no account, no network |
-| 1:35 | PR #1 | `verify-claims` red on `deadbee` — **not** "required check" (branch unprotected) |
-| 2:15 | Four verdicts + refusal | terminal; never runs a command from a report |
-| 2:40 | GCP + honesty | `/health` · eligibility 3/3 **and** cold 1/3 · row `H-57b130f397` · `clear: 0` |
-| 3:15 | Close | install path; *Gemini explains; Python decides* if P1 deployed |
+| 0:00 | Board question | seats/spend visible; claims are not |
+| 0:10 | **Record first** | `/hold/?record=H-a6151a95ac` — session join; moat line at click |
+| 0:28 | PR chain | PR #1 checks · `verify-claims` + `witness-findings` red on `deadbee` |
+| 0:52 | `./demo.sh --film` | stranger, no account, no network |
+| 1:22 | Verdict map | UNVERIFIABLE → HOLD; gate never runs a command from a report |
+| 1:42 | Corpus (mid) | 78,618 · 41.7→8.1 · fixture in repo |
+| 2:08 | Cloud proof | `/health` · eligibility **3/3 with ADC and 1/3 cold** |
+| 2:32 | Close | *Run your agents. Check the math.* |
 
-Recording: flipbook screen capture, voiceover from `film/voiceover-vo.txt`, burned subtitles.
-Cold review before the camera rolls, and the live surface must equal the fixed-by-hash build.
+Recording: flipbook screen capture, voiceover from `film/voiceover-vo.txt`, burned subtitles
+`film/subtitles.srt`. Pre-roll: `./film/preflight.sh`.
 
 ---
 

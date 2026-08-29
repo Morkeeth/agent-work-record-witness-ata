@@ -54,19 +54,26 @@ print('  health fields match')
 fi
 
 grn "record row $RECORD_ID"
-if [ ! -f "$ROOT/.hold_api_token" ]; then
-  red ".hold_api_token missing (gitignored — create locally for preflight)"
+TOKEN=""
+if [ -n "${HOLD_API_TOKEN:-}" ]; then
+  TOKEN="$HOLD_API_TOKEN"
+elif [ -f "$ROOT/.hold_api_token" ]; then
+  TOKEN="$(tr -d '\n' < "$ROOT/.hold_api_token")"
+fi
+CURL_AUTH=()
+if [ -n "$TOKEN" ]; then
+  CURL_AUTH=(-H "X-HOLD-Token: $TOKEN")
 else
-  TOKEN="$(cat "$ROOT/.hold_api_token")"
-  FOUND="$(
-    curl -sS --max-time 30 "$URL/audit/export" -H "X-HOLD-Token: $TOKEN" \
-      | "$PY" -c "import json,sys; ev=json.load(sys.stdin).get('events',[]); print(any(e.get('id')==sys.argv[1] for e in ev))" "$RECORD_ID" 2>/dev/null || echo False
-  )"
-  if [ "$FOUND" != "True" ]; then
-    red "audit export missing $RECORD_ID"
-  else
-    grn "record $RECORD_ID present"
-  fi
+  grn "  no token — probing public /audit/export (read-only)"
+fi
+FOUND="$(
+  curl -sS --max-time 30 "$URL/audit/export" "${CURL_AUTH[@]}" \
+    | "$PY" -c "import json,sys; ev=json.load(sys.stdin).get('events',[]); print(any(e.get('id')==sys.argv[1] for e in ev))" "$RECORD_ID" 2>/dev/null || echo False
+)"
+if [ "$FOUND" != "True" ]; then
+  red "audit export missing $RECORD_ID"
+else
+  grn "record $RECORD_ID present"
 fi
 
 grn "PR #$PR_NUMBER verify-claims red-by-design"

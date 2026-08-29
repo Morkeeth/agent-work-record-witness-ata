@@ -31,6 +31,18 @@ PAUSE_SEC=8 ./film/capture.sh
 open "https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?record=H-a6151a95ac"
 ```
 
+## Terminal capture (lock before rolling)
+
+| Setting | Value |
+|---------|--------|
+| App | Terminal.app (macOS) |
+| Font | **SF Mono Regular 14 pt** (Menlo 14 acceptable) |
+| Window | **100 columns × 32 rows** minimum |
+| Profile | Dark background · light text (match `/hold/` `#0f1419` if custom) |
+| Zoom | Full-screen or 125% so gate `PASS`/`BLOCK`/`HOLD` lines are legible at 1080p |
+
+Preflight verified 2026-08-29: `./demo.sh --film` compact output matches all 8 voiceover beats; record `H-a6151a95ac` present in live export; PR #1 `verify-claims` conclusion=failure.
+
 ---
 
 ## After record
@@ -39,4 +51,4 @@ open "https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?record=H-a6151a95ac"
 2. Paste `SUBMISSION-PACK.md` §1 + `docs/architecture.png`
 3. Share repo: `testing@devpost.com` + `cloudhackathons@google.com`
 
-Checklist: `docs/DEVPOST-CHECKLIST.md`
+Checklist: `docs/OSCAR-FILM-CHECKLIST.md`

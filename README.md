@@ -305,7 +305,7 @@ a decision and never overrules one, and the gate never executes text from a repo
 Written here rather than buried, because a product about false claims does not get to make any.
 
 **Real:** the gate, enforcing. PR #1 ran through `verify-claims` → **FAILURE** (red by design).
-Record **`H-57b130f397`** from a real GitHub Action (`source=github-action`, traceable session).
+Record **`H-a6151a95ac`** from a real GitHub Action (`source=github-action`, traceable session).
 The trace join. The Hold queue. Break-glass with a required reason. The audit export. Gemini
 measured. ADK Runner invoked on `POST /agent/run`; P1 adds explain-on-HOLD when deployed.
 Every mutating route returns 401 to an anonymous caller.

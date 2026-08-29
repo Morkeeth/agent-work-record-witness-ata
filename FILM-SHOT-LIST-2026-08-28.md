@@ -18,7 +18,7 @@ $ git rev-parse --short HEAD && git ls-remote origin HEAD | awk '{print substr($
 # both match — run before every take
 ```
 
-`./demo.sh` passes. PR #1 posted real clearance **`H-57b130f397`** (`source=github-action`, traceable). See `docs/DATA-SOURCE-RECEIPT-2026-08-28.md`.
+`./demo.sh` passes. PR #1 posted real clearance **`H-a6151a95ac`** (`source=github-action`, traceable). See `docs/DATA-SOURCE-RECEIPT-2026-08-28.md`.
 
 ---
 
@@ -28,7 +28,7 @@ $ git rev-parse --short HEAD && git ls-remote origin HEAD | awk '{print substr($
 |---|---|---|---|
 | Clone current | `git ls-remote origin HEAD` vs local | match | ✅ |
 | Stranger demo | `./demo.sh` | exit 0 | ✅ |
-| Real record row | open `/hold/` | `H-57b130f397` | ✅ |
+| Real record row | open `/hold/` | `H-a6151a95ac` | ✅ |
 | PR red check | PR #1 `verify-claims` | failure (BLOCK) | ✅ |
 | Service up | `curl -s $URL/health` | `auth_required: true` | ✅ |
 | **Which `python3`** | `python3 -V` | **3.12.x** from `/Library/Frameworks` | ⚠ **check — see below** |
@@ -283,7 +283,7 @@ $ curl -s $URL/health
 
 **5b — PR #1 (real ingestion, not seed).** Open https://github.com/Morkeeth/agent-work-record-witness-ata/pull/1 — `verify-claims` **failed** (BLOCK on `deadbee`). That red check is the product working.
 
-**5c — the queue.** Row **`H-57b130f397`** · `source=github-action` · traceable to session `01Lzbh4XPYTAgCKg1dciFS3Q`.
+**5c — the queue.** Row **`H-a6151a95ac`** · `source=github-action` · traceable to session `01Lzbh4XPYTAgCKg1dciFS3Q`.
 **5d — the export.** `GET /audit/export` → includes the github-action clearance above.
 **5e — writes are gated.** anonymous `POST /prove` → **HTTP 401**.
 **5f — the console.** `GET /hold/` → **HTTP 200** — click the hold, show session join.
@@ -348,7 +348,7 @@ strength, not an apology** — it is the only page in the submission a judge can
 3. **A live third-party install.** Never performed.
 4. **`wrote _jed.py` and `wrote needs.ts`** on the report page — plausible, not confirmed against their repos.
 
-*Re-run end to end 2026-08-28 @ `e553d69`. Push sync OK. PR #1 + clearance H-57b130f397 live.*
+*Re-run end to end 2026-08-28 @ `e553d69`. Push sync OK. PR #1 + clearance H-a6151a95ac live.*
 
 **Re-verified after the corpus finding, same night, because both have moved under a shot list once
 already:** `/health` returns `product: THE AGENT WORK RECORD WITNESS`, `auth_required: true`,
