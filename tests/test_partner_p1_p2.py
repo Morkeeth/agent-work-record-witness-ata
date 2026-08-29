@@ -44,7 +44,7 @@ p = build_payload(
 )
 check("payload actor is PR author", p["actor"], "coding-agent[bot]")
 check("payload head_sha", p["head_sha"], "abc123deadbeef")
-check("session falls back to head_sha", p["session"], "abc123deadbeef")
+check("session omitted without session-id (server parses report)", p.get("session"), None)
 check("source is github-action", p["source"], "github-action")
 
 p2 = build_payload(
