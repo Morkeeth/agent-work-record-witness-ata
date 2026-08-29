@@ -28,7 +28,10 @@ the wrong object.
 
 ## The corpus
 
-`fixtures/corpus-sample-40.json`, unchanged, at the repo root. It is a seeded random sample
+`fixtures/corpus-sample-40.json`, at the repo root. Rows, labels, shas and context windows
+are the ones committed on 2026-08-27; the only later edit is that repository **paths** in
+`cwd` and in the context text were replaced by opaque labels — see *Pseudonymised repository
+paths* below. It is a seeded random sample
 of 40 SHA extractions drawn from 78,618 real assistant messages in `~/.trace/trace.db`, each
 hand-labelled by reading its context window:
 
@@ -130,6 +133,53 @@ Outputs: `eval/out/results.json` (every item, row by row: mid, sha, label, gold,
 verdict) and `eval/out/equivalence.txt` (the receipt that arm B run against the frozen
 oracle returns byte-identical verdicts to arm B run against live git on this machine — proof
 the oracle substituted an *effect*, never a rule).
+
+## Pseudonymised repository paths
+
+Every repository path in `eval/fixtures/sha_oracle.json`, `eval/out/results.json`,
+`eval/out/equivalence.txt` and `fixtures/corpus-sample-40.json` is an **opaque label** —
+`/code/repo-01` … `/code/repo-82` — and not a real directory. This repository is public. The
+real ones are 82 repositories on one laptop, most of them private, and shipping the oracle
+keyed by absolute paths would have published that inventory and the home-directory layout
+around it as a side effect of publishing an eval.
+
+**What was mapped.** One label per repository, assigned once in the frozen `sibling_repos`
+order and applied to *every* key and value: the `<repo> ||| <command>` probe keys, the
+`code_root`, the `sibling_repos` list, `sibling_resolution_receipts.recorded_cwd` and
+`.resolved_in`, the per-item `evidence` strings, the corpus `cwd` field, and the `~/CODE/…`
+paths that appear inside the recorded transcript text. Additionally, the commit **subject**
+in each `git_log_1` receipt is replaced by a `sha256:` commitment of that subject: those
+subjects are private-repo content, one of them personal, and a commitment keeps the
+redaction checkable instead of turning it into a rewrite.
+
+**What was NOT changed.** The separator (`" ||| "`), the probe command strings, the recorded
+stdout and return codes, the number of entries (1,091 git probes, 82 siblings, 11 receipts),
+the shas, the hand labels, the context text apart from those path substitutions, the
+gold rule, the scoring matrix, and
+`gate/outcome_gate.py`. The mapping is one-to-one and order-preserving, so the sibling search
+visits the same repositories in the same order and stops at the same one.
+
+**The table is deliberately not shipped.** It lives outside the repo at
+`~/.claude/ata-eval-repo-map.json` (override with `$ATA_EVAL_REPO_MAP`), mode 0600, and it
+holds both directions plus the plaintext of the redacted subjects. Committing it — or
+committing anything derived from it — would undo the redaction in one step, which is exactly
+why the labels are sequential and carry no information about the name they replace. Nothing
+in the offline run reads it: the corpus carries labels and the oracle is keyed by labels, so
+`run_eval.py` resolves every key with no table present. Only `eval/build_oracle.py`, the
+machine-bound recorder, loads it — it translates label → real directory immediately before a
+live probe and keys the result by the label (`eval/oracle.py`, the `realpath` hook). A
+rebuild without the table therefore fails loudly rather than recording 82 missing-directory
+probes as if they were observations.
+
+**The equivalence receipt still holds.** `eval/out/equivalence.txt` records 40/40 identical
+verdicts between arm B against live git and arm B against the frozen oracle, measured on
+2026-08-29 before this renaming; the renaming touched no recorded effect, so the receipt is
+still a receipt about the same recording. The check that this is true is the run itself:
+after pseudonymisation the whole table reproduces unchanged — arm A 22.5%, arm B 45.0%, the
+always-silent null 67.5%, B0 defaults 25.0%, exact McNemar b=0 c=9 p=0.0039, negative control
+0/200, sensitivity 25.7% vs 37.1%, no falsifier fired — and a field-by-field diff of
+`results.json` before against after, with paths mapped forward, is empty. A redaction that
+moved a number would be a redaction that broke the experiment.
 
 ---
 

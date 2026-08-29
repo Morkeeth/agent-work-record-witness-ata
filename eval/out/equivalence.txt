@@ -1,5 +1,5 @@
 ORACLE-vs-LIVE EQUIVALENCE RECEIPT
-built 2026-08-29T15:59:49Z on /Users/morkeeth/CODE
+built 2026-08-29T15:59:49Z on /code
 
 Arm B (headline config) was run twice over the same 40 rows: once against
 live git on this disk, once against the frozen oracle. If these disagree,

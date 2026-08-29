@@ -14,6 +14,14 @@ that replay and live agree verdict-for-verdict on the machine where the recordin
 
 A replay miss RAISES. A probe oracle that returns a default for an unknown key would grade
 whatever default it happened to pick, silently.
+
+PSEUDONYMISED PATHS. The repo argument in every key is an OPAQUE LABEL (`/code/repo-07`),
+not the real directory, because this repository is public and the real ones are 82 named
+private repositories on a laptop. The corpus `cwd` fields carry the same labels, so replay
+resolves keys with no table at all. Only RECORDING needs the real paths: pass `realpath=`
+(a str -> str translation) to `Oracle(..., record=True)` and the label is translated back
+immediately before the live probe, while the key stays the label. The table lives outside
+this repo — see eval/README.md, "Pseudonymised repository paths".
 """
 
 from __future__ import annotations
@@ -37,9 +45,12 @@ class _Result:
 
 
 class Oracle:
-    def __init__(self, data: dict, record: bool = False):
+    def __init__(self, data: dict, record: bool = False, realpath=None):
         self.data = data
         self.record = record
+        # Label -> real directory, used ONLY while recording. Identity in replay, where
+        # no real path exists and none is needed.
+        self.realpath = realpath or (lambda p: p)
         self.data.setdefault("git_probes", {})
         self.data.setdefault("path_probes", {})
 
@@ -51,8 +62,10 @@ class Oracle:
                 raise KeyError(
                     "probe not in the frozen oracle: " + repr(key) +
                     ". Rebuild with eval/build_oracle.py on a machine that has these "
-                    "repos; a missing probe is never defaulted.")
-            r = _live(args, repo)
+                    "repos; a missing probe is never defaulted. If the repo component "
+                    "above is a real directory and not a `/code/repo-NN` label, the "
+                    "caller skipped the pseudonymiser and every key will miss.")
+            r = _live(args, self.realpath(repo))
             hit = {"stdout": r.stdout, "returncode": r.returncode}
             self.data["git_probes"][key] = hit
         return _Result(hit["stdout"], hit["returncode"])
@@ -62,7 +75,7 @@ class Oracle:
         if hit is None:
             if not self.record:
                 raise KeyError("path probe not in the frozen oracle: " + repr(path))
-            hit = os.path.exists(path)
+            hit = os.path.exists(self.realpath(path))
             self.data["path_probes"][path] = hit
         return bool(hit)
 

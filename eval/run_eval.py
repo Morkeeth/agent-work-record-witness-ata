@@ -7,6 +7,10 @@ stdlib only, no network, no API key, no $HOME, deterministic. Every world-observ
 from the frozen oracle in eval/fixtures/sha_oracle.json, so this reproduces from a cold
 clone on a machine that has none of the repos the corpus was drawn from.
 
+Repository paths are pseudonymised (`/code/repo-NN`) in the corpus and the oracle alike, so
+the keys resolve here with no mapping table present — which is why this still runs offline.
+eval/README.md, "Pseudonymised repository paths", says what was mapped and why.
+
 Reading order for anyone auditing this: eval/README.md first (metric, arms, falsifiers,
 written before the run), then eval/arms.py (the scoring matrix and why), then this file.
 """
@@ -135,7 +139,16 @@ def main():
         "what_this_measures": ("verdict accuracy of a claim-checker on 40 hand-labelled "
                                "SHA extractions from real agent transcripts. NOT a base "
                                "rate of agent wrongness. See eval/README.md, THE OBJECT."),
-        "corpus": "fixtures/corpus-sample-40.json (unmodified, labelled 2026-08-27)",
+        "corpus": ("fixtures/corpus-sample-40.json (labelled 2026-08-27; "
+                   "repo paths pseudonymised)"),
+        "pseudonymised_paths": (
+            "Every repository path in this file, in the corpus and in the frozen oracle is "
+            "an opaque label (/code/repo-NN), not a real directory. The real names are 82 "
+            "mostly-private repositories on one laptop and this repo is public. The mapping "
+            "is deterministic, one-to-one and applied to every key and value, so entry "
+            "counts, probe commands, recorded outcomes and per-item verdicts are unchanged; "
+            "the table is deliberately NOT shipped. See eval/README.md, "
+            "'Pseudonymised repository paths'."),
         "oracle_built_utc": o.data.get("built_utc"),
         "gold_distribution": {g: golds.count(g) for g in sorted(set(golds))},
         "arms": {"NULL always-silent": null["score"], "A naive baseline": a["score"],
