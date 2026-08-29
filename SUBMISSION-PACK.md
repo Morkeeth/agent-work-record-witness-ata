@@ -192,7 +192,7 @@ session that produced it. The red check is the second beat, not the first.
 | 1:35–2:15 | **Real PR** | agent label + false-done body → red `verify-claims` + Hold row |
 | 2:15–2:40 | Break-glass + audit | reason → recorded; Export JSON |
 | 2:40–3:05 | GCP | `/health` live (say the `*.run.app` URL) · `eligibility.py` → 3/3, **and say cold is 1/3** |
-| 3:05–3:30 | Honest state | PR #1 red · row `H-57b130f397` · still `clear: 0` |
+| 3:05–3:30 | Honest state | PR #1 red · row `H-a6151a95ac` · still `clear: 0` |
 | 3:30–4:00 | Close | install path + roadmap; the line |
 
 **Say the product name in full at least twice.** Never "HOLD" as the product.
@@ -210,9 +210,9 @@ Measured 2026-08-29 by probing the live service and GitHub PR #1, not quoted fro
 
 | Gap | Measured | Say it as |
 |---|---|---|
-| Real agent work in the record | **1 github-action clearance `H-57b130f397`** (PR #1, `source=github-action`, traceable, session `01Lzbh4XPYTAgCKg1dciFS3Q`, BLOCK/HOLD on `deadbee` + missing path) + older staged rows | "One real agent PR went through the gate — it failed on purpose and is in Hold." |
+| Real agent work in the record | **1 github-action clearance `H-a6151a95ac`** (PR #1, `source=github-action`, traceable, session `01Lzbh4XPYTAgCKg1dciFS3Q`, BLOCK/HOLD on `deadbee` + missing path) + older staged rows | "One real agent PR went through the gate — it failed on purpose and is in Hold." |
 | Nothing has ever cleared | `GET /audit` → **`clear: 0`** | "Nothing has passed — the real row is a HOLD, not a clear." |
-| Check fired on a real PR | PR #1 open · `verify-claims` → **FAILURE** | **claim this — red by design.** The PR body claims false done; the gate BLOCKed, posted `H-57b130f397`, workflow exited 1. A green check would mean the demo broke. |
+| Check fired on a real PR | PR #1 open · `verify-claims` → **FAILURE** | **claim this — red by design.** The PR body claims false done; the gate BLOCKed, posted `H-a6151a95ac`, workflow exited 1. A green check would mean the demo broke. |
 | `/audit` vs `/audit/export` counts | **by design, not a defect.** `/audit` returns every event; `/audit/export` returns clearance/exception/policy only and drops prove-only rows; `?include_prove=1` returns the full set and the two agree exactly. Re-probed live 2026-08-28 (31 vs 7 at that moment, 32 vs 8 an hour later — **these are live counters, do not pin a number to them on camera**). | explain the filter, never quote the count |
 | `docs/architecture.png` for Devpost | **exported 2026-08-29** from `docs/ARCHITECTURE.md` mermaid | attach on paste |
 | Deployed revision behind repo | **closed 2026-08-28.** anon `POST /prove` → **401** `HOLD_API_TOKEN required`, probed against the live service. (That is what was probed; the running revision is not claimed to be byte-identical to `main`.) | fixed — the auth gate is live |

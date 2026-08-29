@@ -13,7 +13,7 @@
 ## Three data pipes (don't mix them)
 
 1. **Gate** — `./demo.sh` · synthetic repo · stranger-safe · **already green**
-2. **Record** — PR #1 tonight · Action posted **`H-57b130f397`** · traceable to session · **solved tonight**
+2. **Record** — PR #1 tonight · Action posted **`H-a6151a95ac`** · traceable to session · **solved tonight**
 3. **Corpus** — customer's Transcripto DB · sample in repo · **day-two, not Monday-critical**
 
 ---
@@ -28,7 +28,7 @@
 **Open these two tabs:**
 
 - https://github.com/Morkeeth/agent-work-record-witness-ata/pull/1 (red check = success)
-- https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/ (row `H-57b130f397`)
+- https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/ (row `H-a6151a95ac`)
 
 ---
 
@@ -66,7 +66,7 @@ Paste from `SUBMISSION-PACK.md`. Repo is public — no judge invite. Submit befo
 
 ## Autonomous mode (Oscar away)
 
-Heartbeat every **30 minutes** → `docs/AUTONOMOUS-HEARTBEAT-LOG.md` (probe: demo, PR #1, H-57b130f397, live endpoints).
+Heartbeat every **30 minutes** → `docs/AUTONOMOUS-HEARTBEAT-LOG.md` (probe: demo, PR #1, H-a6151a95ac, live endpoints).
 
 ---
 

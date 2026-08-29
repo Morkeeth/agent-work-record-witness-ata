@@ -54,34 +54,47 @@ print('  health fields match')
 fi
 
 grn "record row $RECORD_ID"
-if [ ! -f "$ROOT/.hold_api_token" ]; then
-  red ".hold_api_token missing (gitignored — create locally for preflight)"
+FOUND="$(
+  curl -sS --max-time 30 "$URL/audit/export" \
+    | "$PY" -c "import json,sys; ev=json.load(sys.stdin).get('events',[]); print(any(e.get('id')==sys.argv[1] for e in ev))" "$RECORD_ID" 2>/dev/null || echo False
+)"
+if [ "$FOUND" != "True" ]; then
+  red "audit export missing $RECORD_ID"
 else
-  TOKEN="$(cat "$ROOT/.hold_api_token")"
-  FOUND="$(
-    curl -sS --max-time 30 "$URL/audit/export" -H "X-HOLD-Token: $TOKEN" \
-      | "$PY" -c "import json,sys; ev=json.load(sys.stdin).get('events',[]); print(any(e.get('id')==sys.argv[1] for e in ev))" "$RECORD_ID" 2>/dev/null || echo False
-  )"
-  if [ "$FOUND" != "True" ]; then
-    red "audit export missing $RECORD_ID"
-  else
-    grn "record $RECORD_ID present"
-  fi
+  grn "record $RECORD_ID present"
+fi
+if [ -f "$ROOT/.hold_api_token" ] || [ -n "${HOLD_API_TOKEN:-}" ]; then
+  grn "break-glass token available locally"
+else
+  echo "  note: .hold_api_token missing — create before live break-glass on camera (read probe passed without it)" >&2
 fi
 
 grn "PR #$PR_NUMBER verify-claims red-by-design"
-PR_JSON="$(curl -sS --max-time 20 "https://api.github.com/repos/$PR_REPO/pulls/$PR_NUMBER" 2>/dev/null || true)"
-if [ -z "$PR_JSON" ]; then
-  red "GitHub PR API unreachable"
+PR_OK=0
+if command -v gh >/dev/null 2>&1; then
+  PR_STATE="$(gh pr view "$PR_NUMBER" --repo "$PR_REPO" --json state -q .state 2>/dev/null || true)"
+  if [ "$PR_STATE" = "OPEN" ]; then
+    PR_OK=1
+    grn "PR #$PR_NUMBER open"
+  else
+    red "PR #$PR_NUMBER state=${PR_STATE:-<unknown>} (expected OPEN)"
+  fi
 else
-  echo "$PR_JSON" | "$PY" -c "
+  PR_JSON="$(curl -sS --max-time 20 "https://api.github.com/repos/$PR_REPO/pulls/$PR_NUMBER" 2>/dev/null || true)"
+  if [ -z "$PR_JSON" ]; then
+    red "GitHub PR API unreachable (install gh for authenticated probe)"
+  else
+    echo "$PR_JSON" | "$PY" -c "
 import json,sys
 d=json.load(sys.stdin)
 if d.get('state')!='open':
     print('  PR state:', d.get('state'), '(expected open)')
     sys.exit(1)
 print('  PR open')
-" || red "PR #1 not open"
+" && PR_OK=1 || red "PR #$PR_NUMBER not open"
+  fi
+fi
+if [ "$PR_OK" -eq 1 ]; then
   # Assert the conclusion AT THE OBJECT, and fail closed.
   # The previous test was `gh pr checks | grep verify-claims | grep -qv fail`, which
   # returns 1 on EMPTY input as well as on a failing check, so a gh outage or a

@@ -21,7 +21,7 @@ supersedes: docs/THIRTY-DAY-PLAN.md (immune-system era — history only)
 | Phase | Gate | Status |
 |-------|------|--------|
 | 5 · Exhibit | `./demo.sh` one-click | ✅ [`STRANGER-PASS`](docs/STRANGER-PASS-2026-08-29.md) |
-| 6 · Freeze | Oscar degraded + film | ⛔ `./film/preflight.sh` |
+| 6 · Freeze | Oscar degraded + film | ⛔ `./film/preflight.sh` → [`OSCAR-FILM-CHECKLIST`](docs/OSCAR-FILM-CHECKLIST.md) |
 | 7 · Submit | Devpost + **sealed prediction** | ⛔ [`SEALED-PREDICTION`](docs/SEALED-PREDICTION-2026-08-29.md) |
 
 **#85:** film is the hard-fail artifact. **#72:** seal prediction before button. Full pass: HANDBOOK-PASS.
@@ -140,7 +140,7 @@ P1 deploy + D3 UI = **fourth**, not first.
 | Asset | Status |
 |-------|--------|
 | **Product + pitch one doc** | `docs/SUBMISSION.md` — ten adoption cases §4, Google stack §5, film §7 |
-| **Live proof** | Cloud Run `/health` · Firestore · PR #1 red · record `H-57b130f397` |
+| **Live proof** | Cloud Run `/health` · Firestore · PR #1 red · record `H-a6151a95ac` |
 | **Cold demo** | `./demo.sh` · `tests/test_demo.sh` 8/8 · preflight green |
 | **Corpus honesty** | 41.7→8.1 preregistered · sample in fixtures |
 | **Architecture** | `docs/architecture.png` + `docs/ARCHITECTURE.md` |

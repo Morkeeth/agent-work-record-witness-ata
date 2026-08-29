@@ -32,7 +32,7 @@
 
 ## Honest bullets (include at least one)
 
-- PR #1 red by design · record `H-57b130f397` · `clear: 0`
+- PR #1 red by design · record `H-a6151a95ac` · `clear: 0`
 - Zero non-author installs
 - Branch protection off — `verify-claims` is advisory until you require it
 - Cold eligibility 1/3 without GCP credentials

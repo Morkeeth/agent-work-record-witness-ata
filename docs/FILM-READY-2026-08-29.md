@@ -32,11 +32,11 @@ Also probed: `GET /hold/` → 200 · anon `POST /prove` → 401 · `python3 -V` 
 
 ---
 
-## Record row `H-57b130f397`
+## Record row `H-a6151a95ac`
 
 | Field | Value |
 |---|---|
-| **id** | `H-57b130f397` |
+| **id** | `H-a6151a95ac` |
 | **kind** | `clearance` |
 | **source** | `github-action` |
 | **traceable** | `true` |
@@ -55,7 +55,7 @@ URL=$(cat .cloud_run_url)
 TOKEN=$(cat .hold_api_token)
 curl -sS "$URL/audit/export" -H "X-HOLD-Token: $TOKEN" | python3 -c \
   "import sys,json; ev=json.load(sys.stdin)['events']; print([e['id'] for e in ev if e.get('source')=='github-action'])"
-# ['H-57b130f397']
+# ['H-a6151a95ac']
 ```
 
 ---
@@ -67,7 +67,7 @@ curl -sS "$URL/audit/export" -H "X-HOLD-Token: $TOKEN" | python3 -c \
 | **URL** | https://github.com/Morkeeth/agent-work-record-witness-ata/pull/1 |
 | **State** | OPEN |
 | **Check** | `verify-claims` → **FAILURE** |
-| **Verdict** | **Red by design** — the PR body claims `deadbee` and a missing path; the gate BLOCKed, posted clearance `H-57b130f397`, and the workflow exited 1 with `ci_should_fail: true`. |
+| **Verdict** | **Red by design** — the PR body claims `deadbee` and a missing path; the gate BLOCKed, posted clearance `H-a6151a95ac`, and the workflow exited 1 with `ci_should_fail: true`. |
 
 No fix applied. A green check would mean the false-done demo stopped working.
 

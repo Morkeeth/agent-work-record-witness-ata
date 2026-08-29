@@ -1,6 +1,24 @@
 # Film final run · 2026-08-29 · GO (spine v2)
 
-**Status:** record-first spine · `--film` demo · hold deep links · clarity pass done.
+**Status:** preflight PASS · `--film` demo · hold deep links · clarity pass done.
+
+**Hero record:** `H-a6151a95ac` · session `01Lzbh4XPYTAgCKg1dciFS3Q`  
+**Live:** https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?record=H-a6151a95ac
+
+---
+
+## Terminal capture (lock before rolling)
+
+| Setting | Value |
+|---------|--------|
+| App | **Terminal.app** (macOS) · dark profile (Pro or Basic) |
+| Font | **SF Mono Regular 14 pt** (fallback: Menlo 14 pt) |
+| Window | **100×32** columns×rows minimum · hide tab bar · zoom **100%** (⌘0) |
+| Shell | repo root `~/CODE/hack-fleet-ata` · `python3 -V` → **3.12.x** (not `/usr/bin/python3` 3.9) |
+| Rehearsal | `PAUSE_SEC=8 ./film/capture.sh` then `./demo.sh --film` — same font/size as record |
+
+Preflight note: record row is verified via public `GET /audit/export` (no token). Create
+gitignored `.hold_api_token` before the live break-glass beat on camera.
 
 ---
 

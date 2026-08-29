@@ -182,7 +182,7 @@ curl -sS -X POST "$URL/prove" \
 # Film record row still present after redeploy (if not purged)
 curl -sS "$URL/audit/export" -H "X-HOLD-Token: $TOKEN" | python3 -c \
   "import sys,json; ev=json.load(sys.stdin)['events']; print([e['id'] for e in ev if e.get('source')=='github-action'])"
-# expect: ['H-57b130f397'] unless export was reset
+# expect: ['H-a6151a95ac'] unless export was reset
 ```
 
 **Pass criteria:**
