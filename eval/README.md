@@ -179,3 +179,81 @@ to show, and it gets reported in the table and in the summary, not quietly dropp
   there are no path labels. Path findings are counted in `results.json` and left unscored.
 - **Test-claim refusals are counted, never scored** — the same rule as the pre-registration.
   The corpus contains no labelled test claims.
+
+---
+
+## WHAT THE RUN FOUND — appended 2026-08-29, after the run
+
+**Nothing above this line was edited after the run.** `git diff <falsifiers-commit>..HEAD --
+eval/README.md` is append-only, and the harness commit precedes the results commit.
+
+Reproduce: `env -i /usr/bin/python3 eval/run_eval.py`
+
+```
+arm                accuracy (95% Wilson)   false accusations   miss  abst    pen  discrim adjud
+NULL always-silent 27/40  67.5% [52.0,79.9]  0/40   0.0%          0    13  +0.68  27/27    0/13
+A naive baseline    9/40  22.5% [12.3,37.5] 18/40  45.0%          0     1  -0.53   2/27    7/13
+B (headline)       18/40  45.0% [30.7,60.2]  2/40   5.0%          0     1  -0.07   6/27   12/13
+B0 defaults        10/40  25.0% [14.2,40.2] 17/40  42.5%          0     1  -0.47   3/27    7/13
+B siblings only    15/40  37.5% [24.2,53.0]  5/40  12.5%          0     1  -0.23   3/27   12/13
+B fixtures only    13/40  32.5% [20.1,48.0] 14/40  35.0%          0     1  -0.33   6/27    7/13
+B + scope          27/40  67.5% [52.0,79.9]  0/40   0.0%          0    13  +0.68  27/27    0/13
+```
+
+Exact McNemar, A vs B: b=0, c=9, 9 discordant pairs, **p = 0.0039**. Every one of the nine
+items the arms disagreed on went B's way; none went A's way.
+
+**No pre-registered falsifier fired.** Arm B beats arm A: accuracy 45.0% vs 22.5% with the
+lower bound of B's interval (30.7%) above A's point estimate (falsifier 1 survived), a
+significant paired difference (falsifier 2 survived), and the win holds when every
+sibling-resolved gold row is dropped — 37.1% vs 25.7% on the remaining 35 (falsifier 4
+survived). The negative control returned **0 of 200** random 7-hex strings resolving anywhere
+in the 82-repo search, so the sibling matches are not collisions (falsifier 3 survived; the
+a-priori estimate of ~0.04% was right).
+
+### The uncomfortable half, which matters more than the win
+
+**A trivial arm that says nothing scores 67.5% and beats both real arms on the metric this
+directory pre-registered.** 27 of the 40 rows are not claims, silence is the correct answer on
+all 27, and an arm that abstains everywhere collects them for free. That is a defect in *my*
+metric, found by this eval's own ablation (`B + scope` is that arm in practice), and it is
+disclosed here rather than repaired by swapping in a metric where we look better. Two things
+were added to the harness after the run — the `NULL always-silent` row and the
+discrimination/adjudication split — and **both of them make the result look worse**. The
+pre-registered scoring itself is unchanged.
+
+What the split shows, and it is the real finding:
+
+- **Adjudication — the 13 rows that were real claims: B 12/13, A 7/13.** This is where the
+  product earns its keep. Arm A wrongly BLOCKs five true done-claims because it looks only in
+  the recorded `cwd`; arm B finds those commits in a sibling repo and passes them. That is the
+  documented repo-resolution fix, measured against an alternative for the first time.
+- **False accusations — B 2/40 (5.0%) vs A 18/40 (45.0%).** A gate that calls an honest agent
+  a liar 45% of the time is unusable regardless of its accuracy. This is the number to quote.
+- **Discrimination — the 27 rows nobody claimed: B 6/27, A 2/27.** Both are bad. Ours is
+  three times less bad and still bad. **The gate cannot tell a claim from a citation**, which
+  is exactly what `docs/CORPUS-MEASUREMENT-2026-08-27.md` said in prose (32% extractor
+  precision) and what this eval now says with a control arm beside it. The ablation locates it
+  precisely: `B0 defaults` scores 25.0% — statistically indistinguishable from the two-hour
+  baseline. **Shipped defaults ≈ naive regex.** The entire measured advantage comes from two
+  opt-in arguments, `sibling_repos` and `exclude_fixtures`, which only the corpus reader
+  passes.
+
+### What this does not show
+
+- **gold BLOCK n = 1.** Twelve of the thirteen real claims were true. The headline capability —
+  catching a false done-claim — is therefore effectively **untested** here: every arm scores
+  0 missed false claims out of a single opportunity. Do not read "miss = 0" as evidence of
+  anything. A corpus with more false claims is the single highest-value thing to build next.
+- **`B + scope` is degenerate on this corpus, not good.** It abstains on all 13 real claims;
+  its 67.5% is the null model wearing our name. Scoping to a declared report section cannot
+  work on a 200-character window that contains no headings, which is why the README above
+  flagged it as measuring the window rather than the gate.
+- The limits listed before the run all still stand, unrevised.
+- **Read the sibling receipts before you believe the sibling fix.** They are in
+  `eval/out/results.json` under `sibling_resolution_receipts`, with `git log -1` for each. The
+  strongest is `a99ac61ed43ff6c92615f8796bbbdc1ff57ea2bf` — 40 hex characters, a collision is
+  not physically plausible. The weakest is `2b2d68f`, claimed while standing in `zup` and
+  resolved to a `mountain-of-helicon` commit; that is cross-repo work if you believe the commit
+  message and a mislabel if you do not. Falsifier 4 exists because of rows like it, and the
+  win survives dropping every one of them.

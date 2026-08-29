@@ -183,6 +183,20 @@ def score_item(gold: str, answer: str) -> str:
     return CORRECT if answer == gold else WRONG
 
 
+# ---------------------------------------------------------------------------
+# THE NULL MODEL — added AFTER the first run, because the first run exposed it.
+# ---------------------------------------------------------------------------
+# An arm that says nothing about anything. It is not a competitor; it is the floor the
+# accuracy metric has to clear to mean anything, and I did not put it in before the run.
+# 27 of the 40 rows are non-claims, so silence alone scores 27/40 = 67.5% and beats both
+# real arms on the pre-registered headline metric. That is a defect in the metric I
+# pre-registered, and the fix is to SHOW it, not to swap the metric for one that hides it.
+# Everything above the falsifiers in eval/README.md is unchanged; this row and the
+# claim/non-claim split are the only additions, and both make the result look worse.
+def arm_silent(text, repo, oracle) -> list:
+    return []
+
+
 def is_false_accusation(gold: str, answer: str) -> bool:
     return answer == BLOCK and gold != BLOCK
 

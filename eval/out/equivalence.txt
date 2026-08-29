@@ -1,0 +1,49 @@
+ORACLE-vs-LIVE EQUIVALENCE RECEIPT
+built 2026-08-29T15:59:49Z on /Users/morkeeth/CODE
+
+Arm B (headline config) was run twice over the same 40 rows: once against
+live git on this disk, once against the frozen oracle. If these disagree,
+the oracle substituted a RULE and not merely an EFFECT, and the eval is void.
+
+311f411                                    CITE     live=PASS     replay=PASS     OK
+2193cef                                    DONE     live=REFUSE   replay=REFUSE   OK
+b38b65b                                    CITE     live=PASS     replay=PASS     OK
+7071595                                    CITE     live=PASS     replay=PASS     OK
+2ce646b                                    FIXTURE  live=PASS     replay=PASS     OK
+5c89b0c                                    DONE     live=PASS     replay=PASS     OK
+deadbee                                    FIXTURE  live=REFUSE   replay=REFUSE   OK
+84f16c8                                    CITE     live=PASS     replay=PASS     OK
+9cae815                                    META     live=PASS     replay=PASS     OK
+7ea1af1                                    CITE     live=PASS     replay=PASS     OK
+2eb5e7b                                    DONE     live=PASS     replay=PASS     OK
+5db661f                                    CITE     live=PASS     replay=PASS     OK
+0b2f3f9                                    DONE     live=PASS     replay=PASS     OK
+9c9b693                                    CITE     live=PASS     replay=PASS     OK
+b6ec7b4                                    META     live=PASS     replay=PASS     OK
+d288f5d                                    DONE     live=PASS     replay=PASS     OK
+73cc2dd                                    CITE     live=PASS     replay=PASS     OK
+131d551                                    CITE     live=PASS     replay=PASS     OK
+4454036                                    CITE     live=PASS     replay=PASS     OK
+671be37                                    DONE     live=PASS     replay=PASS     OK
+bc72911                                    META     live=REFUSE   replay=REFUSE   OK
+5bb88ed9ac38b74b9736daa314aa5afbf8f8f211   DONE     live=PASS     replay=PASS     OK
+54c7a99                                    CITE     live=PASS     replay=PASS     OK
+a99ac61ed43ff6c92615f8796bbbdc1ff57ea2bf   DONE     live=PASS     replay=PASS     OK
+7b7071a                                    META     live=PASS     replay=PASS     OK
+80da7c39                                   DONE     live=PASS     replay=PASS     OK
+deadbee                                    FIXTURE  live=REFUSE   replay=REFUSE   OK
+4d6c83b                                    META     live=PASS     replay=PASS     OK
+deadbee1                                   FIXTURE  live=REFUSE   replay=REFUSE   OK
+b04fcdd5                                   CITE     live=BLOCK    replay=BLOCK    OK
+cce2e5b                                    META     live=PASS     replay=PASS     OK
+7c582601                                   CITE     live=BLOCK    replay=BLOCK    OK
+deadbee                                    FIXTURE  live=REFUSE   replay=REFUSE   OK
+ac72754                                    META     live=REFUSE   replay=REFUSE   OK
+a9f685e                                    DONE     live=BLOCK    replay=BLOCK    OK
+ff5bbe5                                    DONE     live=PASS     replay=PASS     OK
+2b2d68f                                    DONE     live=PASS     replay=PASS     OK
+2ce646b                                    FIXTURE  live=PASS     replay=PASS     OK
+99af70e                                    META     live=PASS     replay=PASS     OK
+5d2fc38                                    DONE     live=PASS     replay=PASS     OK
+
+RESULT: IDENTICAL (40/40 identical)

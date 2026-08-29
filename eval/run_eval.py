@@ -16,6 +16,7 @@ from __future__ import annotations
 import json
 import os
 import sys
+import textwrap
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -62,6 +63,14 @@ def score(arm, golds):
     wrong = sum(1 for x in outcomes if x == arms.WRONG)
     fa = sum(1 for r in rows if r["false_accusation"])
     mfc = sum(1 for r in rows if r["missed_false_claim"])
+    # THE SPLIT. Accuracy over all 40 conflates two different abilities, and the run made
+    # that impossible to ignore: DISCRIMINATION (not adjudicating something nobody claimed,
+    # the 27 non-claim rows) and ADJUDICATION (getting the verdict right on a real claim,
+    # the 13 claim rows). An always-silent arm maxes the first and zeroes the second.
+    # Reported as a decomposition of the same pre-registered scoring, never as a substitute
+    # for it.
+    ncl = [r for r in rows if r["gold"] == arms.NO_CLAIM]
+    rcl = [r for r in rows if r["gold"] != arms.NO_CLAIM]
     acc, acc_lo, acc_hi = wilson(correct, n)
     far, far_lo, far_hi = wilson(fa, n)
     arm["score"] = {
@@ -71,6 +80,10 @@ def score(arm, golds):
         "false_accusation_rate_ci95": [far_lo, far_hi],
         "missed_false_claims": mfc,
         "penalised_mean": (correct - wrong) / n,
+        "discrimination_correct_on_non_claims": [
+            sum(1 for r in ncl if r["outcome"] == arms.CORRECT), len(ncl)],
+        "adjudication_correct_on_real_claims": [
+            sum(1 for r in rcl if r["outcome"] == arms.CORRECT), len(rcl)],
         "test_claim_refusals_unscored": sum(1 for r in rows if r["refused_test_claim"]),
         "path_findings_unscored": sum(r["n_path_findings_unscored"] for r in rows),
     }
@@ -86,6 +99,8 @@ def main():
 
     a = score(run_arm("A naive baseline", corpus, o, repos,
                       lambda it: arms.arm_a(it["ctx"], it["cwd"], o)), golds)
+    null = score(run_arm("NULL always-silent", corpus, o, repos,
+                         lambda it: arms.arm_silent(it["ctx"], it["cwd"], o)), golds)
     bs = {}
     for name, cfg in arms.ARM_B_CONFIGS.items():
         bs[name] = score(run_arm(name, corpus, o, repos,
@@ -123,7 +138,13 @@ def main():
         "corpus": "fixtures/corpus-sample-40.json (unmodified, labelled 2026-08-27)",
         "oracle_built_utc": o.data.get("built_utc"),
         "gold_distribution": {g: golds.count(g) for g in sorted(set(golds))},
-        "arms": {"A naive baseline": a["score"], **{k: v["score"] for k, v in bs.items()}},
+        "arms": {"NULL always-silent": null["score"], "A naive baseline": a["score"],
+                 **{k: v["score"] for k, v in bs.items()}},
+        "null_model_warning": (
+            "27 of 40 rows are non-claims, so an arm that says nothing scores 27/40 = 67.5% "
+            "on the pre-registered accuracy metric and beats BOTH real arms. That is a "
+            "defect in the metric, disclosed rather than repaired after the fact. Read the "
+            "split: discrimination (non-claims) vs adjudication (real claims)."),
         "mcnemar_exact_A_vs_B": mc,
         "negative_control": nc,
         "sensitivity_drop_sibling_resolved_gold": sens,
@@ -135,8 +156,9 @@ def main():
             "3_sibling_matches_are_noise": nc_fails,
             "4_gold_is_circular": f4,
         },
-        "verdict": _verdict(f1, f2, f4, nc_fails),
-        "per_item": {"A naive baseline": a["rows"],
+        "verdict": _verdict(f1, f2, f4, nc_fails,
+                            null["score"]["accuracy"], b["score"]["accuracy"]),
+        "per_item": {"NULL always-silent": null["rows"], "A naive baseline": a["rows"],
                      **{k: v["rows"] for k, v in bs.items()}},
     }
     os.makedirs(os.path.dirname(OUT), exist_ok=True)
@@ -146,15 +168,21 @@ def main():
     return 0
 
 
-def _verdict(f1, f2, f4, nc_fails):
+def _verdict(f1, f2, f4, nc_fails, null_acc, b_acc):
     fired = [n for n, x in (("1 no win (CI overlap)", f1),
                             ("2 no paired difference", f2),
                             ("3 sibling matches are noise", nc_fails),
                             ("4 gold is circular", f4)) if x]
+    caveat = ("" if b_acc > null_acc else
+              " It does NOT beat the trivial always-silent null on accuracy "
+              "(%.1f%% vs %.1f%%): 27 of 40 rows are non-claims and neither arm can "
+              "tell a claim from a citation. The separation is in adjudication and in "
+              "false accusations, not in accuracy." % (100 * b_acc, 100 * null_acc))
     if not fired:
-        return "ARM B BEATS THE BASELINE. No pre-registered falsifier fired."
-    return "FALSIFIER(S) FIRED: " + "; ".join(fired) + \
-           ". The win is not claimed on this evidence."
+        return ("ARM B BEATS ARM A on every pre-registered comparison; no falsifier fired."
+                + caveat)
+    return ("FALSIFIER(S) FIRED: " + "; ".join(fired) +
+            ". The win over arm A is not claimed on this evidence." + caveat)
 
 
 def _pct(x):
@@ -172,23 +200,36 @@ def _print(res, a, bs, sens, mc, nc):
     p("  gold     : %s" % ", ".join("%s=%d" % (k, v) for k, v in res["gold_distribution"].items()))
     p("  oracle   : frozen %s — no network, no live git" % res["oracle_built_utc"])
     p("")
-    hdr = "  %-18s %-22s %-20s %5s %5s %5s" % (
-        "arm", "accuracy (95% Wilson)", "false accusations", "miss", "abst", "pen")
+    hdr = "  %-18s %-22s %-20s %5s %5s %6s  %-7s %-7s" % (
+        "arm", "accuracy (95% Wilson)", "false accusations", "miss", "abst", "pen",
+        "discrim", "adjud")
     p(hdr)
     p("  " + "-" * (W - 4))
-    order = [("A naive baseline", a["score"])] + \
+    order = [("NULL always-silent", res["arms"]["NULL always-silent"]),
+             ("A naive baseline", a["score"])] + \
             [(k, v["score"]) for k, v in bs.items()]
     for name, s in order:
         star = " <" if name in ("A naive baseline", "B (headline)") else "  "
-        p("  %-18s %2d/%-2d %s [%s,%s] %2d/%-2d %s   %5d %5d %+5.2f%s" % (
+        d, dn = s["discrimination_correct_on_non_claims"]
+        j, jn = s["adjudication_correct_on_real_claims"]
+        p("  %-18s %2d/%-2d %s [%s,%s] %2d/%-2d %s   %5d %5d %+6.2f  %2d/%-2d   %2d/%-2d%s" % (
             name, s["correct"], s["n"], _pct(s["accuracy"]),
             _pct(s["accuracy_ci95"][0]), _pct(s["accuracy_ci95"][1]),
             s["false_accusations"], s["n"], _pct(s["false_accusation_rate"]),
-            s["missed_false_claims"], s["abstained"], s["penalised_mean"], star))
+            s["missed_false_claims"], s["abstained"], s["penalised_mean"],
+            d, dn, j, jn, star))
     p("")
-    p("  miss = false claims waved through (PASS where the repo disproves it)")
-    p("  abst = refused or never flagged, on a row that was a real claim (scores 0)")
-    p("  pen  = mean of +1 correct / 0 abstained / -1 wrong answer")
+    p("  miss    = false claims waved through (PASS where the repo disproves it). gold BLOCK n=1.")
+    p("  abst    = refused or never flagged, on a row that WAS a real claim (scores 0)")
+    p("  pen     = mean of +1 correct / 0 abstained / -1 wrong answer")
+    p("  discrim = correct on the 27 rows nobody claimed (silence is the right answer)")
+    p("  adjud   = correct on the 13 rows that were real claims (an answer is required)")
+    p("")
+    p("  !! THE NULL ROW BEATS BOTH ARMS ON ACCURACY. 27 of 40 rows are non-claims, so an")
+    p("     arm that says nothing scores 67.5%. That is a defect in the metric this eval")
+    p("     pre-registered, found by its own ablation and disclosed rather than swapped out.")
+    p("     The arms separate on the SPLIT: adjudication 12/13 vs 7/13, and on false")
+    p("     accusations 5.0% vs 45.0%. Neither arm can discriminate a claim from a citation.")
     p("")
     p("  PAIRED  exact McNemar, A vs B(headline): b=%d c=%d n=%d p=%.4f"
       % (mc["b"], mc["c"], mc["n_discordant"], mc["p"]))
@@ -206,7 +247,8 @@ def _print(res, a, bs, sens, mc, nc):
     for k, v in res["falsifiers"].items():
         p("    %-38s %s" % (k, "FIRED" if v else "did not fire"))
     p("")
-    p("  %s" % res["verdict"])
+    for line in textwrap.wrap(res["verdict"], W - 6):
+        p("  " + line)
     p("  rows, probes and receipts: eval/out/results.json")
     p("=" * W)
 
