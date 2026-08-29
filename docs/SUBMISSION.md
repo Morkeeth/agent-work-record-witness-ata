@@ -24,7 +24,7 @@ decides what is confirmed, never the model.
 
 ## 2 · What it is, on one screen
 
-Install is a YAML file. A required check reads the pull request body, extracts each claim, probes it
+Install is a YAML file. An **agent clearance check** (`verify-claims`) reads the pull request body, extracts each claim, probes it
 against the object, and returns one of four verdicts.
 
 ```
@@ -83,7 +83,7 @@ here carries an invented figure.*
 
 **1 · The false-done PR, caught at the merge.** *Demonstrated.* An agent opens a PR claiming a
 commit that does not exist, a file that nearly exists, and a test run that never happened. The
-required check returns BLOCK on two, PASS on the one true claim, and UNVERIFIABLE on the test claim
+The clearance check returns BLOCK on two, PASS on the one true claim, and UNVERIFIABLE on the test claim
 rather than guessing. Real PR #1 on this repo, record row `H-57b130f397`.
 
 **2 · The board question, answered with a document.** *Demonstrated.* "Prove no agent shipped
@@ -135,7 +135,7 @@ with.
 |---|---|---|
 | **Cloud Run** | The witness service on the request path. `/health` returns 200, product name, `auth_required: true`, `store: firestore` | ✅ live |
 | **Firestore** | The append-only record. Row `H-57b130f397` written by a real GitHub Action, not a seed | ✅ live |
-| **GitHub Actions** | The required check. Runs the local probe, posts the verdict to Cloud Run | ✅ live, PR #1 |
+| **GitHub Actions** | The `verify-claims` check. Runs the local probe, posts the verdict to Cloud Run | ✅ live, PR #1 |
 | **IAM / service account** | Every mutating route returns 401 to an anonymous caller, probed 28 Aug. `demo_seed_enabled: false` in production | ✅ verified |
 
 **The architecture in one sentence:** the probe runs locally in the customer's CI where the
@@ -169,25 +169,28 @@ The preregistration that made the correction possible is
 
 ## 7 · The film, 3 minutes
 
+Align with **`SUBMISSION-PACK.md` §2** (record-first close). Corpus beat is mid, not finale.
+
 | Time | Beat | Shown |
 |---|---|---|
-| 0:00 | Your agents write reports. Nobody checks them | the promise line |
-| 0:25 | `./demo.sh` — a stranger catches a false claim, no account, no network | terminal |
-| 1:10 | PR #1 — required check goes red on `deadbee` | GitHub |
-| 1:50 | The record — open the hold, click through to the session | `/hold/` |
-| 2:20 | The four verdicts, and the refusal. It never runs a command from a report | terminal |
-| 2:40 | 41.7% → 8.1%, and it was our error | the honest close |
+| 0:00 | Board question + promise | seats/spend visible; claims are not |
+| 0:30 | **The record** | `/hold/` — held claim → session join; moat line at click |
+| 1:10 | `./demo.sh` | stranger, no account, no network |
+| 1:35 | PR #1 | `verify-claims` red on `deadbee` — **not** "required check" (branch unprotected) |
+| 2:15 | Four verdicts + refusal | terminal; never runs a command from a report |
+| 2:40 | GCP + honesty | `/health` · eligibility 3/3 **and** cold 1/3 · row `H-57b130f397` · `clear: 0` |
+| 3:15 | Close | install path; *Gemini explains; Python decides* if P1 deployed |
 
-Recording: flipbook screen capture, voiceover from `~/CODE/voice-generation` (local, free), burned
-subtitles. Cold review before the camera rolls, and the live surface must equal the fixed-by-hash
-build.
+Recording: flipbook screen capture, voiceover from `film/voiceover-vo.txt`, burned subtitles.
+Cold review before the camera rolls, and the live surface must equal the fixed-by-hash build.
 
 ---
 
 ## 8 · Devpost fields, ready to paste
 
 **Name:** The Agent Work Record Witness
-**Tagline:** Your agents write reports about work they did. This keeps the receipt.
+**Tagline:** Run your agents. Check the math.
+**Promise (body, not tagline field):** Your agents write reports about work they did. This keeps the receipt.
 **Built with:** Python · Google Cloud Run · Firestore · GitHub Actions
 **Try it:** `git clone` then `./demo.sh` — no account, no network, no credentials
 **Live:** https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/
