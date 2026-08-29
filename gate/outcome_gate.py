@@ -244,7 +244,7 @@ def gate(report, repo=".", *, as_json: bool = False):
         print(f"  GATE: BLOCK — {len(blocks)} claim(s) the repo disproves. Do not auto-merge.")
         return 1
     if any(f.verdict == UNVERIFIABLE for f in fs):
-        print("  GATE: HOLD — nothing disproved, but a claim is unverifiable. Needs a human/CI outcome.")
+        print("  GATE: HOLD — finding UNVERIFIABLE (gate holds; probe never runs commands from a report).")
         return 2
     print("  GATE: PASS — every claim confirmed against the repo.")
     return 0

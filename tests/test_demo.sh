@@ -17,8 +17,11 @@ echo "test_demo.sh"
 chk 'GATE: PASS'   'an honest report PASSES  (the check can say yes)'
 chk 'GATE: BLOCK'  'a false report BLOCKS'
 chk 'GATE: HOLD'   'a test claim HOLDS, never guessed'
+chk 'finding UNVERIFIABLE' 'UNVERIFIABLE finding maps to HOLD gate'
 chk 'NOT a commit in this repo' 'the SHA probe output is shown, not summarised'
 chk 'NO SUCH PATH in the repo'  'the path probe output is shown, not summarised'
+nochk 'As a required PR check' 'does not say required check (branch protection off)'
+nochk 'As an required' 'does not say required check'
 nochk '\.trace/trace\.db'  'reads no transcript database'
 nochk 'Traceback'          'no traceback'
 

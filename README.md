@@ -17,9 +17,12 @@ Live: https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/
 ```bash
 git clone https://github.com/Morkeeth/agent-work-record-witness-ata
 cd agent-work-record-witness-ata
-./demo.sh                    # exits 0 · BLOCK + UNVERIFIABLE shown
+./demo.sh                    # full walkthrough · exits 0
+./demo.sh --film             # compact — same verdicts, for screen recording
 curl -sS https://fleet-wedge-33kamss2jq-uc.a.run.app/health | head
-# open https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/  → PR #1 row H-57b130f397
+# open hold console → PR #1 row (deep link):
+# https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?record=H-57b130f397
+# PR checks: https://github.com/Morkeeth/agent-work-record-witness-ata/pull/1/checks
 ```
 
 ---
