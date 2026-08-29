@@ -94,6 +94,35 @@
   tr.clickable { cursor: pointer; }
   tr.clickable:hover td { background: #1a2229; }
   a { color: #7eb8ff; }
+
+  /* --- evidence surface (added 2026-08-29): the finding + the stack --- */
+  .kicker { color: var(--muted); font-size: 0.7rem; letter-spacing: 0.12em;
+            text-transform: uppercase; font-family: var(--mono); }
+  .hero { background: var(--panel); border: 1px solid var(--line);
+          border-top: 3px solid var(--hold); padding: 1.4rem 1.5rem; }
+  .golden { display: flex; align-items: baseline; gap: 0.9rem; flex-wrap: wrap;
+            font-family: var(--mono); margin: 0.7rem 0 0.1rem; }
+  .golden .raw { font-size: 2.4rem; color: var(--hold);
+                 text-decoration: line-through; text-decoration-thickness: 2px; }
+  .golden .arrow { color: var(--muted); font-size: 1.3rem; }
+  .golden .cor { font-size: 3.2rem; font-weight: 500; letter-spacing: -0.02em; }
+  .golden .unit { color: var(--muted); font-size: 0.8rem; }
+  .bar { display: flex; height: 2rem; border: 1px solid var(--line); margin: 1.2rem 0 0.55rem; }
+  .bar > span { min-width: 0; display: flex; align-items: center; justify-content: center;
+                font-family: var(--mono); font-size: 0.7rem; overflow: hidden; white-space: nowrap; }
+  .seg-ours { background: #3a1e1e; color: #f0a8a8; border-right: 1px solid var(--line); }
+  .seg-mach { background: #1e2530; color: var(--muted); border-right: 1px solid var(--line); }
+  .seg-real { background: #12291f; color: #8ed4b3; }
+  ul.legend { list-style: none; margin: 0; padding: 0; font-size: 0.82rem; color: var(--muted); }
+  ul.legend li { margin: 0.3rem 0; padding-left: 1.1rem; text-indent: -1.1rem; }
+  ul.legend b { color: var(--ink); font-family: var(--mono); font-weight: 500; }
+  .limits { border-left: 3px solid var(--muted); }
+  .limits li { margin: 0.4rem 0; }
+  .limits ul { margin: 0.4rem 0 0; padding-left: 1.1rem; }
+  .note { color: var(--muted); font-size: 0.8rem; }
+  .rec { display: grid; grid-template-columns: 10.5rem 1fr; gap: 0.35rem 0.9rem; font-size: 0.83rem; }
+  .rec dt { color: var(--muted); }
+  .rec dd { margin: 0; font-family: var(--mono); font-size: 0.78rem; word-break: break-word; }
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
@@ -107,13 +136,230 @@
   <div id="apiHint" class="tag"></div>
 </header>
 <nav id="nav">
-  <button data-tab="queue" class="on">Hold queue</button>
+  <button data-tab="finding" class="on">The finding</button>
+  <button data-tab="stack">Google stack</button>
+  <button data-tab="queue">Hold queue</button>
   <button data-tab="install">Install</button>
   <button data-tab="policy">Policy</button>
   <button data-tab="audit">Audit</button>
 </nav>
 <main>
-  <section id="tab-queue">
+  <section id="tab-finding">
+    <h1>Our first finding was our own defect</h1>
+    <p class="lead">We pointed this product at a month of real agent output before we pointed it at
+    anyone else&rsquo;s. The first number it gave us was a headline. The headline was wrong, and the
+    error was ours, not the agents&rsquo;.</p>
+
+    <div class="hero">
+      <div class="kicker">Agent commit claims that disagree with the repository &middot; 78,618 real
+      messages &middot; measured 2026-08-27</div>
+      <div class="golden">
+        <span class="raw">41.7%</span>
+        <span class="arrow">&rarr;</span>
+        <span class="cor">8.1%</span>
+        <span class="unit">after the confounds were tested</span>
+      </div>
+      <p style="margin:0.4rem 0 0;max-width:44rem">
+        The gap is not agents improving. It is <strong>our probe aimed at the wrong repository</strong>
+        &mdash; the exact failure this product is named after. An agent&rsquo;s <code>cwd</code> is
+        where it was standing, not where it committed.
+      </p>
+
+      <div class="bar" role="img" aria-label="103 claims read as wrong: 73 our error, 11 machinery, 19 real disagreements">
+        <span class="seg-ours" style="flex:73" title="73 our error">73 &middot; our error</span>
+        <span class="seg-mach" style="flex:11" title="11 machinery">11</span>
+        <span class="seg-real" style="flex:19" title="19 real disagreements">19 &middot; real</span>
+      </div>
+      <div class="kicker" style="margin-bottom:0.7rem">the 103 claims the first pass called wrong</div>
+
+      <ul class="legend">
+        <li><b>73</b> &mdash; real commits in a <strong>sibling repository on the same disk</strong>.
+          <code>cae8c30</code> is real in <code>rekt-capital</code>. <code>7b3256d</code> is real in
+          <code>helicon</code>. <code>da23d89</code> is real in <code>mountain-of-helicon</code>.
+          The agent was right and the probe looked in the wrong place.</li>
+        <li><b>11</b> &mdash; machinery, not claims: a SHA inside a shell command the agent was
+          <em>running</em>, or inside fenced git output it was <em>reading</em>. Six of those were
+          <code>deadbee</code>, <strong>this repository&rsquo;s own test fixture</strong>, surfacing in
+          transcripts about building this gate. The tool for catching false claims counted its own
+          test data as an agent claim.</li>
+        <li><b>19</b> &mdash; what is left after both corrections. Every exclusion is counted with its
+          reason rather than silently deleted; a filter that quietly shrinks a finding list is the
+          flattering version, and the refusal is the product.</li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h2>The scan, as it printed</h2>
+      <pre>$ python3 gate/corpus_scan.py --db ~/.trace/trace.db --code-root ~/CODE
+
+  78,618 messages examined, of 144,306 in the corpus &middot; 83 repos on disk
+  filter: role='assistant' and is_human=0 and text is not null and length(text) &gt; 20
+  52,878 of those were written in a directory that is still a git repo today
+
+  RAW          247 sha claims &middot;  103 disagree &middot; 41.7%
+  CORRECTED    236 sha claims &middot;   19 disagree &middot; 8.1%
+
+      11 dropped &mdash; shell commands, fenced output, and this repo's own test fixtures
+      73 resolved in a SIBLING repo &mdash; the agent was right, the probe was aimed at the wrong repo
+       5 path claims dropped &mdash; a code identifier, not a file
+       1 path claims dropped &mdash; a hostname, not a repository path
+       1 path claims dropped &mdash; an absolute path outside the repository</pre>
+      <p class="note" style="margin:0.7rem 0 0">Corpus: <code>~/.trace/trace.db</code> &mdash; 2,672
+      indexed transcripts of real agent sessions across 40 repositories. Not a fixture, not written
+      for this. Ships as <code>gate/corpus_scan.py</code>; run it on yours with
+      <code>witness-corpus --db &lt;your.db&gt; --code-root &lt;dir&gt;</code>.</p>
+    </div>
+
+    <div class="panel limits">
+      <h2>What this number does not tell you</h2>
+      <ul>
+        <li><strong>8.1% is not an incidence rate, and neither was 41.7%.</strong> Neither is your
+          fleet&rsquo;s error rate and neither is presented as one.</li>
+        <li><strong>n = 13.</strong> Hand-labelling a seeded random sample of 40 extractions put the
+          extractor&rsquo;s precision on conversational prose at <strong>13/40</strong> &mdash; the rest
+          were citations (<em>&ldquo;Commit 7b3256d landed on&hellip;&rdquo;</em>), shell commands and
+          fixtures. Of those 13 real claims, 6 disagreed with the repository.
+          <strong>A direction, not a measurement.</strong> The sample and its labels ship in
+          <code>fixtures/corpus-sample-40.json</code> so you can re-label them and disagree.</li>
+        <li><strong>One operator, one machine.</strong> Nothing here generalises to a population.
+          The hand labels were assigned by the same agent that wrote the report &mdash; the weakest
+          link on this page, and the cheapest one to fix.</li>
+        <li><strong>The denominator was fixed before anyone looked at a claim.</strong>
+          <code>docs/CORPUS-PREREGISTRATION-2026-08-27.md</code> names what counts as a claim, which
+          claim types may carry a headline, and five confounds &mdash; including the one that turned
+          out to matter. That document is the method, and the method is the product. A vendor who
+          shows you a number without one is showing you a negotiation.</li>
+        <li><strong>The 41.7% is kept, not deleted.</strong> It survives in
+          <code>docs/CORPUS-MEASUREMENT-2026-08-27.md</code> on purpose: removing it would hide the
+          one thing worth learning.</li>
+        <li><strong>The corpus is alive, so this page quotes a frozen run.</strong> The same scan
+          re-run on 2026-08-29, against the same database now grown to 154,970 messages, reports
+          <code>84,560 examined &middot; 50.6% raw &rarr; 11.5% corrected</code>, with 82 of 161 again
+          resolved in a sibling repository. The totals move because the corpus moves; the shape does
+          not. A number on a page needs the date it was measured, so the number above carries
+          <strong>2026-08-27</strong> and is not silently refreshed.</li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <h2>The record this finding came from</h2>
+      <p class="lead" style="margin:0 0 0.8rem">One real hold, written by the GitHub Action on a real
+      pull request. Not seeded &mdash; <code>demo_seed_enabled</code> is <code>false</code> in
+      production.</p>
+      <dl class="rec">
+        <dt>Record</dt><dd>H-a6151a95ac</dd>
+        <dt>Decision</dt><dd>HOLD &middot; gate BLOCK &middot; policy <code>enforce</code></dd>
+        <dt>Repository</dt><dd>Morkeeth/agent-work-record-witness-ata</dd>
+        <dt>Pull request</dt><dd><a href="https://github.com/Morkeeth/agent-work-record-witness-ata/pull/1" target="_blank" rel="noopener">#1</a>
+          &middot; <a href="https://github.com/Morkeeth/agent-work-record-witness-ata/pull/1/checks" target="_blank" rel="noopener">verify-claims (red by design)</a></dd>
+        <dt>Written by</dt><dd>source=github-action &middot; actor=Morkeeth (the Action passes the PR author)</dd>
+        <dt>Head commit</dt><dd>c99589111f82</dd>
+        <dt>Stored</dt><dd>2026-08-29T12:15:09+00:00 &middot; Firestore</dd>
+        <dt>Session join</dt><dd>01Lzbh4XPYTAgCKg1dciFS3Q</dd>
+      </dl>
+      <div style="margin-top:0.9rem;overflow-x:auto">
+        <table>
+          <thead><tr><th>Verdict</th><th>Claim</th><th>Probe</th><th>Evidence</th></tr></thead>
+          <tbody>
+            <tr><td><span class="pill hold">BLOCK</span></td><td>committed as deadbee</td>
+                <td><code>git cat-file -t deadbee</code></td>
+                <td>NOT a commit in this repo (no sibling repos were checked)</td></tr>
+            <tr><td><span class="pill hold">BLOCK</span></td><td>wrote docs/auth-migration-2026.md</td>
+                <td><code>stat docs/auth-migration-2026.md</code></td>
+                <td>NO SUCH PATH in the repo</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note" style="margin:0.8rem 0 0">Note the evidence string on the first row. After the
+      corpus finding, the probe says <em>&ldquo;no sibling repos were checked&rdquo;</em> in its own
+      output, because that is precisely the assumption that made 73 correct agents look wrong.</p>
+      <div class="row">
+        <button class="act secondary" id="btnOpenRecord">Open this record in the queue</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="tab-stack" class="hidden">
+    <h1>Where this runs on Google</h1>
+    <p class="lead">Every row below is a service on the request path, with the probe that shows it.
+    Nothing here is an architecture diagram of an intention.</p>
+
+    <div class="panel">
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>Layer</th><th>What runs there</th><th>How you check it</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Cloud Run</strong></td>
+                <td>The witness gateway. Serves this console at <code>/hold/</code> and the
+                    <code>/clearance</code> API. Service <code>fleet-wedge</code>, region
+                    <code>us-central1</code>.</td>
+                <td><code>GET /health</code> &rarr; payload below</td></tr>
+            <tr><td><strong>Firestore</strong></td>
+                <td>The append-only record. Every clearance, hold and break-glass exception is a
+                    document; nothing is edited in place.</td>
+                <td><code>"store": "firestore"</code> on <code>/health</code>;
+                    <code>GET /audit/export</code></td></tr>
+            <tr><td><strong>GitHub Actions</strong></td>
+                <td>The <code>verify-claims</code> check. The probe runs <em>inside your checkout</em>
+                    where the repository already is; only the verdict crosses the network. The
+                    product never needs read access to your code.</td>
+                <td>PR #1 on this repo &mdash; red on purpose</td></tr>
+            <tr><td><strong>IAM / shared secret</strong></td>
+                <td>Reads are open, writes are not. Every mutating route returns 401 to an anonymous
+                    caller. Honest limit: <strong>one shared bearer token, not per-agent identity.</strong></td>
+                <td><code>curl -X POST .../clearance -d '{}'</code> &rarr; 401</td></tr>
+            <tr><td><strong>Vertex Gemini via ADK</strong></td>
+                <td><code>google.adk.runners.Runner</code> drives an <code>LlmAgent</code>
+                    (<code>gemini-3.5-flash-lite</code>) to <em>explain</em> a hold in the reviewer&rsquo;s
+                    words. It never decides one.
+                    <strong>Gemini explains. Python decides.</strong></td>
+                <td><code>agent_explanation.invoked</code> on record H-a6151a95ac</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Live <code>/health</code>, probed 2026-08-29</h2>
+      <pre>$ curl -s https://fleet-wedge-33kamss2jq-uc.a.run.app/health
+{
+  "ok": true,
+  "service": "agent-work-record-witness-gateway",
+  "product": "THE AGENT WORK RECORD WITNESS",
+  "console": "/hold/",
+  "auth_required": true,
+  "demo_seed_enabled": false,
+  "store": "firestore",
+  "agent": {
+    "class": "google.adk.agents.llm_agent.LlmAgent",
+    "constructed": true,
+    "invoked": false,
+    "last_run": "never invoked in this process &mdash; POST /agent/run"
+  },
+  "policy": { "mode": "enforce", "agent_only": true,
+              "label": "agent", "break_glass_role": "break-glass" }
+}</pre>
+      <p class="note" style="margin:0.7rem 0 0">
+        <code>invoked: false</code> is reported deliberately and is per-process, not per-product: a
+        class name proves an import, not a run, so <code>/health</code> reports the last real
+        invocation instead of a <code>type()</code> string. The run that did happen is recorded on
+        the hold itself, where it can be checked.</p>
+    </div>
+
+    <div class="panel limits">
+      <h2>What is not on this path</h2>
+      <p style="margin:0 0 0.5rem">Google <strong>Agent Builder / the managed GEAP surfaces</strong>
+      &mdash; Agent Registry, Memory Bank, Model Armor &mdash; are <strong>not</strong> wired here, and
+      naming a managed product we have not wired is the sharpest available lie in a submission that
+      is about false claims.</p>
+      <p style="margin:0">The gap is measured rather than glossed: <code>docs/GEAP-GAP-2026-08-27.md</code>
+      walks all seven surfaces at the object and marks each one present, partial or absent, including
+      the three defects that audit found in our own live service. What is real today is the gateway,
+      the audit record, and token-gated writes.</p>
+    </div>
+  </section>
+
+  <section id="tab-queue" class="hidden">
     <h1>Hold queue</h1>
     <p class="lead">Calm default: empty. Humans only see releases the object disproves. <strong>Reading the queue and audit needs no token.</strong></p>
     <div id="strip" class="strip empty">No agent releases need attention.</div>
@@ -236,7 +482,7 @@ async function loadConfig() {
 
 function tab(name) {
   document.querySelectorAll("nav button").forEach(b => b.classList.toggle("on", b.dataset.tab === name));
-  ["queue","install","policy","audit","registry"].forEach(t => {
+  ["finding","stack","queue","install","policy","audit","registry"].forEach(t => {
     document.getElementById("tab-" + t).classList.toggle("hidden", t !== name);
   });
   showErr("");
@@ -513,6 +759,17 @@ document.getElementById("btnSavePolicy").onclick = async () => {
     document.getElementById("policyOut").textContent = JSON.stringify(data.policy, null, 2);
   } catch (e) { showErr(e); }
 };
+const btnOpenRecord = document.getElementById("btnOpenRecord");
+if (btnOpenRecord) {
+  // Same URL the film and the README use, so the page, the shot list and the docs
+  // cannot drift apart: /hold/?record=H-a6151a95ac lands on the queue with the
+  // record already open.
+  btnOpenRecord.onclick = () => {
+    const u = new URL(location.href);
+    u.searchParams.set("record", "H-a6151a95ac");
+    location.href = u.toString();
+  };
+}
 document.getElementById("btnProve").onclick = async () => {
   try {
     const data = await jfetch("/prove", { method: "POST", body: "{}" });
@@ -522,7 +779,15 @@ document.getElementById("btnProve").onclick = async () => {
 
 loadConfig();
 fillInstall();
-loadQueue();
+
+// Boot tab. The evidence is the default screen: a judge should meet the finding
+// before the install. `?record=` still lands straight on the queue with the hold
+// open, because that URL is what film/capture.sh and the README hand out.
+const bootTab = params.get("record")
+  ? "queue"
+  : (params.get("tab") || (location.hash || "").replace("#", "") || "finding");
+tab(["finding","stack","queue","install","policy","audit","registry"].includes(bootTab)
+    ? bootTab : "finding");
 </script>
 </body>
 </html>

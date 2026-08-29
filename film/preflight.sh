@@ -20,6 +20,17 @@ grep -q "8.1" "$FILM_DIR/voiceover.txt" || red "voiceover missing 8.1"
 grep -q "41.7" "$ROOT/docs/SUBMISSION.md" || red "SUBMISSION.md missing 41.7"
 grep -q "8.1" "$ROOT/docs/SUBMISSION.md" || red "SUBMISSION.md missing 8.1"
 
+# The console is an on-camera surface too. Preflight used to check the voiceover and
+# SUBMISSION.md but never the page a judge actually opens, so the page could drift off
+# the numbers while every check stayed green. Assert the evidence at the object.
+HOLD_HTML="$ROOT/surface/hold/index.html"
+grep -q "$RAW_PCT" "$HOLD_HTML" || red "hold console missing raw $RAW_PCT"
+grep -q "$CORRECTED_PCT" "$HOLD_HTML" || red "hold console missing corrected $CORRECTED_PCT"
+grep -q "$RECORD_ID" "$HOLD_HTML" || red "hold console missing record $RECORD_ID"
+grep -q 'id="tab-finding"' "$HOLD_HTML" || red "hold console has no finding screen — evidence is not above the install"
+grep -q 'id="tab-stack"' "$HOLD_HTML" || red "hold console has no Google stack screen"
+grn "hold console carries $RAW_PCT -> $CORRECTED_PCT, $RECORD_ID, finding + stack screens"
+
 VO_LINES="$(grep -cve '^[[:space:]]*$' "$FILM_DIR/voiceover.txt" || true)"
 SR_CUES="$(grep -cE '^[0-9]+$' "$FILM_DIR/subtitles.srt" || true)"
 if [ "$VO_LINES" != "$SR_CUES" ]; then
