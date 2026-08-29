@@ -82,15 +82,24 @@ if d.get('state')!='open':
     sys.exit(1)
 print('  PR open')
 " || red "PR #1 not open"
+  # Assert the conclusion AT THE OBJECT, and fail closed.
+  # The previous test was `gh pr checks | grep verify-claims | grep -qv fail`, which
+  # returns 1 on EMPTY input as well as on a failing check, so a gh outage or a
+  # renamed check read as "failing as designed". A control that cannot go red is
+  # not a control. This reads conclusion directly and treats anything that is not
+  # the literal string `failure` as a stop.
   if command -v gh >/dev/null 2>&1; then
-    if gh pr checks "$PR_NUMBER" --repo "$PR_REPO" 2>/dev/null | grep -q verify-claims; then
-      if gh pr checks "$PR_NUMBER" --repo "$PR_REPO" 2>/dev/null | grep verify-claims | grep -qv fail; then
-        red "verify-claims not failing — demo story broken"
-      else
-        grn "verify-claims failing as designed"
-      fi
+    _sha="$(gh pr view "$PR_NUMBER" --repo "$PR_REPO" --json headRefOid -q .headRefOid 2>/dev/null)"
+    if [ -z "$_sha" ]; then
+      red "could not read PR head sha — cannot prove verify-claims is red"
     else
-      grn "verify-claims check present (confirm red in UI before filming)"
+      _concl="$(gh api "repos/$PR_REPO/commits/$_sha/check-runs" \
+        --jq '.check_runs[] | select(.name=="verify-claims") | .conclusion' 2>/dev/null | head -1)"
+      if [ "$_concl" = "failure" ]; then
+        grn "verify-claims conclusion=failure (red by design, asserted at the object)"
+      else
+        red "verify-claims conclusion='${_concl:-<none>}' — expected failure. Demo story broken."
+      fi
     fi
   else
     grn "gh not installed — confirm verify-claims FAILURE manually on GitHub"
