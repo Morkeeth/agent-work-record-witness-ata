@@ -2,7 +2,7 @@
 
 _Product home: this repo only. Brand on camera: **THE AGENT WORK RECORD WITNESS**, said in full.
 `agent-claims-inbox` = disclosure, not a second entry._
-_Film checklist: [`docs/ATA-FILM-AND-SHIP.md`](docs/ATA-FILM-AND-SHIP.md) · Product: [`hack.md`](hack.md) **(canonical)** · Why: [`docs/WHY-THIS-MATTERS.md`](docs/WHY-THIS-MATTERS.md)_
+_Film checklist: [`docs/ATA-FILM-AND-SHIP.md`](docs/ATA-FILM-AND-SHIP.md) · **Oscar start here:** [`docs/PITCH-WHEN-YOU-ARE-BACK.md`](docs/PITCH-WHEN-YOU-ARE-BACK.md) · Product: [`hack.md`](hack.md) **(canonical)** · Why: [`docs/WHY-THIS-MATTERS.md`](docs/WHY-THIS-MATTERS.md)_
 
 > **Naming discipline.** The product is **THE AGENT WORK RECORD WITNESS** — long and descriptive on
 > purpose, in a research-paper register (ruled by Oscar 2026-08-27). **Do not shorten it in
@@ -122,6 +122,11 @@ python3 contract/eligibility.py calls all three services rather than importing t
 With ADC on a Firestore + Vertex project it prints 3 OF 3 MET and exits 0. Cold, with no
 credentials, it prints 1 OF 3 MET and exits 1 — deliberately, because import is not call
 and credentials you do not have do not count.
+
+Integration shape: the GitHub Action runs deterministic probes in the customer's CI —
+no repo read access on our side. Only the verdict and session pointer cross to Cloud Run,
+where Firestore append-only storage and IAM-gated APIs hold the record. ADK + Vertex Gemini
+explain HOLD decisions for humans; they never override a probe.
 ```
 
 ### Challenges
@@ -166,6 +171,7 @@ witnesses beyond SHA and path.
 
 ### Architecture
 Source: `docs/ARCHITECTURE.md` (mermaid) → export `docs/architecture.png` for the form.
+**PNG not exported yet** (2026-08-29) — re-export from mermaid before Devpost paste.
 Narrate **record first**: the record is the product · the gate is its intake · Action → Cloud Run
 Gateway → Firestore · the join back to the session · console and export are what people open.
 
@@ -186,7 +192,7 @@ session that produced it. The red check is the second beat, not the first.
 | 1:35–2:15 | **Real PR** | agent label + false-done body → red `verify-claims` + Hold row |
 | 2:15–2:40 | Break-glass + audit | reason → recorded; Export JSON |
 | 2:40–3:05 | GCP | `/health` live (say the `*.run.app` URL) · `eligibility.py` → 3/3, **and say cold is 1/3** |
-| 3:05–3:30 | Honest state | zero real claims before today · `clear: 0` · never fired on a real PR |
+| 3:05–3:30 | Honest state | PR #1 red · row `H-57b130f397` · still `clear: 0` |
 | 3:30–4:00 | Close | install path + roadmap; the line |
 
 **Say the product name in full at least twice.** Never "HOLD" as the product.
@@ -200,16 +206,18 @@ Pre-roll: `docs/ATA-FILM-AND-SHIP.md` §2.
 
 # 3 · Honest state — roadmap, never claims
 
-Measured 2026-08-27 by probing the live service, not quoted from a note.
+Measured 2026-08-29 by probing the live service and GitHub PR #1, not quoted from a note.
 
 | Gap | Measured | Say it as |
 |---|---|---|
-| The record is empty of real work | 4 clearances, **all four staged by us**; `GET /audit` → **`clear: 0`** | "Nothing has ever passed the gate, because nothing real has ever gone through it." |
-| The check has never fired on a real PR | zero | roadmap — one real PR moves it |
-| `/audit` vs `/audit/export` counts | **by design, not a defect.** `/audit` → 31 events; `/audit/export` → 7 (clearance/exception/policy only); `/audit/export?include_prove=1` → 31. Re-probed live 2026-08-28. | explain the filter, do not call it a bug |
+| Real agent work in the record | **1 github-action clearance `H-57b130f397`** (PR #1, `source=github-action`, traceable, session `01Lzbh4XPYTAgCKg1dciFS3Q`, BLOCK/HOLD on `deadbee` + missing path) + older staged rows | "One real agent PR went through the gate — it failed on purpose and is in Hold." |
+| Nothing has ever cleared | `GET /audit` → **`clear: 0`** | "Nothing has passed — the real row is a HOLD, not a clear." |
+| Check fired on a real PR | PR #1 open · `verify-claims` → **FAILURE** | **claim this — red by design.** The PR body claims false done; the gate BLOCKed, posted `H-57b130f397`, workflow exited 1. A green check would mean the demo broke. |
+| `/audit` vs `/audit/export` counts | **by design, not a defect.** `/audit` returns every event; `/audit/export` returns clearance/exception/policy only and drops prove-only rows; `?include_prove=1` returns the full set and the two agree exactly. Re-probed live 2026-08-28 (31 vs 7 at that moment, 32 vs 8 an hour later — **these are live counters, do not pin a number to them on camera**). | explain the filter, never quote the count |
+| `docs/architecture.png` for Devpost | **exported 2026-08-29** from `docs/ARCHITECTURE.md` mermaid | attach on paste |
 | Deployed revision behind repo | **closed 2026-08-28.** anon `POST /prove` → **401** `HOLD_API_TOKEN required`, probed against the live service. (That is what was probed; the running revision is not claimed to be byte-identical to `main`.) | fixed — the auth gate is live |
 | Agent genuinely invoked | `GET /audit` carries an `agent_run`: `invoked: true`, `google.adk.runners.Runner`, `gemini-3.5-flash-lite`, 3 tool calls | **claim this — it is live and recorded** |
-| `/health` reports a run receipt | deployed: `constructed: true`, `invoked: false`, `last_run: never invoked in this process` on a fresh container | **claim the receipt, not a run** |
+| `/health` reports a run receipt | deployed: `constructed: true`; P1 adds `agent_explanation` on HOLD when redeployed | **claim receipt on `/agent/run`**; explain-on-HOLD after deploy |
 | Install path | repo is public, action ships the probe, `uses:` resolves from a foreign repo | works — but zero non-author installs |
 | Non-author installs | **zero** | roadmap. The 2026-08-27 foreign-repo run does not count: we wrote the test organisation and scripted its PRs. It proves the chain, not adoption. |
 | Org lift | field of 2 → `UNMEASURED_FOR_ORG_CLAIM` | never claim a population effect |

@@ -4,7 +4,7 @@
 # is an audit trail, that is the exact class of true-looking claim it exists to block.
 # A broken store must produce ok=false and recorded=false, while the VERDICT still stands.
 set -u
-export HOLD_API_TOKEN=test-token-abc HOLD_DEMO_MODE=0
+export HOLD_API_TOKEN=test-token-abc HOLD_DEMO_MODE=0 HOLD_AGENT_EXPLAIN=0
 fail=0
 probe() { # $1=label $2=FLEET_STORE $3=expect_recorded
   export FLEET_STORE="$2" FLEET_STORE_PATH=/tmp/honesty-$$.jsonl PORT=$4

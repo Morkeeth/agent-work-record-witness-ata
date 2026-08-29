@@ -1,0 +1,30 @@
+1
+00:00:00,000 --> 00:00:08,000
+Your agents write reports about work they did. This keeps the receipt.
+
+2
+00:00:08,000 --> 00:00:18,000
+Seats and spend are visible. What the agents actually did is not.
+
+3
+00:00:18,000 --> 00:00:38,000
+Open the hold console — a held claim opens back to the session.
+None of them holds the transcript.
+
+4
+00:00:38,000 --> 00:01:08,000
+Watch ./demo.sh — a stranger catches a false claim with no account and no network.
+
+5
+00:01:08,000 --> 00:01:38,000
+Pull request one — verify-claims goes red on deadbee.
+Record H-57b130f397 — traceable, by design.
+
+6
+00:01:38,000 --> 00:02:03,000
+Four verdicts: PASS, BLOCK, UNVERIFIABLE, HOLD — the gate never runs a command from a report.
+
+7
+00:02:03,000 --> 00:02:35,000
+78,618 messages audited — 41.7 raw, 8.1 corrected; our probe error.
+Gemini explains; Python decides.

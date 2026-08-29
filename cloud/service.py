@@ -138,6 +138,7 @@ def run_clearance(body: dict) -> dict:
         # The join: carry the session that produced the claim, so a hold opens back to
         # what the agent actually did rather than stopping at what it wrote.
         session=body.get("session"),
+        head_sha=body.get("head_sha"),
         report=report,
         pr=body.get("pr"),
         repo=body.get("repo"),
@@ -151,16 +152,27 @@ def run_clearance(body: dict) -> dict:
     except Exception as e:
         record["store_error"] = f"{type(e).__name__}: {e}"
 
-    # Construct ADK so the clearance path exercises the agent framework. This is an
-    # IMPORT, not a run: it is recorded as `agent_class` with `agent_invoked: False`
-    # so no reader can mistake a class name for a model having reasoned about this
-    # clearance. A real run is POST /agent/run and it leaves a receipt.
+    # Construct ADK on every clearance path. On HOLD, optionally invoke Runner so
+    # Gemini explains findings — probes still own the verdict (P1 partner depth).
     try:
         a = _agent()
         record["agent_class"] = type(a).__module__ + "." + type(a).__name__
-        record["agent_invoked"] = False
     except Exception as e:
         record["agent_error"] = f"{type(e).__name__}: {e}"
+
+    from cloud.hold_api import attach_agent_explanation
+
+    attach_agent_explanation(
+        record,
+        evaluation,
+        session_id=body.get("session") or record.get("session") or record.get("id"),
+    )
+
+    if record.get("agent_explanation") and "store_error" not in record:
+        try:
+            _store().put(record)
+        except Exception as e:
+            record["store_update_error"] = f"{type(e).__name__}: {e}"
 
     # A gateway that sells an audit trail must not report success over a failed write.
     # Storing is the product here: if the record did not land, the caller has to know,

@@ -25,6 +25,18 @@ inputs:
     description: 'owner/name, recorded on the decision.'
     required: false
     default: ''
+  actor:
+    description: 'PR author login, recorded on the decision (not the workflow bot).'
+    required: false
+    default: ''
+  head-sha:
+    description: 'PR head commit SHA — join metadata and session fallback when no transcript id.'
+    required: false
+    default: ''
+  session-id:
+    description: 'Optional Transcripto or session id; when unset, head-sha is sent as session.'
+    required: false
+    default: ''
 
 outputs:
   gate:
@@ -64,6 +76,15 @@ runs:
         fi
         echo "gate=$(python3 -c 'import json,os;print(json.load(open(os.environ["HOLD_FINDINGS"]))["gate"])')" >> "$GITHUB_OUTPUT"
 
+    - id: summary
+      shell: bash
+      if: always()
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        HEAD_SHA: ${{ inputs.head-sha }}
+        REPO: ${{ inputs.repo }}
+      run: python3 "$GITHUB_ACTION_PATH/gate/check_run_summary.py"
+
     - id: record
       shell: bash
       env:
@@ -72,4 +93,7 @@ runs:
         PR_BODY: ${{ inputs.pr-body }}
         PR_NUMBER: ${{ inputs.pr-number }}
         REPO: ${{ inputs.repo }}
+        ACTOR: ${{ inputs.actor }}
+        HEAD_SHA: ${{ inputs.head-sha }}
+        SESSION_ID: ${{ inputs.session-id }}
       run: python3 "$GITHUB_ACTION_PATH/gate/post_clearance.py"

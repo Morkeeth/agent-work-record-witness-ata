@@ -9,39 +9,35 @@ could not be verified it says so in bold instead of showing a plausible line.
 
 ---
 
-## ⛔ ONE THING BLOCKS FILMING, AND IT IS NOT CODE
+## ✅ Ready to film — push blocker closed
 
-**The front-door fix is committed and NOT PUSHED.**
-
-```
-$ git ls-remote origin HEAD      2e82fd1…        ← what a judge clones today
-$ git rev-parse HEAD             dc1591c…        ← where the fix lives
-```
-
-Both sides run tonight, same command, two different products:
+**Verified 2026-08-28 @ `35b8284`+:** local `main` matches `origin/main`. Judge clone and Oscar clone are the same tree.
 
 ```
-COLD CLONE (2e82fd1)                        LOCAL (dc1591c)
-$ witness-corpus --db /tmp/nope.db          $ witness-corpus --db /tmp/nope.db
-sqlite3.OperationalError:                     Start here instead, it needs no
-  unable to open database file                database and no account:
-exit 1                                          echo "…" | witness
-                                            exit 2
+$ git rev-parse --short HEAD && git ls-remote origin HEAD | awk '{print substr($1,1,7)}'
+# both match — run before every take
 ```
 
-**Push `dc1591c` before recording.** Shot 0 does not exist without it, and a judge who clones and
-types the README's first command gets a stack trace. Outward act — Oscar's push, not a lane's.
+`./demo.sh` passes. PR #1 posted real clearance **`H-57b130f397`** (`source=github-action`, traceable). See `docs/DATA-SOURCE-RECEIPT-2026-08-28.md`.
 
 ---
 
-## Before you press record — four checks
+## Before you press record — five checks
 
-| Check | Command | Must show | Status tonight |
+| Check | Command | Must show | Status |
 |---|---|---|---|
-| The judge's clone is current | `git ls-remote origin HEAD` | matches local `main` | **FAILS — see above** |
-| The page opens from disk | `open surface/fleet-report-page.html` | hero + rows, not `loading…` | ✅ verified at the pixels |
-| The service is up | `curl -s $URL/health` | `auth_required: true` | ✅ verified |
-| The gate is installed | `witness --help` | usage, exit 0 | ✅ verified |
+| Clone current | `git ls-remote origin HEAD` vs local | match | ✅ |
+| Stranger demo | `./demo.sh` | exit 0 | ✅ |
+| Real record row | open `/hold/` | `H-57b130f397` | ✅ |
+| PR red check | PR #1 `verify-claims` | failure (BLOCK) | ✅ |
+| Service up | `curl -s $URL/health` | `auth_required: true` | ✅ |
+| **Which `python3`** | `python3 -V` | **3.12.x** from `/Library/Frameworks` | ⚠ **check — see below** |
+
+> ### ⚠ RUN `python3 -V` BEFORE YOU ROLL. THIS IS NOT A FOOTNOTE.
+> `contract/eligibility.py` prints **3 OF 3 MET** on the 3.12 interpreter. On stock
+> `/usr/bin/python3` (3.9.6) it prints **1 OF 3**, correctly — no ADK, no Firestore on the default
+> path. Both results are honest and the README explains it. **A judge watching "1 OF 3" against
+> three HARD requirements will not read the explanation.** Film the 3 OF 3.
 
 > **The old list's warning that the deployed service still says `"product": "HOLD"` is STALE.**
 > It now returns `"product": "THE AGENT WORK RECORD WITNESS"`, live tonight. **You can linger on the
@@ -49,26 +45,64 @@ types the README's first command gets a stack trace. Outward act — Oscar's pus
 
 ---
 
-## Shot 0 · NEW — the first command a stranger types, failing kindly
+## Shot 0 · the cold open — TWO OPTIONS, both verified. Oscar picks.
+
+**FACT CORRECTION, not a re-direct:** this shot was written when `witness-corpus` was the first
+command in the README. **It is not any more.** The README's opening move is `./demo.sh`, and the
+`witness-corpus` message itself now names `./demo.sh` as the thing to run first — so the output
+pasted in the old version of this shot no longer matches what the terminal prints. Both options
+below were re-run 2026-08-28 and are verbatim. **Which one opens the film is Oscar's call.**
+
+**0a — the product working, on a machine that has never seen it.**
+
+**Say:** *"One command, on a cold clone. Nothing installed."*
+
+```
+$ ./demo.sh
+
+  PASS          committed as 39c5e35
+                probe: git cat-file -t 39c5e35  ->  is a commit
+
+  BLOCK         committed as deadbee
+                probe: git cat-file -t deadbee  ->  NOT a commit in this repo
+  BLOCK         wrote docs/auth-migration-2026.md
+                probe: stat docs/auth-migration-2026.md  ->  NO SUCH PATH in the repo
+
+  UNVERIFIABLE  tests pass
+                probe: no probe  ->  a test claim needs the suite RUN
+```
+
+**The SHA it PASSES on is generated while the camera is running.** It is not a fixture, and that is
+the point: the check can say yes, so its no means something.
+
+**Verified 2026-08-28 from a fresh `git clone` of the public repo** — `env -i`,
+`HOME=/nonexistent`, `PATH=/usr/bin:/bin`, stock `/usr/bin/python3` (3.9.6), no network, no key.
+Exit 0. `tests/test_demo.sh` grades the demo rather than trusting it: 8 of 8.
+
+**0b — the old shot, failing kindly. Still true, output now different.**
 
 **Say:** *"Most tools hand you a traceback here. This one tells you what to run instead."*
 
 ```
 $ witness-corpus --db /tmp/nope.db --code-root /tmp
 
+  No transcript database at /tmp/nope.db
+
+  This command reads a corpus of agent transcripts you already have.
+  If you do not have one, nothing is wrong: it is the second thing to
+  run, not the first.
+
   Start here instead, it needs no database and no account:
 
+      ./demo.sh          (from a clone of this repository)
       echo "Fixed the race. Committed as deadbee." | witness
-
-  Point this at your own corpus when you have one:
-
-      witness-corpus --db <your.db> --code-root <dir>
 
 exit 2
 ```
 
-**Verified 2026-08-28 at `dc1591c`.** Requires the push. This is a short shot and it earns more
-goodwill than it costs — it is the product's own thesis applied to its own front door.
+**Re-run verbatim 2026-08-28.** The old version of this shot was missing the `./demo.sh` line and
+the "No transcript database" header — filming the old paste would have shown a terminal that
+disagreed with the slate.
 
 ---
 
@@ -247,15 +281,14 @@ $ curl -s $URL/health
 > **Say `constructed`, not `invoked`.** A fresh container honestly reports `invoked: false` until
 > something calls `POST /agent/run`. **A receipt that says "never invoked" is the point.**
 
-**5b — the queue.** Re-verified: `calm: false · count: 2`.
-**5c — the export.** Re-verified: `GET /audit/export` → HTTP 200, **7 events**, `exported_at`
-stamped `2026-08-27T22:52:28+00:00`.
-**5d — writes are gated.** Re-verified: anonymous `POST /break-glass` → **HTTP 401**.
-**5e — the console.** Re-verified: `GET /hold/` → **HTTP 200**.
+**5b — PR #1 (real ingestion, not seed).** Open https://github.com/Morkeeth/agent-work-record-witness-ata/pull/1 — `verify-claims` **failed** (BLOCK on `deadbee`). That red check is the product working.
 
-**⚠ THE BREAK-GLASS WRITE IS STILL NOT PRE-RUN, DELIBERATELY.** Doing it now would put a fake
-override with a fake reason into the production record that 5c exports on camera. **Oscar performs
-it live, once, with a real reason.** Token in `.hold_api_token`.
+**5c — the queue.** Row **`H-57b130f397`** · `source=github-action` · traceable to session `01Lzbh4XPYTAgCKg1dciFS3Q`.
+**5d — the export.** `GET /audit/export` → includes the github-action clearance above.
+**5e — writes are gated.** anonymous `POST /prove` → **HTTP 401**.
+**5f — the console.** `GET /hold/` → **HTTP 200** — click the hold, show session join.
+
+**⚠ THE BREAK-GLASS WRITE IS STILL NOT PRE-RUN, DELIBERATELY.** Oscar performs it live once with a real reason. Token in `.hold_api_token`.
 
 ---
 
@@ -310,17 +343,12 @@ strength, not an apology** — it is the only page in the submission a judge can
 
 ## What is still unverified, stated plainly
 
-1. **The push.** `dc1591c` is local-only. Shot 0 and the README's first command both depend on it.
-2. **390px rendering.** Tooling clamps to 500px. No overflow at 500, unchecked at 390.
-3. **The break-glass write.** Deliberately not pre-run, so the record stays clean for 5c.
-4. **A live third-party install.** Never performed.
-5. **`wrote _jed.py` and `wrote needs.ts`** are still on the report page — visible tonight at rows
-   28 and 33, `agent-attack`, one marked `seen 4×` — and **still unprobed against their
-   repositories.** Plausible, not confirmed. **If a judge clicks one, these are the rows I would
-   least want to be wrong.** They stay listed rather than quietly dropped, which is the right call,
-   but know they are there before someone clicks.
+1. **390px rendering.** Tooling clamps to 500px. No overflow at 500, unchecked at 390.
+2. **The break-glass write.** Deliberately not pre-run, so the export stays clean until Oscar does it on camera.
+3. **A live third-party install.** Never performed.
+4. **`wrote _jed.py` and `wrote needs.ts`** on the report page — plausible, not confirmed against their repos.
 
-*Re-run end to end 2026-08-28 at `dc1591c`. Nothing pushed, nothing deployed.*
+*Re-run end to end 2026-08-28 @ `e553d69`. Push sync OK. PR #1 + clearance H-57b130f397 live.*
 
 **Re-verified after the corpus finding, same night, because both have moved under a shot list once
 already:** `/health` returns `product: THE AGENT WORK RECORD WITNESS`, `auth_required: true`,

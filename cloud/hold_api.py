@@ -137,11 +137,13 @@ def make_clearance_record(
     actor: str | None = None,
     source: str = "api",
     session: str | None = None,
+    head_sha: str | None = None,
     report: str | None = None,
 ) -> dict[str, Any]:
     rid = f"H-{uuid.uuid4().hex[:10]}"
     # An explicitly-passed session wins; otherwise recover one from the report itself.
     session_ref = (session or "").strip() or extract_session_ref(report)
+    sha = (head_sha or "").strip() or None
     return {
         "id": rid,
         "kind": "clearance",
@@ -159,9 +161,59 @@ def make_clearance_record(
         "actor": actor or "agent",
         "source": source,
         "session": session_ref,
+        "head_sha": sha,
         "traceable": bool(session_ref),
         "open": evaluation["decision"] == HOLD,
     }
+
+
+def agent_explain_enabled() -> bool:
+    return os.environ.get("HOLD_AGENT_EXPLAIN", "1").strip().lower() not in (
+        "0", "false", "no", "off",
+    )
+
+
+def attach_agent_explanation(
+    record: dict[str, Any],
+    evaluation: dict[str, Any],
+    *,
+    session_id: str | None = None,
+) -> None:
+    """P1: ADK + Gemini explain HOLD; deterministic probes already decided.
+
+    Mutates `record` in place. Sets `agent_invoked` only when Runner actually ran.
+    """
+    if evaluation.get("decision") != HOLD:
+        record.setdefault("agent_invoked", False)
+        return
+    if not agent_explain_enabled():
+        record["agent_invoked"] = False
+        record["agent_explain_skipped"] = True
+        return
+
+    import json as _json
+
+    findings = evaluation.get("findings") or []
+    prompt = (
+        "You are explaining a CI clearance gate to a human reviewer. "
+        "The deterministic probes have already decided; do NOT change or second-guess verdicts.\n\n"
+        f"Decision: {evaluation.get('decision')} ({evaluation.get('gate')})\n"
+        f"Findings:\n{_json.dumps(findings, indent=2)}\n\n"
+        "In plain language: what failed, what evidence the probes saw, "
+        "and what the reviewer should check next."
+    )
+    sid = (session_id or record.get("session") or record.get("id") or "witness-clearance")
+    try:
+        from cloud.agent import run_agent
+
+        receipt = run_agent(prompt=prompt, session_id=str(sid), timeout_s=45.0)
+    except Exception as e:
+        receipt = {"invoked": False, "error": f"{type(e).__name__}: {e}"}
+
+    record["agent_explanation"] = receipt
+    record["agent_invoked"] = bool(receipt.get("invoked"))
+    if receipt.get("agent_class"):
+        record["agent_class"] = receipt["agent_class"]
 
 
 def make_exception_record(

@@ -1,0 +1,32 @@
+flowchart TB
+  PR["Agent-authored PR<br/>a done-claim in the body"]
+  A["GitHub Action<br/>verify-claims<br/><i>advisory today · 'required' is roadmap</i>"]
+  P["outcome_gate.py<br/>probe claim vs OBJECT<br/>git SHA · path · test"]
+  V{"claim survives<br/>its own probe?"}
+  M["merge proceeds"]
+  CL["POST /clearance<br/><i>token required</i>"]
+
+  subgraph Product["THE RECORD · this is the product"]
+    direction TB
+    CR["Cloud Run<br/>the gateway service<br/><i>us-central1 · public URL</i>"]
+    FS[("Firestore<br/>every claim · its verdict<br/>every break-glass reason")]
+    CR --> FS
+    Q["/hold/ console · the Hold queue"]
+    JOIN["the join<br/>a held claim opens back<br/>to the session that produced it"]
+    EX["GET /audit/export<br/>the compliance artifact"]
+    BG["POST /break-glass<br/><i>reason required</i>"]
+    FS --> Q --> JOIN
+    FS --> EX
+    Q --> BG --> FS
+  end
+
+  AG["ADK LlmAgent constructed<br/>Vertex Gemini 3.5<br/>explains, never overrules"]
+  SV["Transcripto corpus → authorship gate → survival<br/><i>ROADMAP — not in this submission;<br/>needs a corpus a judge cannot verify</i>"]
+
+  PR --> A --> P --> V
+  V -- "yes" --> M
+  V -- "no · the gate is the intake" --> CL
+  CL --> CR
+  CL -.-> AG
+  JOIN -.-> SV
+  SV -.-> Q

@@ -98,8 +98,8 @@
 <body>
 <header>
   <div>
-    <div class="brand">HOLD</div>
-    <div class="tag">Outcome clearance for agentic production — against the object.</div>
+    <div class="brand" style="font-size:0.78rem;line-height:1.35;letter-spacing:0.04em">THE AGENT WORK RECORD WITNESS</div>
+    <div class="tag" style="margin-top:0.35rem">Hold queue · outcome clearance against the object</div>
   </div>
   <div id="apiHint" class="tag"></div>
 </header>
@@ -129,14 +129,14 @@
 
   <section id="tab-install" class="hidden">
     <h1>Install</h1>
-    <p class="lead">Platform eng arms HOLD as a required check on agent PRs. Five minutes. No dashboard login required for the gate itself.</p>
+    <p class="lead">Platform eng adds the clearance check on agent PRs. Five minutes. No dashboard login required for the gate itself.</p>
     <div class="panel">
       <h2>1 · Policy URL</h2>
       <pre id="policyUrl"></pre>
       <h2>2 · GitHub Action (agent-scoped)</h2>
       <pre id="actionYaml"></pre>
-      <h2>3 · Required check</h2>
-      <p class="lead" style="margin:0">Branch protection → require status check <code>verify-claims</code> on agent-labeled PRs. Start in <code>report-only</code>, promote to <code>enforce</code>.</p>
+      <h2>3 · Make it binding (when ready)</h2>
+      <p class="lead" style="margin:0">Run in <code>report-only</code> first. When branch protection requires <code>verify-claims</code>, promote to <code>enforce</code>. Until then the check is <strong>advisory</strong> — do not call it a required check while protection is off.</p>
     </div>
   </section>
 
@@ -294,11 +294,27 @@ function showDetail(h) {
             target="_blank" rel="noopener">open the session that produced this claim</a></p>`
     : `<p class="trace muted">Trace · no session reference in the report. This claim cannot be
          opened back to what the agent actually did.</p>`;
+  const sha = h.head_sha
+    ? `<p class="trace">Commit · <code>${esc(String(h.head_sha).slice(0, 12))}</code></p>`
+    : "";
+  const explain = h.agent_explanation;
+  let explainBlock = "";
+  if (explain && explain.invoked && explain.text) {
+    explainBlock = `<div class="panel" style="margin-top:0.75rem">
+      <h2>Gemini explanation <span style="font-weight:400;color:var(--muted)">· probe decided</span></h2>
+      <p style="margin:0;white-space:pre-wrap">${esc(explain.text)}</p></div>`;
+  } else if (explain && explain.error) {
+    explainBlock = `<p class="trace muted">Explain (not invoked): ${esc(explain.error)}</p>`;
+  } else if (h.agent_invoked === false && h.decision === "HOLD") {
+    explainBlock = `<p class="trace muted">Explain · ADK not invoked on this row (deploy P1 for live explain-on-HOLD).</p>`;
+  }
   d.innerHTML = `
     <h2>Release ${esc(h.id)}</h2>
     <p><span class="pill hold">${esc(h.gate || h.decision)}</span>
        · PR ${esc(h.pr || "—")} · ${esc(h.repo || "—")} · ${esc(h.actor || "")}</p>
     ${trace}
+    ${sha}
+    ${explainBlock}
     <table><thead><tr><th>Verdict</th><th>Claim</th><th>Probe</th><th>Evidence</th></tr></thead>
     <tbody>${rows}</tbody></table>
     <label>Break-glass reason</label>

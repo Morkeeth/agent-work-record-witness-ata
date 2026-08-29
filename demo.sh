@@ -110,4 +110,18 @@ cat <<TXT
   On your own transcripts:     $PY -m gate.corpus_scan --db <your.db> --code-root <dir>
 TXT
 
+b "6 · And the gate is not the product"
+cat <<'TXT'
+  What you just watched is the INTAKE. Every verdict above becomes a row in a
+  record that outlives the pull request: who claimed what, whether the object
+  agreed, who overrode a hold and the reason they typed, and the session behind
+  each entry. That record is the product. The gate is how claims arrive in it.
+
+      the console      <deployment>/hold/
+      the record       GET /audit          every claim and its verdict
+      the artifact     GET /audit/export   the thing you hand a regulator
+
+  Live instance and the full picture: README.md, and docs/ARCHITECTURE.md.
+TXT
+
 exit $STATUS

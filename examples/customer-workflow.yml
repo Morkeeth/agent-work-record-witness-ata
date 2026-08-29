@@ -8,10 +8,9 @@
 #
 # Nothing is vendored. The gate ships with the action.
 #
-# TRACEABILITY: the gateway recovers the session from the PR body itself — a
-# claude.ai/code/session_... URL or a "Claude-Session: <id>" line. If neither is
-# present the decision is recorded as untraceable and the CI log says so. No id is
-# ever invented.
+# TRACEABILITY: the action posts the PR head SHA as join metadata. A Transcripto or
+# Claude session id in the PR body still wins; pass session-id explicitly if you use
+# another transcript source.
 name: Agent claim clearance
 
 on:
@@ -20,6 +19,10 @@ on:
 
 jobs:
   verify-claims:
+    permissions:
+      checks: write
+      contents: read
+      pull-requests: read
     # Only agent-authored PRs. Widen or narrow to match how your org labels them.
     if: >
       contains(join(github.event.pull_request.labels.*.name, ','), 'agent')
@@ -37,3 +40,5 @@ jobs:
           api-token: ${{ secrets.HOLD_API_TOKEN }}
           pr-number: ${{ github.event.pull_request.number }}
           repo: ${{ github.repository }}
+          actor: ${{ github.event.pull_request.user.login }}
+          head-sha: ${{ github.event.pull_request.head.sha }}
