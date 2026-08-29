@@ -136,7 +136,16 @@ with.
 | **Cloud Run** | The witness service on the request path. `/health` returns 200, product name, `auth_required: true`, `store: firestore` | ✅ live |
 | **Firestore** | The append-only record. Row `H-a6151a95ac` written by a real GitHub Action, not a seed | ✅ live |
 | **GitHub Actions** | The `verify-claims` check. Runs the local probe, posts the verdict to Cloud Run | ✅ live, PR #1 |
-| **IAM / service account** | Every mutating route returns 401 to an anonymous caller, probed 28 Aug. `demo_seed_enabled: false` in production | ✅ verified |
+| **Application token gate** (not IAM) | Cloud Run is **public at the IAM layer by design** so a judge can click the console — the only binding on `fleet-wedge` is `allUsers → roles/run.invoker`. The 401 is application-level: every mutating route is refused without a bearer token by `_require_token()` in `cloud/service.py`, probed 28 Aug. `demo_seed_enabled: false` in production. **Honest limit: one shared token, not per-agent identity, and not IAM.** | ✅ verified, app-level |
+| **Gemini 3.5 via ADK** | `google.adk.runners.Runner` drives an `LlmAgent` (`gemini-3.5-flash-lite`) that *explains* a hold and never decides one. Record `H-a6151a95ac` carries `agent_explanation.invoked: true` | ✅ live |
+
+**Known posture, stated rather than waited for.** `HOLD_API_TOKEN` is a **plaintext environment
+variable** on the Cloud Run service; `secretmanager.googleapis.com` is enabled on the project and
+unused, so anyone with `run.services.get` on `hack-fleet` can read the token. The service runs as
+the **default compute service account** `568004190078-compute@developer.gserviceaccount.com`, which
+holds `roles/editor` — a principal that can delete the Firestore collection this product calls
+append-only. Both are hackathon-project realities, not design positions. Live revision:
+`fleet-wedge-00011-p5b`.
 
 **The architecture in one sentence:** the probe runs locally in the customer's CI where the
 repository already is, and only the verdict crosses the network, so the product never needs read

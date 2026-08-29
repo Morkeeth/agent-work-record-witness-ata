@@ -308,10 +308,15 @@
                     where the repository already is; only the verdict crosses the network. The
                     product never needs read access to your code.</td>
                 <td>PR #1 on this repo &mdash; red on purpose</td></tr>
-            <tr><td><strong>IAM / shared secret</strong></td>
-                <td>Reads are open, writes are not. Every mutating route returns 401 to an anonymous
-                    caller. Honest limit: <strong>one shared bearer token, not per-agent identity.</strong></td>
-                <td><code>curl -X POST .../clearance -d '{}'</code> &rarr; 401</td></tr>
+            <tr><td><strong>Application token gate</strong> <span style="font-weight:400">(not IAM)</span></td>
+                <td>Cloud Run is <strong>public at the IAM layer by design</strong> so you can click this
+                    console &mdash; the only binding on <code>fleet-wedge</code> is
+                    <code>allUsers &rarr; roles/run.invoker</code>. The 401 is application-level:
+                    <code>_require_token()</code> in <code>cloud/service.py</code> refuses every mutating
+                    route without a bearer token. Honest limit: <strong>one shared bearer token, not
+                    per-agent identity, and not IAM.</strong></td>
+                <td><code>curl -X POST .../clearance -d '{}'</code> &rarr; 401;
+                    <code>gcloud run services get-iam-policy fleet-wedge</code> &rarr; <code>allUsers</code></td></tr>
             <tr><td><strong>Gemini via ADK</strong></td>
                 <td><code>google.adk.runners.Runner</code> drives an <code>LlmAgent</code>
                     (<code>gemini-3.5-flash-lite</code>) to <em>explain</em> a hold in the reviewer&rsquo;s
@@ -356,6 +361,14 @@
       &mdash; Agent Registry, Memory Bank, Model Armor &mdash; are <strong>not</strong> wired here, and
       naming a managed product we have not wired is the sharpest available lie in a submission that
       is about false claims.</p>
+      <p style="margin:0 0 0.5rem"><strong>Known posture, said first rather than found.</strong>
+      <code>HOLD_API_TOKEN</code> is a <strong>plaintext environment variable</strong> on the Cloud Run
+      service; <code>secretmanager.googleapis.com</code> is enabled on the project and unused. The service
+      runs as the <strong>default compute service account</strong>
+      <code>568004190078-compute@developer.gserviceaccount.com</code>, which holds
+      <code>roles/editor</code> &mdash; the principal behind an append-only record can delete the
+      collection. Both are open items, not design positions. Live revision
+      <code>fleet-wedge-00011-p5b</code>, re-probed 2026-08-30.</p>
       <p style="margin:0">The gap is measured rather than glossed: <code>docs/GEAP-GAP-2026-08-27.md</code>
       walks all seven surfaces at the object and marks each one present, partial or absent, including
       the three defects that audit found in our own live service. What is real today is the gateway,

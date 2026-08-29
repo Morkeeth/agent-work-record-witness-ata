@@ -156,7 +156,7 @@ Use that spine in README top, Devpost ¶1, film 0:00, `/hold/` header — **one 
 
 #### D · Product surface (after A+B, if time)
 
-- [x] **D1** Redeploy Cloud Run — P1+P2 live · revision `fleet-wedge-00010-xww` 29 Aug
+- [x] **D1** Redeploy Cloud Run — P1+P2 live · live revision `fleet-wedge-00011-p5b` (re-probed 30 Aug; `00010-xww` was superseded during the 29 Aug cutover)
 - [x] **D2** Re-trigger outcome-gate on PR #1 — run `33250194854` · `witness-findings` check posted
 - [x] **D3** `/hold/` detail panel renders `agent_explanation` + `head_sha`
 - [x] **D4** README judge path at top

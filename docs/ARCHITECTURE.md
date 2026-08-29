@@ -45,7 +45,7 @@ flowchart TB
   V -- "yes" --> M
   V -- "no · the gate is the intake" --> CL
   CL --> CR
-  CL -.-> AG
+  CL --> AG
   JOIN -.-> SV
   SV -.-> Q
 ```
@@ -105,11 +105,21 @@ unreachable model is a condition of the environment, not a fact about two prompt
 **The ADK agent was constructed and never invoked**, with `type()` printed on `/health` as
 evidence. It now runs through `google.adk.runners.Runner`: `POST /agent/run` returns **7 events
 and 3 real tool calls**, and `/health` carries the run receipt instead of a class name. A
-clearance record now stores `agent_class` alongside `agent_invoked: false`, so no reader can
-mistake an import for a model having reasoned about that clearance.
+clearance record stores `agent_class` alongside `agent_invoked`, so no reader can mistake an
+import for a model having reasoned about that clearance. Since 2026-08-29 the agent is called on
+the clearance path itself: record `H-a6151a95ac`, written by a real GitHub Action, carries
+`agent_invoked: true` and `agent_explanation.invoked: true`.
 
 **Verified red as well as green.** With credentials removed, `/agent/run` returns 502,
 `invoked: false`, and no tool calls. A receipt that cannot fail is not a receipt.
+
+**Two posture facts about that token gate, stated rather than waited for.** `HOLD_API_TOKEN` is a
+**plaintext environment variable** on the Cloud Run service — `secretmanager.googleapis.com` is
+enabled on `hack-fleet` and unused, so anyone with `run.services.get` can read it. And the service
+runs as the **default compute service account**
+`568004190078-compute@developer.gserviceaccount.com`, which holds `roles/editor`: the principal
+behind an append-only record can delete the collection. Neither is a design position; both are
+open items.
 
 ## The seven enterprise surfaces, measured before tonight
 
@@ -128,12 +138,14 @@ Fortified Enterprise Fleet names seven. Measured at the object: **0 present, 3 p
 ## Live vs roadmap
 
 **Live:** the object probe · `/clearance` with token · `/break-glass` with a reason · Firestore ·
-the Hold queue · `/audit/export` · enforce mode · the join from a held claim to its session.
+the Hold queue · `/audit/export` · enforce mode · the join from a held claim to its session ·
+**Gemini invoked inside the container on the clearance path** through the ADK `Runner` — record
+`H-a6151a95ac` carries `agent_explanation.invoked: true`, `model: gemini-3.5-flash-lite`,
+`framework: google.adk.runners.Runner`. `/health` still reports `invoked: false` because that
+receipt is per-process and the health check answers from a different instance.
 
 **Roadmap · dashed above, must not be claimed as built:** the check as a *required* check ·
-Gemini invoked inside the container (the ADK agent is constructed and visible in `/health`, and
-is not called on the request path today) · survival on the queue · GEAP Memory Bank · cross-harness
-ingestion beyond Claude Code and Codex.
+survival on the queue · GEAP Memory Bank · cross-harness ingestion beyond Claude Code and Codex.
 
 ## What is NOT claimed
 
