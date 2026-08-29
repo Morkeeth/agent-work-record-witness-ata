@@ -31,7 +31,7 @@ live**, unedited.
 
 | Fixture | Role |
 |---|---|
-| `fixtures/operators/` | Two synthetic transcript JSONL files (operator-a high-survive, operator-b low-survive on same task class) |
+| `fixtures/operators/` | Two synthetic transcript JSONL files (operator-a high-survive, operator-b low-survive on same task class). **operator-a was rebuilt 2026-08-30 and is now genuinely synthetic.** The previous file was labelled synthetic and was not: it was a real session dump carrying `~/.claude` paths and a written-up live database finding, public since `f812bea`. A fixture described as synthetic must be synthetic, or the label is the vulnerability. |
 | `fixtures/org-repo/` | Minimal git repo with empty `.cursor/rules/` |
 | `fixtures/expected/` | Golden: propagated skill content + witness verdict |
 
