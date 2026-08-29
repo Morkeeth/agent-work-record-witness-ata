@@ -8,7 +8,7 @@ If the regulator asks what you hand them — today you have a spend graph, not a
 
 Open the hold console. A held claim opens back to the session. None of them holds the transcript.
 
-Pull request one — verify-claims and witness-findings go red on deadbee. Row H-57b130f397 — same probe, traceable.
+Pull request one — verify-claims and witness-findings go red on deadbee. Row H-a6151a95ac — same probe, traceable, Gemini explains.
 
 Watch demo dot sh — a stranger catches a false claim with no account and no network.
 

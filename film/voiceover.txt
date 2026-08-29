@@ -1,6 +1,6 @@
 If the regulator asks what you hand them — today you have a spend graph, not a record.
 Open the hold console. A held claim opens back to the session. None of them holds the transcript.
-Pull request one — verify-claims and witness-findings go red on deadbee. Row H-57b130f397 — same probe, traceable.
+Pull request one — verify-claims and witness-findings go red on deadbee. Row H-a6151a95ac — same probe, traceable, Gemini explains.
 Watch ./demo.sh — a stranger catches a false claim with no account and no network.
 UNVERIFIABLE is the finding; HOLD is what CI does with it. The gate never runs a command from a report.
 78,618 messages audited — 41.7 raw, 8.1 corrected; our probe error. Gemini explains; Python decides.

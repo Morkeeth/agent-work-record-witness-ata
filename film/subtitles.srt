@@ -10,7 +10,7 @@ None of them holds the transcript.
 3
 00:00:28,000 --> 00:00:52,000
 Pull request one — verify-claims and witness-findings go red on deadbee.
-Row H-57b130f397 — same probe, traceable.
+Row H-a6151a95ac — same probe, traceable, Gemini explains.
 
 4
 00:00:52,000 --> 00:01:22,000

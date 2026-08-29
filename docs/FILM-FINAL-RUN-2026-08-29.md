@@ -9,7 +9,7 @@
 | Time | Beat | On camera |
 |------|------|-----------|
 | 0:00 | Board question | *If the regulator asks what you hand them…* |
-| 0:10 | **Record first** | https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?record=H-57b130f397 |
+| 0:10 | **Record first** | https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?record=H-a6151a95ac |
 | 0:28 | PR chain | PR #1 checks tab · verify-claims + witness-findings red |
 | 0:52 | Stranger probe | `./demo.sh --film` (compact, readable) |
 | 1:22 | Verdict map | UNVERIFIABLE → HOLD · gate never runs commands from report |
@@ -28,7 +28,7 @@ cd ~/CODE/hack-fleet-ata
 ./film/preflight.sh
 PAUSE_SEC=8 ./film/capture.sh
 ./demo.sh --film
-open "https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?record=H-57b130f397"
+open "https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?record=H-a6151a95ac"
 ```
 
 ---

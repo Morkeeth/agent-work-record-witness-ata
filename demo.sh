@@ -29,7 +29,7 @@ done
 [ "${DEMO_QUIET:-}" = "1" ] && FILM=1
 
 LIVE_HOLD="${WITNESS_LIVE_URL:-https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/}"
-LIVE_RECORD="${WITNESS_RECORD_ID:-H-57b130f397}"
+LIVE_RECORD="${WITNESS_RECORD_ID:-H-a6151a95ac}"
 
 b() { printf '\n\033[1m%s\033[0m\n' "$*"; }
 dim() { printf '\033[2m%s\033[0m\n' "$*"; }
