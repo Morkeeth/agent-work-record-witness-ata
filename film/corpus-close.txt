@@ -1,0 +1,9 @@
+  RAW          247 sha claims ·  103 disagree · 41.7%
+  CORRECTED    236 sha claims ·   19 disagree · 8.1%
+
+      73 resolved in a SIBLING repo — the agent was right, the probe was aimed at the wrong repo
+      11 dropped — shell commands, fenced output, and this repo's own test fixtures
+       7 path claims never checkable — identifiers, hostnames, absolute paths
+
+  A tool that shipped forty-one point seven would have been believed.
+  Eight point one is not the point. Writing the denominator down before you look is.

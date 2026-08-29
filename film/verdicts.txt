@@ -1,0 +1,6 @@
+  PASS          every claim confirmed against the repo          exit 0
+  BLOCK         claim(s) the repo disproves                     exit 1
+  HOLD          nothing disproved, but a claim is unverifiable  exit 2
+  UNVERIFIABLE  tests pass — no probe; never execute agent prose
+
+  Three states on the gate. Four verdict words. The exit code is the answer.

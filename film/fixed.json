@@ -1,0 +1,91 @@
+{
+  "schema": "film-fixed-v1",
+  "verified_at": "2026-08-29",
+  "spine": {
+    "beats": 6,
+    "duration_seconds": 180,
+    "beat_seconds": [25, 40, 30, 35, 30, 20]
+  },
+  "service_url": "https://fleet-wedge-33kamss2jq-uc.a.run.app",
+  "health": {
+    "subset": {
+      "product": "THE AGENT WORK RECORD WITNESS",
+      "auth_required": true,
+      "demo_seed_enabled": false,
+      "store": "firestore",
+      "agent_constructed": true,
+      "agent_invoked": false
+    },
+    "sha256": "6ffc47b69f079a74d08ae9bd83212e8155b682c31831e2c17affcad092f62433"
+  },
+  "pr": {
+    "repo": "Morkeeth/agent-work-record-witness-ata",
+    "number": 1,
+    "state": "OPEN",
+    "check_name": "verify-claims",
+    "check_conclusion": "FAILURE"
+  },
+  "record_row": {
+    "subset": {
+      "id": "H-57b130f397",
+      "kind": "clearance",
+      "source": "github-action",
+      "traceable": true,
+      "session": "01Lzbh4XPYTAgCKg1dciFS3Q",
+      "gate": "BLOCK",
+      "decision": "HOLD",
+      "pr": "1",
+      "repo": "Morkeeth/agent-work-record-witness-ata",
+      "stored_at": "2026-08-28T17:33:21+00:00"
+    },
+    "sha256": "8e453cf9e13acf31651a11472ecfb7bb989f2b7a0b11658456b2adaf6c895333"
+  },
+  "corpus": {
+    "source": "surface/fleet-report-page.html",
+    "subset": {
+      "raw_sha_claims": 247,
+      "raw_disagree": 103,
+      "raw_pct": 41.7,
+      "corrected_sha_claims": 236,
+      "corrected_disagree": 19,
+      "corrected_pct": 8.1,
+      "resolved_in_a_sibling_repo": 73,
+      "dropped_as_machinery_or_fixture": 11,
+      "path_claims_not_checkable": 7
+    },
+    "sha256": "a078863b3487c8f9bbbbc0f934f1e9c9af981752b9ba7cb0333cd21d13ef71a8"
+  },
+  "demo": {
+    "patterns": [
+      "GATE: PASS",
+      "GATE: BLOCK",
+      "GATE: HOLD",
+      "UNVERIFIABLE",
+      "exit 0",
+      "exit 1",
+      "exit 2",
+      "14 tests pass"
+    ],
+    "exit_codes": [0, 1, 2]
+  },
+  "verdicts": ["PASS", "BLOCK", "HOLD", "UNVERIFIABLE"],
+  "voiceover_numbers": {
+    "duration_minutes": 3,
+    "tests_in_hold_beat": 14,
+    "exit_pass": 0,
+    "exit_block": 1,
+    "exit_hold": 2,
+    "pr_number": 1,
+    "raw_pct": 41.7,
+    "corrected_pct": 8.1,
+    "raw_sha_claims": 247,
+    "raw_disagree": 103,
+    "corrected_sha_claims": 236,
+    "corrected_disagree": 19,
+    "resolved_in_sibling_repo": 73,
+    "dropped_machinery_or_fixture": 11,
+    "path_not_checkable": 7,
+    "hold_id": "H-57b130f397",
+    "session_id": "01Lzbh4XPYTAgCKg1dciFS3Q"
+  }
+}
