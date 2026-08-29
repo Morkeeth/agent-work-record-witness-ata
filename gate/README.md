@@ -37,3 +37,26 @@ is the painkiller that gets the product bought; propagation is the expansion tha
 `probe_repo` (claimed SHA/path exists) · `probe_power` (a rate quoted as a result survives its own n) ·
 `probe_exercise` (a service is called, not imported) · `probe_right_object` (checked against the
 object the claim is about). Each names its probe and returns UNMEASURED rather than guessing.
+
+## P3 · GitHub check summary (`gate/check_run_summary.py`)
+
+After the local probe writes `/tmp/hold-findings.json`, the composite action runs P3 to:
+
+1. Append a markdown findings table to the GitHub Actions step summary
+2. Emit `::error` / `::warning` annotations per BLOCK / UNVERIFIABLE finding
+3. Post a `witness-findings` check run when `GITHUB_TOKEN`, `REPO`, and `HEAD_SHA` are set
+
+Wired in `action.yml` step `summary` (runs `always()`). Live on PR #1 as a second red check.
+
+**Verify locally:**
+
+```bash
+PYTHONPATH=. python3 tests/test_check_run_summary.py
+```
+
+**Verify on GitHub (at the object):**
+
+```bash
+gh api repos/Morkeeth/agent-work-record-witness-ata/commits/$(gh pr view 1 --json headRefOid -q .headRefOid)/check-runs \
+  --jq '.check_runs[] | select(.name=="witness-findings") | {name, conclusion}'
+```

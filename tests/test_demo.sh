@@ -22,6 +22,7 @@ chk 'NOT a commit in this repo' 'the SHA probe output is shown, not summarised'
 chk 'NO SUCH PATH in the repo'  'the path probe output is shown, not summarised'
 nochk 'As a required PR check' 'does not say required check (branch protection off)'
 nochk 'As an required' 'does not say required check'
+nochk 'required check' 'does not print required check anywhere (branch protection off)'
 nochk '\.trace/trace\.db'  'reads no transcript database'
 nochk 'Traceback'          'no traceback'
 

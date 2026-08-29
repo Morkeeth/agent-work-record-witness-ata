@@ -12,6 +12,12 @@ object agreed, who overrode a hold and why, and the session behind every entry.*
 Built for **All Things Agentic**, Fortified Enterprise Fleet track.
 Live: https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/
 
+**One command (cold clone → local verdicts → live row):**
+
+```bash
+git clone https://github.com/Morkeeth/agent-work-record-witness-ata && cd agent-work-record-witness-ata && ./demo.sh && echo "Live row: https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?record=H-a6151a95ac"
+```
+
 ### Judge path (60 seconds)
 
 ```bash
