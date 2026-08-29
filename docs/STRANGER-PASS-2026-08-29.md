@@ -19,20 +19,45 @@ env -i PATH="$PATH" HOME="$HOME" ./demo.sh
 - `GATE: BLOCK` on false commit claim
 - `GATE: HOLD` on test claim (never guessed)
 - No `Traceback` · no `.trace/trace.db` read
+- No `required check` in output (branch protection off)
 
-## Probed locally (same repo, 2026-08-29)
+## Probed locally (night wave · 2026-08-29T20:47Z · commit `5b97eaf`)
 
 ```
 test_demo.sh
   ok    demo.sh exits 0
-  ok    an honest report PASSES
+  ok    an honest report PASSES  (the check can say yes)
   ok    a false report BLOCKS
   ok    a test claim HOLDS, never guessed
+  ok    UNVERIFIABLE finding maps to HOLD gate
+  ok    the SHA probe output is shown, not summarised
+  ok    the path probe output is shown, not summarised
+  ok    does not say required check (branch protection off)
+  ok    does not say required check
+  ok    does not say required check anywhere in demo output
   ok    reads no transcript database
+  ok    no traceback
   PASS
 ```
 
+Direct run:
+
+```bash
+env -i PATH="$PATH" HOME="$HOME" ./demo.sh; echo EXIT:$?
+# EXIT:0
+```
+
 **Receipt:** `tests/test_demo.sh` grades `./demo.sh`; this doc is the handbook exhibit line.
+
+## Live row (optional second click)
+
+After `./demo.sh`, open the hold console hero row from README:
+
+```
+https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?record=H-a6151a95ac
+```
+
+Probed: `curl -sS …/audit/export` → hero present · PR #1 checks red at object.
 
 ## Not claimed
 
@@ -46,4 +71,4 @@ test_demo.sh
 
 ---
 
-_Log: agent run 2026-08-29 · handbook Phase 5 closure for cold clone path._
+_Log: agent night wave 2026-08-29 · stranger path re-verified at object · fixture scrubbed (no "required check" in demo output)._
