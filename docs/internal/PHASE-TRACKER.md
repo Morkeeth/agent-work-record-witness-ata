@@ -30,7 +30,7 @@ Time is a **fraction of total event time**. Window Aug 22 → Aug 31 ≈ 9 days.
 
 - ~~Hours calibration~~ — scope pivoted to Witness; ship path in `hack.md` 48h plan
 - ~~Design owner unnamed~~ — ruled Oscar Aug 29 (handbook pass)
-- ~~Zero real PR~~ — PR #1 · `H-57b130f397` · verify-claims FAILURE by design
+- ~~Zero real PR~~ — PR #1 · `H-a6151a95ac` · verify-claims FAILURE by design
 
 ## Lessons in play (T-2 days)
 

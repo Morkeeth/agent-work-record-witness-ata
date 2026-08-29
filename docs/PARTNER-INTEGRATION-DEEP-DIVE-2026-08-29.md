@@ -28,7 +28,7 @@ Not legal advice. Not a commitment to build everything here before Devpost.
 | **Gemini / Vertex** | `classify()` in eligibility; task-class path | **Explain BLOCK** on clearance — model narrates findings, never overrules probe | "Gemini decides merge" |
 | **ADK** | `build_agent()` on `/health`; **`POST /agent/run`** with Runner + tool calls | Call **`run_agent()` after HOLD** with findings as context; store receipt on record | `type(LlmAgent)` on `/health` = "agent ran" |
 | **Cloud Run** | `fleet-wedge` live · `/health` · auth on mutating routes | Same service; show `*.run.app` on film | Multi-service mesh |
-| **Firestore** | Append-only record · `H-57b130f397` from real Action | Index by `session`, `repo`, `source` for console browse | "Real-time analytics" |
+| **Firestore** | Append-only record · `H-a6151a95ac` from real Action | Index by `session`, `repo`, `source` for console browse | "Real-time analytics" |
 | **GitHub Actions** | Composite action · PR #1 posts `/clearance` | **Checks API** annotations · pass `session` + `actor` in JSON body | "Required check" (branch unprotected) |
 | **GEAP Sessions** | `session` field on record (foreign key) | **VertexAiSessionService** — resume ADK run with same session id | "Memory Bank" without retrieval |
 | **GEAP Memory Bank** | Not wired | Write clearance summary artifact; read on repeat query | Retrieval loop that does not exist |
@@ -65,7 +65,7 @@ GitHub Action (local probe) → POST /clearance → Firestore record → /hold/ 
 
 - Cloud Run policy · enforce vs report-only · break-glass with reason
 - Firestore export · `/audit/export` for auditors
-- **Film beat:** PR #1 red → row `H-57b130f397` → export JSON
+- **Film beat:** PR #1 red → row `H-a6151a95ac` → export JSON
 
 ### Depth C · ADK on the witness path (best 48h upgrade)
 

@@ -22,7 +22,7 @@ No single magic database. Three intentional pipes.
 | Label `agent` | created (was missing — blocked first PR attempt) |
 | PR #1 | https://github.com/Morkeeth/agent-work-record-witness-ata/pull/1 |
 | Workflow | `verify-claims` **failed on purpose** (BLOCK deadbee) — that is the product working |
-| Record | **`H-57b130f397`** · `kind=clearance` · `source=github-action` · `traceable=true` |
+| Record | **`H-a6151a95ac`** · `kind=clearance` · `source=github-action` · `traceable=true` |
 | Session join | `01Lzbh4XPYTAgCKg1dciFS3Q` from PR body trailer |
 | Findings | `deadbee` not a commit · `docs/auth-migration-2026.md` missing |
 
@@ -39,7 +39,7 @@ curl -sS "$URL/audit/export" -H "X-HOLD-Token: $TOKEN" | python3 -c \
 ## Film beats this unlocks
 
 1. **PR tab** — red `verify-claims` on PR #1 (link in browser).
-2. **`/hold/`** — row `H-57b130f397` opens to session (not seed, not probe).
+2. **`/hold/`** — row `H-a6151a95ac` opens to session (not seed, not probe).
 3. **`./demo.sh`** — stranger path unchanged; say "gate needs no corpus."
 
 ## Still honest limits

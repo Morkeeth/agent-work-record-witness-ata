@@ -84,7 +84,7 @@ here carries an invented figure.*
 **1 · The false-done PR, caught at the merge.** *Demonstrated.* An agent opens a PR claiming a
 commit that does not exist, a file that nearly exists, and a test run that never happened. The
 The clearance check returns BLOCK on two, PASS on the one true claim, and UNVERIFIABLE on the test claim
-rather than guessing. Real PR #1 on this repo, record row `H-57b130f397`.
+rather than guessing. Real PR #1 on this repo, record row `H-a6151a95ac`.
 
 **2 · The board question, answered with a document.** *Demonstrated.* "Prove no agent shipped
 unverified." The record is queryable by claim, verdict, author and session. A VP Eng does not buy a
@@ -134,7 +134,7 @@ with.
 | Layer | What runs there | State |
 |---|---|---|
 | **Cloud Run** | The witness service on the request path. `/health` returns 200, product name, `auth_required: true`, `store: firestore` | ✅ live |
-| **Firestore** | The append-only record. Row `H-57b130f397` written by a real GitHub Action, not a seed | ✅ live |
+| **Firestore** | The append-only record. Row `H-a6151a95ac` written by a real GitHub Action, not a seed | ✅ live |
 | **GitHub Actions** | The `verify-claims` check. Runs the local probe, posts the verdict to Cloud Run | ✅ live, PR #1 |
 | **IAM / service account** | Every mutating route returns 401 to an anonymous caller, probed 28 Aug. `demo_seed_enabled: false` in production | ✅ verified |
 
@@ -178,7 +178,7 @@ Align with **`SUBMISSION-PACK.md` §2** (record-first close). Corpus beat is mid
 | 1:10 | `./demo.sh` | stranger, no account, no network |
 | 1:35 | PR #1 | `verify-claims` red on `deadbee` — **not** "required check" (branch unprotected) |
 | 2:15 | Four verdicts + refusal | terminal; never runs a command from a report |
-| 2:40 | GCP + honesty | `/health` · eligibility 3/3 **and** cold 1/3 · row `H-57b130f397` · `clear: 0` |
+| 2:40 | GCP + honesty | `/health` · eligibility 3/3 **and** cold 1/3 · row `H-a6151a95ac` · `clear: 0` |
 | 3:15 | Close | install path; *Gemini explains; Python decides* if P1 deployed |
 
 Recording: flipbook screen capture, voiceover from `film/voiceover-vo.txt`, burned subtitles.

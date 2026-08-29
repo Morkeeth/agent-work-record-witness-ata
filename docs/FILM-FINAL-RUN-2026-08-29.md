@@ -21,6 +21,19 @@
 
 ---
 
+## Terminal capture (demo beat)
+
+| Setting | Value |
+|---------|--------|
+| App | Terminal.app |
+| Font | **SF Mono** (Menlo OK) |
+| Size | **18 pt** |
+| Theme | Pro or Basic dark · ~100 cols visible |
+
+Preflight verified 2026-08-29: `./film/preflight.sh` PASS · `./demo.sh --film` matches 8 voiceover beats.
+
+---
+
 ## Rehearsal
 
 ```bash
@@ -39,4 +52,4 @@ open "https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?record=H-a6151a95ac"
 2. Paste `SUBMISSION-PACK.md` §1 + `docs/architecture.png`
 3. Share repo: `testing@devpost.com` + `cloudhackathons@google.com`
 
-Checklist: `docs/DEVPOST-CHECKLIST.md`
+Checklist: `docs/OSCAR-FILM-CHECKLIST.md` · Devpost detail: `docs/DEVPOST-CHECKLIST.md`

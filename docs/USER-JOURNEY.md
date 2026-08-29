@@ -107,7 +107,7 @@ Written so nobody has to guess which parts are real. Synced with `SUBMISSION-PAC
 | Moment | Real today | Gap |
 |---|---|---|
 | 1 · the red check | **yes** — PR #1 · `verify-claims` **FAILURE** (red by design) | branch protection off · zero non-author installs |
-| 2 · the trace | **yes** — `H-57b130f397` traceable · session on record · console renders join | Claude Code session patterns only today |
+| 2 · the trace | **yes** — `H-a6151a95ac` traceable · session on record · console renders join | Claude Code session patterns only today |
 | 3 · the export | **yes**, `/audit/export`, Firestore-backed | **`clear: 0`** — real row is HOLD, not clear |
 
 **One real agent PR is in the record.** What remains is adoption beyond the author and a first CLEAR.
