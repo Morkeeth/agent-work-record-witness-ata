@@ -1,0 +1,23 @@
+1
+00:00:00,000 --> 00:00:24,000
+Your agents write reports about work they did. This keeps the receipt.
+
+2
+00:00:25,000 --> 00:01:09,000
+Watch ./demo.sh — a stranger catches a false claim with no account and no network.
+
+3
+00:01:10,000 --> 00:01:49,000
+Pull request one — the required check goes red on deadbee, a commit that never existed.
+
+4
+00:01:50,000 --> 00:02:19,000
+Open the hold console — record H-57b130f397, traceable back to the agent session.
+
+5
+00:02:20,000 --> 00:02:39,000
+Four verdicts: PASS, BLOCK, UNVERIFIABLE, HOLD — and the gate never runs a command from a report.
+
+6
+00:02:40,000 --> 00:03:00,000
+78,618 messages examined. 41.7% raw → 8.1% corrected — the gap was our error, not the agents'.

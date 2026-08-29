@@ -1,0 +1,6 @@
+Your agents write reports about work they did. This keeps the receipt.
+Watch ./demo.sh — a stranger catches a false claim with no account and no network.
+Pull request one — the required check goes red on deadbee, a commit that never existed.
+Open the hold console — record H-57b130f397, traceable back to the agent session.
+Four verdicts: PASS, BLOCK, UNVERIFIABLE, HOLD — the gate never runs a command from a report.
+78,618 messages examined. 41.7% raw → 8.1% corrected — the gap was our error, not the agents'.
