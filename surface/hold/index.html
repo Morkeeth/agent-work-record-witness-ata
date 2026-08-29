@@ -178,10 +178,11 @@
           <code>helicon</code>. <code>da23d89</code> is real in <code>mountain-of-helicon</code>.
           The agent was right and the probe looked in the wrong place.</li>
         <li><b>11</b> &mdash; machinery, not claims: a SHA inside a shell command the agent was
-          <em>running</em>, or inside fenced git output it was <em>reading</em>. Six of those were
-          <code>deadbee</code>, <strong>this repository&rsquo;s own test fixture</strong>, surfacing in
-          transcripts about building this gate. The tool for catching false claims counted its own
-          test data as an agent claim.</li>
+          <em>running</em>, or inside fenced git output it was <em>reading</em>. Across the
+          hand-labelled sample of 40 extractions, six were <code>deadbee</code>,
+          <strong>this repository&rsquo;s own test fixture</strong>, surfacing in transcripts about
+          building this gate. The tool for catching false claims found its own test data and would
+          have counted it as an agent claim.</li>
         <li><b>19</b> &mdash; what is left after both corrections. Every exclusion is counted with its
           reason rather than silently deleted; a filter that quietly shrinks a finding list is the
           flattering version, and the refusal is the product.</li>
@@ -229,9 +230,12 @@
           claim types may carry a headline, and five confounds &mdash; including the one that turned
           out to matter. That document is the method, and the method is the product. A vendor who
           shows you a number without one is showing you a negotiation.</li>
-        <li><strong>The 41.7% is kept, not deleted.</strong> It survives in
-          <code>docs/CORPUS-MEASUREMENT-2026-08-27.md</code> on purpose: removing it would hide the
-          one thing worth learning.</li>
+        <li><strong>The raw number is kept, not deleted.</strong> 41.7% is printed beside the
+          corrected figure by the scan itself and in <code>docs/ENTERPRISE-CASE-2026-08-27.md</code>;
+          the earlier, cruder pass that produced <strong>42.0%</strong> before these confounds were
+          tested survives separately in <code>docs/CORPUS-MEASUREMENT-2026-08-27.md</code>. Two runs,
+          both kept, neither mixed into the other: deleting either would hide the one thing worth
+          learning.</li>
         <li><strong>The corpus is alive, so this page quotes a frozen run.</strong> The same scan
           re-run on 2026-08-29, against the same database now grown to 154,970 messages, reports
           <code>84,560 examined &middot; 50.6% raw &rarr; 11.5% corrected</code>, with 82 of 161 again
@@ -308,7 +312,7 @@
                 <td>Reads are open, writes are not. Every mutating route returns 401 to an anonymous
                     caller. Honest limit: <strong>one shared bearer token, not per-agent identity.</strong></td>
                 <td><code>curl -X POST .../clearance -d '{}'</code> &rarr; 401</td></tr>
-            <tr><td><strong>Vertex Gemini via ADK</strong></td>
+            <tr><td><strong>Gemini via ADK</strong></td>
                 <td><code>google.adk.runners.Runner</code> drives an <code>LlmAgent</code>
                     (<code>gemini-3.5-flash-lite</code>) to <em>explain</em> a hold in the reviewer&rsquo;s
                     words. It never decides one.
