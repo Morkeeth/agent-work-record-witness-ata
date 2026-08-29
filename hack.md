@@ -112,8 +112,8 @@ Use that spine in README top, Devpost ¶1, film 0:00, `/hold/` header — **one 
 
 #### D · Product surface (after A+B, if time)
 
-- [ ] **D1** Redeploy Cloud Run — P1+P2 live on `/clearance`
-- [ ] **D2** Re-trigger outcome-gate on PR #1 — row gets `head_sha`, `actor`, optional `agent_explanation`
+- [x] **D1** Redeploy Cloud Run — P1+P2 live · revision `fleet-wedge-00010-xww` 29 Aug
+- [x] **D2** Re-trigger outcome-gate on PR #1 — run `33250194854` · `witness-findings` check posted
 - [x] **D3** `/hold/` detail panel renders `agent_explanation` + `head_sha`
 - [x] **D4** README judge path at top
 
@@ -215,8 +215,7 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🎯 NOW
 
-**Handbook pass green except Phase 6–7 (Oscar).** Film → preflight → sealed prediction → Devpost.
-Deploy **D1** if P1 on camera · re-trigger PR #1 **D2** after deploy.
+**RUN COMPLETE 29 Aug.** P1+P2+P3 live · preflight PASS. Oscar: **film** → `SEALED-PREDICTION` → Devpost.
 
 ---
 
