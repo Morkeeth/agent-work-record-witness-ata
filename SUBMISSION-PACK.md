@@ -125,7 +125,8 @@ and credentials you do not have do not count.
 
 Integration shape: the GitHub Action runs deterministic probes in the customer's CI —
 no repo read access on our side. Only the verdict and session pointer cross to Cloud Run,
-where Firestore append-only storage and IAM-gated APIs hold the record. ADK + Vertex Gemini
+where Firestore append-only storage and token-gated APIs hold the record — the gate is an
+application-level bearer token, not IAM; Cloud Run is public at the IAM layer. ADK + Vertex Gemini
 explain HOLD decisions for humans; they never override a probe.
 ```
 

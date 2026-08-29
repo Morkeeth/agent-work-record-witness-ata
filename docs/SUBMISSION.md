@@ -144,8 +144,7 @@ variable** on the Cloud Run service; `secretmanager.googleapis.com` is enabled o
 unused, so anyone with `run.services.get` on `hack-fleet` can read the token. The service runs as
 the **default compute service account** `568004190078-compute@developer.gserviceaccount.com`, which
 holds `roles/editor` — a principal that can delete the Firestore collection this product calls
-append-only. Both are hackathon-project realities, not design positions. Live revision:
-`fleet-wedge-00011-p5b`.
+append-only. Both are hackathon-project realities, not design positions.
 
 **The architecture in one sentence:** the probe runs locally in the customer's CI where the
 repository already is, and only the verdict crosses the network, so the product never needs read
