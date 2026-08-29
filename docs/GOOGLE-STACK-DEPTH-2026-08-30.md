@@ -397,35 +397,78 @@ session, not to this lane.
 
 ### Tier A — demonstrable live Monday, touches nothing on the request path
 
-#### 3.1 · BigQuery: the record becomes a table — **2–3h · RANK 1**
+#### 3.1 · BigQuery: the record becomes a table — **RANK 1 · RUN, NOT ESTIMATED**
 
-*What:* a standalone script `scripts/export_to_bigquery.py` that reads `GET /audit/export`, flattens
-each event to a row, creates dataset `witness_record` and table `clearances`, and loads it. Nested
-`findings[]` becomes a `REPEATED RECORD` — BigQuery's native shape for exactly this, so the per-claim
-evidence survives the trip rather than collapsing to a JSON string.
+**This row is a receipt, not a projection. It was built and executed while writing this document,
+in under 30 minutes.** The rule in this repo is that "valid" is not "it runs", so it was run.
 
-*Demo:* one query in the BigQuery console with a judge watching:
+*What:* read `GET /audit/export`, flatten each event to a row, load into dataset `witness_record`,
+table `clearances`. Nested `findings[]` becomes a `REPEATED RECORD` — BigQuery's native shape for
+exactly this, so the per-claim assertion, probe, verdict and evidence survive the trip rather than
+collapsing into a JSON string.
+
+```
+$ bq mk --dataset --location=US hack-fleet:witness_record
+Dataset 'hack-fleet:witness_record' successfully created.
+
+$ bq load --source_format=NEWLINE_DELIMITED_JSON --autodetect --replace \
+    hack-fleet:witness_record.clearances clearances.ndjson
+Current status: DONE      # 12 rows, 9 carrying findings
+```
+
+*The demo query, and its real output:*
 
 ```sql
 SELECT repo, actor, gate, COUNT(*) AS n,
        COUNTIF(f.verdict = 'BLOCK') AS blocked_claims
 FROM `hack-fleet.witness_record.clearances`, UNNEST(findings) AS f
-GROUP BY repo, actor, gate
+GROUP BY repo, actor, gate ORDER BY n DESC
+```
+
+```
++----------------------------------------+-------------------+-------+---+----------------+
+|                  repo                  |       actor       | gate  | n | blocked_claims |
++----------------------------------------+-------------------+-------+---+----------------+
+| Morkeeth/agent-work-record-witness-ata | Morkeeth          | BLOCK | 6 |              6 |
+| acme/payments                          | coding-agent[bot] | BLOCK | 4 |              4 |
+| Morkeeth/agent-work-record-witness-ata | github-action     | BLOCK | 2 |              2 |
+| Morkeeth/hack-fleet-ata                | phase-a           | BLOCK | 2 |              2 |
+| NULL                                   | skeptic           | BLOCK | 1 |              1 |
+| Morkeeth/agent-work-record-witness-ata | test              | BLOCK | 1 |              1 |
++----------------------------------------+-------------------+-------+---+----------------+
 ```
 
 That is `SUBMISSION.md` §4 case 10 — *"which repositories, teams and agents produce claims that
-hold"* — stopping being a paragraph and becoming a result set.
+hold"* — ceasing to be a paragraph and becoming a result set, in the warehouse the buyer already
+runs.
 
-*What breaks / what to say honestly:* this is a **one-shot copy, not a live sink.** The service does
-not write to BigQuery; a script does, on demand. Say "the record exports into the warehouse you
-already run" and never "streams". The permanent version is a Firestore→BigQuery pipeline (Datastream
-or the Firebase extension) and that is roadmap. Second honest limit: with `clear: 0` and nine
-clearance rows, the query returns a nearly empty table. **That is the correct state and should be
-shown, not seeded** — the repo's own rule. A judge who sees a busy table in a hackathon project
-should be suspicious, and this one has already published that its record is thin.
+*Remaining work to make it demo-grade:* ~1h. Wrap the flattening in `scripts/export_to_bigquery.py`
+(it currently exists only as the ad-hoc script that produced the load above), pin an explicit schema
+instead of `--autodetect`, and rehearse the console view. **Total 1–1.5h, of which the risky part is
+already done.**
 
-*Risk:* low. New dataset, no existing data touched, reversible with `bq rm -r -f`. Nothing in
-`gate/` or `cloud/` changes.
+*What to say honestly, and the table itself enforces it:*
+
+- **A one-shot copy, not a live sink.** The service does not write to BigQuery; a script does, on
+  demand. Say "the record exports into the warehouse you already run"; never say "streams". The
+  continuous Firestore→BigQuery pipeline is roadmap (§4.3).
+- **Every row says BLOCK, and `clear: 0` is visible in the output above.** Nothing has ever passed
+  this gate because nothing real has ever gone through it — exactly what `ARCHITECTURE.md` §"What is
+  NOT claimed" already states. `acme/payments` / `coding-agent[bot]` is a staged demo row and is
+  identifiable as one. **Show it as-is; do not seed it.** A busy table in a weekend project is the
+  thing a judge should distrust.
+- **One `NULL` repo** (`actor: skeptic`) — an early probe row with no repo attached. Left in rather
+  than filtered, per the repo's own rule that a filter which quietly shrinks a finding list is the
+  flattering version.
+
+*Side finding, and it corrects a pessimistic note elsewhere:* `/audit` returns **36** events
+(24 `prove`, 9 `clearance`, 2 `exception`, 1 `agent_run`) but `/audit/export` returns **12** — the
+export already excludes the `prove` rows. **`GEAP-GAP` §4's "the audit store is 80% probe noise"
+is true of `/audit` and false of the compliance artifact a judge actually downloads.** The export is
+100% decisions. Worth saying on camera, because it is the surface being sold.
+
+*Risk:* low, and it is reversible: `bq rm -r -f hack-fleet:witness_record`. New dataset, no existing
+data touched, nothing in `gate/` or `cloud/` changed, no deployment involved.
 
 #### 3.2 · Cloud Build: the gate runs outside GitHub — **2–3h · RANK 2**
 
@@ -465,7 +508,7 @@ foreign key.
 
 *Risk:* none. Read-only.
 
-**Tier A total: 5–8h for three live Google-stack beats, no redeploy, no verdict logic touched.**
+**Tier A total: 4–7h for three live Google-stack beats, no redeploy, no verdict logic touched — and 3.1, the highest-value one, is already proven to work.**
 If only one gets built, build 3.1 — BigQuery is the layer the buyer already owns.
 
 ### Tier B — buildable this weekend, but needs a redeploy to go live
@@ -614,7 +657,7 @@ the control arm. That is the Qwen loss with a different logo on it.
 
 1. **Fix C1 and C2 in the docs.** ~20 minutes, and they are the two things a judge finds fastest.
    C1 is a wrong label on a true fact; C2 is a shipped feature the doc still calls roadmap.
-2. **Build 3.1 (BigQuery, 2–3h).** The record becomes queryable in the warehouse the buyer already
+2. **Finish 3.1 (BigQuery, ~1h left).** Already loaded and queried — see the receipt in §3.1. The record becomes queryable in the warehouse the buyer already
    runs. Highest Google-depth-per-hour available without a redeploy.
 3. **Build 3.3 (log correlation, 1–2h)** if there is time. Already proven to work in §1.7.
 4. **Say "no" about SCC out loud.** A submission whose thesis is false claims, declining to fake the
