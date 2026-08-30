@@ -101,6 +101,12 @@ predates your Devpost submit.
 - Testing instructions field: **`SUBMISSION-PACK.md` §5, stopping at the
   "end of the §5 paste" line.** Everything after that line is an operator note — do not paste it.
 - Built with: `SUBMISSION-PACK.md` §6.
+- **Long description / "the story" field, if the form has one beyond "What it does":**
+  [`docs/THE-THESIS.md`](THE-THESIS.md), whole, top to bottom. One page, written tonight, every
+  claim in it carries the evidence it was checked against. It exists so a judge reading one entry
+  can see the layer the entry is the first instrument of. If the form has no such field, paste it
+  as the last block of "What it does" — never in place of §1's opening, which answers the track
+  brief in the track's own words.
 - Video URL: the unlisted YouTube link from step 1.
 - Architecture image: attach `docs/architecture.png` (784×1247, opened and read today, legible).
 
