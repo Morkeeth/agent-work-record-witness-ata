@@ -14,7 +14,9 @@ export PATH="$HOME/google-cloud-sdk/bin:$PATH"
 SILENT=0
 [ "${1:-}" = "--silent" ] && SILENT=1
 
-echo "1/4 · terminal segment (vhs) — real commands, real exit codes"
+echo "1/4 · slides + terminal segment"
+( cd film/slides && for i in 1 2 3 4; do :; done )   # slides render via film/slides/render.sh
+./film/slides/render.sh
 vhs film/terminal.tape
 
 echo "2/4 · console + browser segments (playwright) — the live service"
@@ -48,7 +50,7 @@ echo "4/4 · voiceover (local Kokoro — no API, no key) + mux"
 # times. Rendering the script as one file and matching TOTAL length is not sync.
 python3 film/split_voice.py
 ( cd ~/CODE/voice-generation && for f in ~/CODE/hack-fleet-ata/demo/.vo-parts/p*.txt; do \
-    ./kvenv/bin/python vo.py "$f" -o "${f%.txt}.mp3" --preset demo --speed 1.30 >/dev/null; done )
+    ./kvenv/bin/python vo.py "$f" -o "${f%.txt}.mp3" --preset demo --speed 1.42 >/dev/null; done )
 python3 film/lay_voice.py
 ffmpeg -y -loglevel error -i demo/.picture.mp4 -i demo/voiceover.mp3 \
   -map 0:v -map 1:a -c:v copy -c:a aac -b:a 160k demo/demo-final.mp4

@@ -1,0 +1,7 @@
+file 's1.png'
+duration 4.5
+file 's2.png'
+duration 11
+file 's3.png'
+duration 9.5
+file 's3.png'

@@ -58,7 +58,7 @@ def record():
             record_video_size={"width": 1600, "height": 900})
         pg = ctx.pages[0] if ctx.pages else ctx.new_page()
         first = True
-        for url, dwell in ((SERVICE, 7000), (LOGS, 6000)):  # revisions dropped: gcloud already named the revision, and the 4:00 cap is real
+        for url, dwell in ((SERVICE, 6000), (LOGS, 4000)):  # revisions dropped: gcloud already named the revision, and the 4:00 cap is real
             pg.goto(url, wait_until="load")
             pg.wait_for_timeout(3000)
             if first:

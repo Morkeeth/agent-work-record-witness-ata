@@ -13,24 +13,24 @@ SR = 24000
 
 # paragraph index -> second at which it should START, taken from the beat map
 CUES = {
-    0: 1.0,    # title line, empty prompt
-    1: 4.0,    # the problem
-    2: 16.5,   # BLOCK on screen (output ~15.3)
-    3: 26.8,   # still BLOCK
-    4: 38.5,   # the honest report; PASS lands ~41
-    5: 46.5,   # HOLD lands ~51
-    6: 59.5,   # gcloud table ~62, /health ~68
-    7: 74.5,   # eligibility typed ~75, 3 OF 3 lands ~85
-    8: 92.0,   # Cloud Run console, service details (91.1)
-    9: 114.5,  # console logs (117.3)
-    10: 127.7, # the finding tab (127.2) — the corpus number
-    11: 148.3, # the held record, resolving to its session (147.8)
-    12: 162.5, # Google stack -> queue -> audit (164 / 171 / 176)
-    13: 180.5, # Install (180.1)
-    14: 195.5, # Policy (195.5)
-    15: 205.5, # PR #1, verify-claims red (205.0)
-    16: 213.2, # roadmap
-    17: 228.2, # close
+    0: 0.8,    # slide 1 · title
+    1: 5.0,    # slide 2 · the problem
+    2: 16.0,   # slide 3 · the gap, deadbee in blue
+    3: 25.8,   # terminal opens (25.0); BLOCK output ~29
+    4: 36.0,   # the honest report, PASS
+    5: 43.5,   # the claim it refuses to guess at, HOLD
+    6: 55.0,   # gcloud table, then /health
+    7: 68.5,   # eligibility typed; 3 OF 3 lands ~78
+    8: 88.5,   # Cloud Run console, service details (87.3)
+    9: 106.5,  # console logs
+    10: 114.0, # the finding tab (113.3) — the corpus number
+    11: 131.0, # the held record, resolving to its session (130.0)
+    12: 142.8, # Google stack -> queue -> audit (142.8 / 151 / 155)
+    13: 160.0, # Install (159.4)
+    14: 172.5, # Policy (172.4)
+    15: 181.0, # PR #1, verify-claims red (180.2)
+    16: 188.5, # roadmap, carrying into the closing slide (197.6)
+    17: 201.5, # close
 }
 
 

@@ -53,15 +53,15 @@ def main():
         pg.goto(BASE + "#finding", wait_until="load")
         pg.add_init_script(CURSOR)
         pg.evaluate(CURSOR)
-        pg.wait_for_timeout(6000)
-        pg.mouse.wheel(0, 450); pg.wait_for_timeout(7000)
-        pg.mouse.wheel(0, 450); pg.wait_for_timeout(7000)
+        pg.wait_for_timeout(5000)
+        pg.mouse.wheel(0, 450); pg.wait_for_timeout(6000)
+        pg.mouse.wheel(0, 450); pg.wait_for_timeout(5000)
 
         # 2 · the record — a held claim that opens back to its session
         pg.goto(BASE + "?record=H-a6151a95ac", wait_until="load")
-        pg.evaluate(CURSOR); pg.wait_for_timeout(4000)
-        pg.mouse.wheel(0, 400); pg.wait_for_timeout(5000)
-        pg.mouse.wheel(0, 500); pg.wait_for_timeout(5000)
+        pg.evaluate(CURSOR); pg.wait_for_timeout(3500)
+        pg.mouse.wheel(0, 400); pg.wait_for_timeout(4000)
+        pg.mouse.wheel(0, 500); pg.wait_for_timeout(4000)
 
         # 3 · where it runs on Google
         point(pg, "text=Google stack"); pg.wait_for_timeout(4000)
@@ -74,9 +74,9 @@ def main():
         point(pg, "text=Audit"); pg.wait_for_timeout(4000)
 
         # 5b · how a stranger installs it, and the policy it runs under
-        point(pg, "text=Install"); pg.wait_for_timeout(7000)
-        pg.mouse.wheel(0, 450); pg.wait_for_timeout(7000)
-        point(pg, "text=Policy"); pg.wait_for_timeout(9000)
+        point(pg, "text=Install"); pg.wait_for_timeout(6000)
+        pg.mouse.wheel(0, 450); pg.wait_for_timeout(5000)
+        point(pg, "text=Policy"); pg.wait_for_timeout(7500)
 
         # 6 · the check, red on a real pull request
         pg.goto(PR, wait_until="load"); pg.wait_for_timeout(5000)
@@ -85,9 +85,9 @@ def main():
             point(pg, "text=HOLD Outcome Clearance")
             pg.wait_for_timeout(4000)
             point(pg, "text=verify-claims")
-            pg.wait_for_timeout(17000)
+            pg.wait_for_timeout(6000)
         except Exception:
-            pg.wait_for_timeout(26000)
+            pg.wait_for_timeout(10000)
 
         video = pg.video
         ctx.close(); b.close()

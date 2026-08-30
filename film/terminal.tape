@@ -17,16 +17,16 @@ Type "setopt interactive_comments; cd ~/CODE/hack-fleet-ata; clear" Enter
 Sleep 1s
 Show
 
-# --- p00 + p01: the problem, over an empty prompt (14.6s of narration)
-Sleep 9s
-Type "# An agent says it committed. The gate asks the repository." Enter
-Sleep 3s
+# the problem and the gap are now slides; the terminal opens straight on the probe
+Sleep 1s
+Type "# The gate asks the repository, never the report." Enter
+Sleep 1s
 
 # --- p02 + p03: deadbee, BLOCK on screen (20.4s)
 Type "echo 'Committed as deadbee.' | python3 -m gate.outcome_gate" Enter
-Sleep 17s
-Type 'echo exit-code=$?' Enter
 Sleep 4s
+Type 'echo exit-code=$?' Enter
+Sleep 2s
 
 # --- p04: the honest report, PASS (7.1s)
 Type "clear" Enter
@@ -40,7 +40,7 @@ Sleep 1s
 Type "# And the claim it refuses to guess at." Enter
 Sleep 1s
 Type "echo 'Committed as 7c95a4f. All 14 tests pass.' | python3 -m gate.outcome_gate" Enter
-Sleep 7s
+Sleep 6s
 
 # --- p06: Google Cloud, the deployed service (14s)
 Type "clear" Enter
@@ -54,4 +54,4 @@ Sleep 3s
 Type "clear" Enter
 Sleep 1s
 Type "python3 contract/eligibility.py 2>&1 | tail -12" Enter
-Sleep 18s
+Sleep 15s

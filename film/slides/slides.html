@@ -1,0 +1,63 @@
+<!doctype html><meta charset="utf-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root{
+    --black:#000; --white:#F2F4F6; --dim:#7C848C; --line:#1C2126;
+    --blue:#3D7BFF;                 /* used ONCE per slide, on the thing that is gone */
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--black);color:var(--white);
+       font-family:Inter,-apple-system,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .s{width:1920px;height:1080px;position:relative;display:flex;flex-direction:column;
+     justify-content:center;padding:0 168px;background:var(--black)}
+  .tag{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:21px;letter-spacing:.34em;
+       color:var(--dim);text-transform:uppercase;margin-bottom:56px}
+  h1{font-size:104px;line-height:1.04;letter-spacing:-.032em;font-weight:700;max-width:1500px}
+  h2{font-size:78px;line-height:1.1;letter-spacing:-.026em;font-weight:600;max-width:1480px}
+  .sub{font-size:34px;line-height:1.5;color:var(--dim);margin-top:44px;max-width:1240px;font-weight:400}
+  .gone{color:var(--blue)}
+  .rule{width:96px;height:3px;background:var(--white);margin-top:64px;opacity:.85}
+  .claim{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:44px;line-height:1.7;
+         color:var(--white);margin-top:56px;max-width:1560px}
+  .claim .gone{position:relative}
+  .foot{position:absolute;left:168px;bottom:88px;font-family:'JetBrains Mono',ui-monospace,monospace;
+        font-size:20px;letter-spacing:.28em;color:var(--dim);text-transform:uppercase}
+  ul{list-style:none;margin-top:52px}
+  li{font-size:38px;line-height:1.9;color:var(--white);display:flex;gap:28px;align-items:baseline}
+  li .n{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:22px;color:var(--dim);min-width:44px}
+  li.gap{color:var(--blue)}
+  li.gap .n{color:var(--blue)}
+</style>
+
+<section class="s" id="s1">
+  <div class="tag">The Agent Work Record Witness</div>
+  <h1>Run your agents.<br>Check the math.</h1>
+  <div class="rule"></div>
+  <div class="foot">All Things Agentic · Fortified Enterprise Fleet</div>
+</section>
+
+<section class="s" id="s2">
+  <div class="tag">01 · The problem</div>
+  <h2>Seats and spend are visible.<br>The work is not.</h2>
+  <div class="sub">Every company running agents can see how many seats it bought and how many
+  tokens burned. Not whether the work the agents said they did, they did.</div>
+</section>
+
+<section class="s" id="s3">
+  <div class="tag">02 · The gap</div>
+  <h2>Nothing checks the sentence<br>against the work.</h2>
+  <div class="claim">Fixed the auth race and shipped.<br>Committed as <span class="gone">deadbee</span>.</div>
+  <div class="sub">That commit does not exist. There is no diff to review and the trace is
+  perfectly consistent, so it merges.</div>
+</section>
+
+<section class="s" id="s4">
+  <div class="tag">08 · What is next</div>
+  <h2>The gate is the intake.<br>The record is the product.</h2>
+  <ul>
+    <li><span class="n">01</span>Separate a citation from a claim — precision on prose is 13 of 40</li>
+    <li><span class="n">02</span>A GitHub App, so install is one click and the check is required</li>
+    <li><span class="n">03</span>Survival scoring: whose agent claims still stand a month later</li>
+    <li class="gap"><span class="n">04</span>Installs by anyone who is not the author — today, zero</li>
+  </ul>
+</section>
