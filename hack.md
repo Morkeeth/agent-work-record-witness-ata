@@ -270,7 +270,7 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🎯 NOW
 
-**RUN COMPLETE 29 Aug.** P1+P2+P3 live · preflight PASS. Oscar: **film** → `SEALED-PREDICTION` → Devpost.
+**Night-wave 30 Aug.** Sealed prediction draft filled · stranger path re-verified · embarrassment scrub · P3 confirmed on PR #1. Oscar: **film** → Oscar seal on prediction → Devpost.
 
 ---
 
@@ -288,6 +288,7 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🪵 LOG
 
+- 2026-08-30 · Night-wave: sealed prediction draft filled (measured anchors + SHA-256 `6a88a0fc…`); stranger path re-verified (`./tests/test_demo.sh` PASS, cold clone exit 0); fixture/demo scrubbed "required check"; SUBMISSION-PACK cold eligibility clarified (0/3 stock Python vs 1/3 after pip); preflight 11/11 PASS; P3 `witness-findings` confirmed on PR #1.
 - 2026-08-29 · Full 48h review; pre-submit plan replaces post-only hack.md.
 - 2026-08-29 · Probed: preflight PASS · eligibility 3/3 · branch unprotected · P1+P2 coded.
 - 2026-08-29 · Handbook pass: HANDBOOK-PASS, SEALED-PREDICTION template, PHASE-TRACKER refresh, STRANGER-PASS, voiceover/preflight sync.

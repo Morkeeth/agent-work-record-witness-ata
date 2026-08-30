@@ -286,7 +286,7 @@ reports in other people's tools.
 | **Google Cloud** | Firestore + Cloud Run | live `/health`, `/audit/export` |
 
 ```bash
-python3 contract/eligibility.py          # 3 of 3 with GCP, 1 of 3 cold. Both correct.
+python3 contract/eligibility.py          # 3 of 3 with GCP; 1 of 3 cold after pip install -r requirements.txt; 0 of 3 on stock Python
 ./tests/test_auth_gate.sh                # every mutating route rejects anonymous
 PYTHONPATH=. python3 tests/test_record.py
 curl -sS https://fleet-wedge-33kamss2jq-uc.a.run.app/health

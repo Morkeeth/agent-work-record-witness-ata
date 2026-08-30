@@ -30,7 +30,7 @@ _Film checklist: [`docs/ATA-FILM-AND-SHIP.md`](docs/ATA-FILM-AND-SHIP.md) · **O
 | Anon `POST /prove` | **401** (was 201 before the 2026-08-27 redeploy — re-probe it) |
 | `POST /demo/seed-hold` | **403** (film uses a real agent PR) |
 | `python3 contract/eligibility.py` **with ADC** | **3 OF 3 MET**, exit 0 |
-| `python3 contract/eligibility.py` **cold, no GCP creds** | **1 OF 3 MET** (ADK only), **exit 1** — by design |
+| `python3 contract/eligibility.py` **cold, no GCP creds** | **1 OF 3 MET** (ADK only) after `pip install -r requirements.txt`; **0 OF 3** on stock Python with no deps — **exit 1** in both cases — by design |
 
 **Both eligibility rows are true and a judge may see either one.** Do not paste "3 of 3" anywhere
 without the cold number beside it: a judge who clones this repo and runs the script with no
@@ -120,8 +120,9 @@ Install shape: GitHub Action to Cloud Run policy.
 
 python3 contract/eligibility.py calls all three services rather than importing them.
 With ADC on a Firestore + Vertex project it prints 3 OF 3 MET and exits 0. Cold, with no
-credentials, it prints 1 OF 3 MET and exits 1 — deliberately, because import is not call
-and credentials you do not have do not count.
+credentials but with `pip install -r requirements.txt`, it prints 1 OF 3 MET and exits 1 —
+deliberately, because import is not call and credentials you do not have do not count. Stock
+Python with no deps prints 0 OF 3.
 
 Integration shape: the GitHub Action runs deterministic probes in the customer's CI —
 no repo read access on our side. Only the verdict and session pointer cross to Cloud Run,

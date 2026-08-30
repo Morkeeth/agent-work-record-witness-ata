@@ -1,5 +1,5 @@
 name: HOLD Outcome Clearance
-# Required check for agent-authored PRs. Probes claims against the repo object,
+# verify-claims clearance check for agent-authored PRs. Probes claims against the repo object,
 # then posts the decision to the Witness gateway for the org record.
 #
 # This repo dogfoods its own composite action. A customer installs the same twelve

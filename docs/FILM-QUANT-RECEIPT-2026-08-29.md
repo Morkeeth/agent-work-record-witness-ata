@@ -1,9 +1,9 @@
-# Film quant receipt · ATA · 29 Aug 2026
+# Film quant receipt · ATA · 30 Aug 2026
 
-**Runner:** Cloud Agent (preflight + quant probes)  
-**Repo:** `Morkeeth/agent-work-record-witness-ata` @ `dea2409`  
+**Runner:** Cloud Agent night-wave (preflight + quant probes)  
+**Repo:** `Morkeeth/agent-work-record-witness-ata` @ night-wave branch  
 **Live URL:** `https://fleet-wedge-33kamss2jq-uc.a.run.app`  
-**Probed at:** 2026-08-29 (UTC)
+**Probed at:** 2026-08-30 (UTC)
 
 ---
 
@@ -14,7 +14,8 @@
 | Preflight checks | **11 ok / 11 total** |
 | `./demo.sh --film` exit code | **0** |
 | Voiceover / film beat count | **8** (8 spoken lines = 8 subtitle cues) |
-| Hero record `H-a6151a95ac` in `/audit/export` | **yes** |
+| Hero record `H-a6151a95ac` in `/audit/export` | **yes** · `head_sha=c995891…` · `agent_explanation.invoked=true` |
+| PR #1 checks | `verify-claims` **FAILURE** · `witness-findings` **FAILURE** (P3) |
 | Live `/health` eligibility fields | `auth_required` · `demo_seed_enabled` · `store` |
 | Live `/hold/` Google Material theme | **yes** (`--primary: #1a73e8` · `--sans: "Google Sans"` · `--shadow-1`) |
 
@@ -101,10 +102,10 @@ PREFLIGHT PASS — safe to run ./film/capture.sh and record.
 ## Not done (Oscar / post-receipt)
 
 - [ ] Screen recording ?4:00
-- [ ] `docs/SEALED-PREDICTION-2026-08-29.md` Oscar timestamp block
+- [ ] `docs/SEALED-PREDICTION-2026-08-29.md` Oscar timestamp block (agent draft filled 2026-08-30)
 - [ ] Devpost submit
 - [ ] Deploy without this receipt
 
 ---
 
-*Live revision `fleet-wedge-00012-5w6` · re-probed 2026-08-29 (UTC)*
+*Live service re-probed 2026-08-30 (UTC) · preflight 11/11 PASS*

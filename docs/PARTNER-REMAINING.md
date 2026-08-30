@@ -10,7 +10,7 @@
 |----|---------|------|-------|
 | P1 | Gemini + ADK | explain on HOLD clearance | ⛔ needs **D1 deploy** |
 | P2 | GitHub Action | session · actor · head_sha in JSON | ⛔ needs **D2 re-run PR** |
-| P3 | GitHub Checks | `gate/check_run_summary.py` — summary + annotations + `witness-findings` check | ✅ coded · push + PR sync |
+| P3 | GitHub Checks | `gate/check_run_summary.py` — summary + annotations + `witness-findings` check | ✅ live on PR #1 · `PYTHONPATH=. python3 tests/test_check_run_summary.py` PASS (2026-08-30) |
 
 ---
 
@@ -57,6 +57,6 @@
 
 ## Next agent slice
 
-1. Push P3 · re-sync PR #1 to see `witness-findings` check + annotations  
-2. Oscar: D1 deploy  
+1. ~~Push P3 · re-sync PR #1 to see `witness-findings` check + annotations~~ **done 2026-08-30**
+2. Oscar: film → sealed prediction Oscar timestamp → Devpost
 3. P4 only if calendar allows
