@@ -1,0 +1,19 @@
+Run your agents. Check the math.
+
+Every company running AI agents can see two things: how many seats they bought, and how many tokens those agents burned. What they cannot see is whether the work the agents said they did, they actually did.
+
+This is the Agent Work Record Witness. It starts at month four, not week one. Here a platform lead opens a held claim, and it resolves all the way back to the session that produced it. The record came first. The red check is what fills it.
+
+Here is how it fills. An agent opens a pull request. Before the merge, every claim in that pull request is checked against the repository itself. Did that commit land. Does that file exist. The gate reads the object, never the report.
+
+Watch a real one. An agent submits a pull request whose body says the work is done. The claims are false. The check verify-claims goes red, the pull request is blocked, and a row opens in the queue. The one true claim inside a false report still passes. The false ones are held.
+
+Every hold can be opened with a reason, and the reason is recorded. The whole record exports as JSON, an append-only account your continuous integration fills by itself.
+
+It runs on Google Cloud. The service is live on Cloud Run. The eligibility check reports three of three met with credentials, and one of three cold, because an import is not a call and we say so. Gemini three point five, through the Agent Development Kit, explains a verdict. It never overrules it. Release authority is a deterministic probe of the code.
+
+The honest state. One real agent pull request has gone through the gate. It failed on purpose, and it is in the queue as record H, a six one five one. Nothing has cleared yet. The real row is a hold, not a pass. That is the product working, not the product breaking.
+
+Install is a policy URL and one GitHub action. When your board asks whether an AI agent shipped unverified code to production, you hand them the record, instead of an opinion.
+
+The Agent Work Record Witness. Run your agents. Check the math.

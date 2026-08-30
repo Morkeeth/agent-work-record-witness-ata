@@ -39,12 +39,28 @@ fi
 # HOLD_DEMO_MODE default off (no Seed button /seed endpoint for film)
 HOLD_DEMO_MODE="${HOLD_DEMO_MODE:-0}"
 
+# Secret Manager: the token is a SECRET and must never sit in a Cloud Run revision as a
+# plaintext env-var (a revision cannot be un-written). Provision/rotate the secret, then
+# mount it with --set-secrets so only a reference is stored on the service. This also makes
+# Secret Manager a real, claimable Google Cloud integration.
+SECRET_NAME="${SECRET_NAME:-hold-api-token}"
+if ! gcloud secrets describe "$SECRET_NAME" --project "$PROJECT" >/dev/null 2>&1; then
+  echo "==> creating Secret Manager secret $SECRET_NAME"
+  gcloud secrets create "$SECRET_NAME" --project "$PROJECT" --replication-policy=automatic --quiet
+fi
+printf '%s' "$HOLD_API_TOKEN" | gcloud secrets versions add "$SECRET_NAME" --project "$PROJECT" --data-file=- --quiet
+# grant the runtime service account read on the secret (idempotent)
+SA="$(gcloud iam service-accounts list --project "$PROJECT" --format='value(email)' --filter='displayName:Compute Engine default' | head -1)"
+[ -n "$SA" ] && gcloud secrets add-iam-policy-binding "$SECRET_NAME" --project "$PROJECT" \
+  --member="serviceAccount:${SA}" --role=roles/secretmanager.secretAccessor --quiet >/dev/null 2>&1 || true
+
 gcloud run deploy "$SERVICE" \
   --source . \
   --region "$REGION" \
   --platform managed \
   --allow-unauthenticated \
-  --set-env-vars "GEMINI_MODEL=gemini-3.5-flash-lite,GOOGLE_CLOUD_PROJECT=${PROJECT},FLEET_STORE=firestore,HOLD_API_TOKEN=${HOLD_API_TOKEN},HOLD_DEMO_MODE=${HOLD_DEMO_MODE}" \
+  --set-env-vars "GEMINI_MODEL=gemini-3.5-flash-lite,GOOGLE_CLOUD_PROJECT=${PROJECT},FLEET_STORE=firestore,HOLD_DEMO_MODE=${HOLD_DEMO_MODE}" \
+  --set-secrets "HOLD_API_TOKEN=${SECRET_NAME}:latest" \
   --memory 1Gi \
   --timeout 300 \
   --max-instances 3 \

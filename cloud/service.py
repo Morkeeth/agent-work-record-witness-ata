@@ -295,12 +295,22 @@ class Handler(BaseHTTPRequestHandler):
                 from cloud.agent import last_run
                 a = _agent()
                 run = last_run()
-                info["agent"] = {
+                agent = {
                     "class": type(a).__module__ + "." + type(a).__name__,
                     "constructed": True,
-                    "invoked": bool(run and run.get("invoked")),
+                    # process-scoped: honest that a cold container has not run yet
+                    "invoked_this_process": bool(run and run.get("invoked")),
                     "last_run": run or "never invoked in this process — POST /agent/run",
                 }
+                # durable answer: has the agent EVER run, per the record? This is what
+                # /audit shows, so /health no longer contradicts it on a cold container.
+                try:
+                    agent["ever_invoked"] = any(
+                        r.get("agent_invoked") for r in _store().all()
+                    )
+                except Exception:
+                    agent["ever_invoked"] = None
+                info["agent"] = agent
             except Exception as e:
                 info["agent_error"] = f"{type(e).__name__}: {e}"
             info["policy"] = _policy()

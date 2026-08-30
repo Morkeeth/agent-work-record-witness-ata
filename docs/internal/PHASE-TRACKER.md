@@ -37,4 +37,11 @@ Time is a **fraction of total event time**. Window Aug 22 → Aug 31 ≈ 9 days.
 #85 video hard-fail · #78-II hardening vs exhibit · #71 publish honest-state · #72 seal first ·
 #69 live URL · #86 handbook open (HANDBOOK-PASS) · #14 no polish after flow works
 
-**Last updated:** 2026-08-29
+**Last updated:** 2026-08-30 · **~78% elapsed** · **T-1 day** to Aug 31 17:00 PDT
+
+| Phase | State (Aug 30) |
+|-------|----------------|
+| 0–5 | ✅ unchanged |
+| **6 · Freeze & prove** | ⛔ **Oscar** — film + cold browser still open |
+| **6b · Pre-camera** | ⛔ `./film/preflight.sh` not re-run today |
+| **7 · Submit** | ⛔ Devpost + sealed prediction |

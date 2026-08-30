@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Agent Work Record Witness — demo flipbook</title>
+<style>
+  :root{
+    --bg:#0b0d10; --panel:#12161c; --line:#232a33; --ink:#e9edf2; --muted:#8b95a3;
+    --pass:#38b26b; --block:#e5484d; --unv:#d9a441; --accent:#4b93ff; --track:#1a2028;
+    --mono:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box} html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+  .stage{width:min(960px,94vw);aspect-ratio:16/9;background:var(--panel);
+    border:1px solid var(--line);border-radius:16px;position:relative;overflow:hidden;
+    box-shadow:0 24px 80px rgba(0,0,0,.5)}
+  .frame{position:absolute;inset:0;padding:44px 52px;display:none;flex-direction:column}
+  .frame.on{display:flex;animation:fade .45s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .kicker{font-family:var(--mono);font-size:12px;letter-spacing:.18em;color:var(--muted);
+    text-transform:uppercase;display:flex;gap:14px;align-items:center}
+  .kicker .tc{color:var(--accent)}
+  .head{font-size:34px;font-weight:680;line-height:1.12;margin:14px 0 6px;letter-spacing:-.01em}
+  .on-cam{color:var(--muted);font-size:15px;max-width:60ch}
+  .spacer{flex:1}
+  .vo{font-family:var(--mono);font-size:14px;color:var(--ink);border-left:2px solid var(--accent);
+    padding:8px 0 8px 16px;max-width:70ch;line-height:1.55}
+  .vo b{color:var(--accent);font-weight:600}
+  /* signature device: the verdict resolve strip */
+  .verdicts{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:520px;margin-top:6px}
+  .v{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:13px;
+    background:var(--track);border:1px solid var(--line);border-radius:8px;padding:9px 12px}
+  .v .dot{width:9px;height:9px;border-radius:50%}
+  .v.pass .dot{background:var(--pass)} .v.block .dot{background:var(--block)}
+  .v.unv .dot{background:var(--unv)}
+  .v .verdict{margin-left:auto;font-weight:600}
+  .v.pass .verdict{color:var(--pass)} .v.block .verdict{color:var(--block)} .v.unv .verdict{color:var(--unv)}
+  .big{font-size:56px;font-weight:720;letter-spacing:-.02em;line-height:1.05}
+  .line{font-family:var(--mono);color:var(--accent);font-size:16px;margin-top:10px}
+  .brand{position:absolute;top:20px;right:24px;font-family:var(--mono);font-size:11px;
+    letter-spacing:.16em;color:var(--muted)}
+  /* controls */
+  .bar{position:absolute;left:0;right:0;bottom:0;height:4px;background:var(--track)}
+  .bar i{display:block;height:100%;background:var(--accent);transition:width .3s}
+  .ui{width:min(960px,94vw);display:flex;align-items:center;gap:16px;margin-top:16px;
+    font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+  button{font-family:var(--mono);font-size:12.5px;background:var(--panel);color:var(--ink);
+    border:1px solid var(--line);border-radius:8px;padding:8px 14px;cursor:pointer}
+  button:hover{border-color:var(--accent)}
+  .dots{display:flex;gap:6px;margin-left:auto}
+  .dots i{width:8px;height:8px;border-radius:50%;background:var(--line);cursor:pointer}
+  .dots i.on{background:var(--accent)}
+  audio{height:30px}
+</style></head>
+<body>
+  <div class="stage" id="stage">
+    <div class="brand">THE AGENT WORK RECORD WITNESS</div>
+
+    <div class="frame">
+      <div class="kicker"><span>00 · title</span><span class="tc">0:00</span></div>
+      <div class="spacer"></div>
+      <div class="big">Run your agents.<br>Check the math.</div>
+      <div class="line">The Agent Work Record Witness · All Things Agentic</div>
+      <div class="spacer"></div>
+    </div>
+
+    <div class="frame">
+      <div class="kicker"><span>01 · the problem</span><span class="tc">0:00–0:30</span></div>
+      <div class="head">Seats and spend are visible. The work is not.</div>
+      <div class="on-cam">A vendor dashboard shows tokens burned. It does not show whether the work the agents said they did, they did.</div>
+      <div class="spacer"></div>
+      <div class="vo">Every company running AI agents sees two things: seats bought, and tokens burned. What they cannot see is <b>whether the work the agents said they did, they actually did.</b></div>
+    </div>
+
+    <div class="frame">
+      <div class="kicker"><span>02 · the record</span><span class="tc">0:30–1:10</span></div>
+      <div class="head">Open on month four, not week one.</div>
+      <div class="on-cam">/hold/ — a platform lead opens a held claim; it resolves to the session that produced it. The record came first.</div>
+      <div class="spacer"></div>
+      <div class="vo">It starts at <b>month four</b>. A held claim resolves all the way back to the session that produced it. The record came first. The red check is what fills it.</div>
+    </div>
+
+    <div class="frame">
+      <div class="kicker"><span>03 · how it fills</span><span class="tc">1:10–1:35</span></div>
+      <div class="head">The gate reads the object, never the report.</div>
+      <div class="on-cam">Agent opens a PR → each claim probed against the repo → PASS · BLOCK · UNVERIFIABLE · HOLD.</div>
+      <div class="spacer"></div>
+      <div class="vo">An agent opens a pull request. Before merge, every claim is checked <b>against the repository itself</b>. Did that commit land. Does that file exist.</div>
+    </div>
+
+    <div class="frame">
+      <div class="kicker"><span>04 · a real PR</span><span class="tc">1:35–2:15</span></div>
+      <div class="head">The one true claim in a false report still passes.</div>
+      <div class="verdicts">
+        <div class="v block"><span class="dot"></span>committed as a41c9f2<span class="verdict">BLOCK</span></div>
+        <div class="v pass"><span class="dot"></span>wrote cache.py<span class="verdict">PASS</span></div>
+        <div class="v block"><span class="dot"></span>wrote validators.py<span class="verdict">BLOCK</span></div>
+        <div class="v unv"><span class="dot"></span>tests pass<span class="verdict">UNVERIFIABLE</span></div>
+      </div>
+      <div class="spacer"></div>
+      <div class="vo">A false-done PR body. <b>verify-claims goes red</b>, the PR is blocked, a row opens in the queue. The true claim passes; the false ones are held.</div>
+    </div>
+
+    <div class="frame">
+      <div class="kicker"><span>05 · break-glass + audit</span><span class="tc">2:15–2:40</span></div>
+      <div class="head">Every hold opens with a reason. The reason is recorded.</div>
+      <div class="on-cam">Break-glass → reason stored. Export JSON — an append-only account your CI fills by itself.</div>
+      <div class="spacer"></div>
+      <div class="vo">The whole record exports as JSON — an <b>append-only account your CI fills by itself.</b></div>
+    </div>
+
+    <div class="frame">
+      <div class="kicker"><span>06 · Google Cloud</span><span class="tc">2:40–3:05</span></div>
+      <div class="head">Live on Cloud Run. Gemini explains; it never overrules.</div>
+      <div class="on-cam">/health live · eligibility 3/3 with creds, 1/3 cold (import is not a call). Gemini 3.5 via ADK. Release authority is a deterministic probe.</div>
+      <div class="spacer"></div>
+      <div class="vo">Eligibility reports <b>three of three met</b> with credentials, and one of three cold, because an import is not a call and we say so. Gemini three-five, via the ADK, <b>explains a verdict — it never overrules it.</b></div>
+    </div>
+
+    <div class="frame">
+      <div class="kicker"><span>07 · honest state</span><span class="tc">3:05–3:30</span></div>
+      <div class="head">One real agent PR. It failed on purpose. It is in Hold.</div>
+      <div class="on-cam">Record H-a6151a95ac · clear: 0. The real row is a HOLD, not a pass — the product working, not breaking.</div>
+      <div class="spacer"></div>
+      <div class="vo">One real agent PR went through the gate. It failed on purpose, and it is record <b>H-a6151a95ac</b>. Nothing has cleared. That is the product working, not breaking.</div>
+    </div>
+
+    <div class="frame">
+      <div class="kicker"><span>08 · close</span><span class="tc">3:30–4:00</span></div>
+      <div class="head">Hand them the record, instead of an opinion.</div>
+      <div class="on-cam">Install: a policy URL and one GitHub action.</div>
+      <div class="spacer"></div>
+      <div class="big" style="font-size:38px">Run your agents.<br>Check the math.</div>
+      <div class="line">The Agent Work Record Witness</div>
+    </div>
+
+    <div class="bar"><i id="bar"></i></div>
+  </div>
+
+  <div class="ui">
+    <button id="prev">← prev</button>
+    <button id="next">next →</button>
+    <audio id="vo" controls src="voiceover.mp3"></audio>
+    <span id="count"></span>
+    <span class="dots" id="dots"></span>
+  </div>
+
+<script>
+  const frames=[...document.querySelectorAll('.frame')];
+  const dots=document.getElementById('dots');
+  let i=0;
+  frames.forEach((_,k)=>{const d=document.createElement('i');d.onclick=()=>go(k);dots.appendChild(d);});
+  function go(n){
+    i=Math.max(0,Math.min(frames.length-1,n));
+    frames.forEach((f,k)=>f.classList.toggle('on',k===i));
+    [...dots.children].forEach((d,k)=>d.classList.toggle('on',k===i));
+    document.getElementById('bar').style.width=((i)/(frames.length-1)*100)+'%';
+    document.getElementById('count').textContent=(i+1)+' / '+frames.length;
+  }
+  document.getElementById('next').onclick=()=>go(i+1);
+  document.getElementById('prev').onclick=()=>go(i-1);
+  addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')go(i+1);if(e.key==='ArrowLeft')go(i-1);});
+  go(0);
+</script>
+</body></html>
