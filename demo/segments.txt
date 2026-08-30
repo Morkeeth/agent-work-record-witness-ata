@@ -1,0 +1,2 @@
+file 'seg-terminal.mp4'
+file 'seg-browser.mp4'

@@ -1,19 +1,29 @@
+@voice am_michael
+@lang a
+@pause 300
+
 Run your agents. Check the math.
 
-Every company running AI agents can see two things: how many seats they bought, and how many tokens those agents burned. What they cannot see is whether the work the agents said they did, they actually did.
+Every company running AI agents can see two things. How many seats they bought, and how many tokens those agents burned. What they cannot see is whether the work the agents said they did, they actually did.
 
-This is the Agent Work Record Witness. It starts at month four, not week one. Here a platform lead opens a held claim, and it resolves all the way back to the session that produced it. The record came first. The red check is what fills it.
+An agent writes a sentence. Committed as deadbee. Nothing checks that sentence against the repository, and at fleet scale, that sentence is what auto-merge reads.
 
-Here is how it fills. An agent opens a pull request. Before the merge, every claim in that pull request is checked against the repository itself. Did that commit land. Does that file exist. The gate reads the object, never the report.
+So we check it. The gate takes the claim, turns it into a probe, and runs the probe against the object. Git cat file. Does that commit exist. It does not, so the pull request is blocked.
 
-Watch a real one. An agent submits a pull request whose body says the work is done. The claims are false. The check verify-claims goes red, the pull request is blocked, and a row opens in the queue. The one true claim inside a false report still passes. The false ones are held.
+A check that only ever says no is not a check. Here is an honest report. Real commit, real file, and it passes.
 
-Every hold can be opened with a reason, and the reason is recorded. The whole record exports as JSON, an append-only account your continuous integration fills by itself.
+And here is the one it refuses to guess at. The commit checks out. All fourteen tests pass does not, because verifying that would mean running a command lifted from agent prose. It is held, not guessed.
 
-It runs on Google Cloud. The service is live on Cloud Run. The eligibility check reports three of three met with credentials, and one of three cold, because an import is not a call and we say so. Gemini three point five, through the Agent Development Kit, explains a verdict. It never overrules it. Release authority is a deterministic probe of the code.
+The backend is live on Google Cloud Run. This is the deployed service, its URL, and its revision. Firestore holds the record. Gemini three point five, through the Agent Development Kit, explains a verdict. It never overrules one.
 
-The honest state. One real agent pull request has gone through the gate. It failed on purpose, and it is in the queue as record H, a six one five one. Nothing has cleared yet. The real row is a hold, not a pass. That is the product working, not the product breaking.
+This is the Agent Work Record Witness, and the gate is only its intake. The record is the product.
 
-Install is a policy URL and one GitHub action. When your board asks whether an AI agent shipped unverified code to production, you hand them the record, instead of an opinion.
+Before we pointed this at anyone else, we pointed it at a month of our own agent output. It said forty one point seven percent of commit claims disagreed with the repository. That number was wrong, and the error was ours. Seventy three of a hundred and three were real commits in a sibling repository on the same disk. The corrected figure is eight point one percent.
+
+Here is a held claim, opened. It resolves all the way back to the session that produced it. That join is the thing no observability tool, no code reviewer and no compliance product holds, because none of them keeps the transcript.
+
+Every Google service on the request path, with the probe that shows it. The queue humans actually open, calm by default. And the record, exportable, append only. Zero percent cleared. Nothing has passed, and that is the honest state, not a broken demo.
+
+One real agent pull request went through the gate. Verify claims went red. It failed on purpose, and it is held.
 
 The Agent Work Record Witness. Run your agents. Check the math.
