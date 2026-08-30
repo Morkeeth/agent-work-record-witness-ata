@@ -75,6 +75,11 @@ def main():
         point(pg, "text=Audit"); pg.wait_for_timeout(6000)
         pg.mouse.wheel(0, 350); pg.wait_for_timeout(4000)
 
+        # 5b · how a stranger installs it, and the policy it runs under
+        point(pg, "text=Install"); pg.wait_for_timeout(5000)
+        pg.mouse.wheel(0, 450); pg.wait_for_timeout(5000)
+        point(pg, "text=Policy"); pg.wait_for_timeout(5000)
+
         # 6 · the check, red on a real pull request
         pg.goto(PR, wait_until="load"); pg.wait_for_timeout(4000)
         pg.evaluate(CURSOR)

@@ -42,7 +42,7 @@ fi
 echo "4/4 · voiceover (local Kokoro — no API, no key) + mux"
 ( cd ~/CODE/voice-generation && \
   ./kvenv/bin/python vo.py ~/CODE/hack-fleet-ata/demo/voiceover.txt \
-    -o ~/CODE/hack-fleet-ata/demo/voiceover.mp3 --preset demo --speed 1.18 --pause 0.85 >/dev/null )
+    -o ~/CODE/hack-fleet-ata/demo/voiceover.mp3 --preset demo --speed 1.30 --pause 1.15 >/dev/null )
 ffmpeg -y -loglevel error -i demo/.picture.mp4 -i demo/voiceover.mp3 \
   -map 0:v -map 1:a -c:v copy -c:a aac -b:a 160k demo/demo-final.mp4
 rm -f demo/.picture.mp4 demo/.t30.mp4 demo/.b30.mp4 demo/.seg30.txt

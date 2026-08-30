@@ -44,4 +44,11 @@ Sleep 2s
 Type "gcloud run services describe fleet-wedge --region us-central1 --format='table[box](metadata.name:label=SERVICE, status.url:label=URL, status.latestReadyRevisionName:label=REVISION)'" Enter
 Sleep 8s
 Type "curl -s https://fleet-wedge-33kamss2jq-uc.a.run.app/health | python3 -m json.tool | head -14" Enter
-Sleep 8s
+Sleep 9s
+
+Type "clear" Enter
+Sleep 1s
+Type "# Eligibility is not an import. This CALLS all three services." Enter
+Sleep 2s
+Type "python3 contract/eligibility.py 2>&1 | tail -12" Enter
+Sleep 22s

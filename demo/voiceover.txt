@@ -1,5 +1,5 @@
 @voice am_michael
-@lang a
+@lang b
 @pause 300
 
 Run your agents. Check the math.
@@ -16,6 +16,8 @@ And here is the one it refuses to guess at. The commit checks out. All fourteen 
 
 The backend is live on Google Cloud Run. This is the deployed service, its URL, and its revision. Firestore holds the record. Gemini three point five, through the Agent Development Kit, explains a verdict. It never overrules one.
 
+And eligibility is not an import. This script calls all three services rather than importing them. With credentials it prints three of three and exits zero. Cold, with no credentials, it prints one of three and exits one, deliberately, because a class name proves an import, not a run.
+
 This is the Agent Work Record Witness, and the gate is only its intake. The record is the product.
 
 Before we pointed this at anyone else, we pointed it at a month of our own agent output. It said forty one point seven percent of commit claims disagreed with the repository. That number was wrong, and the error was ours. Seventy three of a hundred and three were real commits in a sibling repository on the same disk. The corrected figure is eight point one percent.
@@ -24,6 +26,12 @@ Here is a held claim, opened. It resolves all the way back to the session that p
 
 Every Google service on the request path, with the probe that shows it. The queue humans actually open, calm by default. And the record, exportable, append only. Zero percent cleared. Nothing has passed, and that is the honest state, not a broken demo.
 
+Installing it is a policy URL and one GitHub action. The probe runs inside your own checkout, where the repository already is. Only the verdict and a session pointer cross the network, so this product never needs read access to your code.
+
+The policy is explicit. Enforce mode, scoped to pull requests an agent actually opened, with a named break-glass role for the human who overrides.
+
 One real agent pull request went through the gate. Verify claims went red. It failed on purpose, and it is held.
+
+What is next is the half we are asking for help with. Separating a citation from a claim. Committed as X, and commit X landed, are the same string. Only the speech act differs. And the thing we do not have yet: a single install by somebody who is not us.
 
 The Agent Work Record Witness. Run your agents. Check the math.
