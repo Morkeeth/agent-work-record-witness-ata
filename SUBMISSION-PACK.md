@@ -238,27 +238,36 @@ deployed revision, and on 2026-08-27 the deployed revision disagreed with it.
 
 # 5 · Testing instructions (paste into the Devpost "Testing instructions" field)
 
-**The whole demo is viewable with NO login.** Start here:
+**No login, no install, no terminal. Four links.** Each one opens a tab of the live console.
+Every tab renders the underlying API response in place, so there is nothing to copy or paste.
 
-1. Live console (opens on a real held record — no credentials needed):
+1. **The finding** — what the product measured before it measured anyone else
+   `https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/#finding`
+   78,618 real agent messages. The first pass said 41.7% of commit claims disagreed with the
+   repository. Corrected: 8.1%. The gap was our own probe, not the agents.
+
+2. **The record** — one real agent pull request that went through the gate
    `https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?record=H-a6151a95ac`
-   You are looking at one real agent pull request that went through the gate, failed on purpose,
-   and is held. Nothing has cleared (`clear: 0`) — the real row is a HOLD, by design.
-2. Health + Google Cloud proof (no login):
-   `curl -s https://fleet-wedge-33kamss2jq-uc.a.run.app/health`
-   Reports the Cloud Run service, Firestore store, the ADK agent class, `invoked_this_process`
-   and `ever_invoked` (the durable answer, matching `/audit`). **Cold start may hang once — retry.**
-3. The audit record (no login):
-   `curl -s https://fleet-wedge-33kamss2jq-uc.a.run.app/audit`
-   Carries an `agent_run`: `invoked: true`, `google.adk.runners.Runner`, `gemini-3.5-flash-lite`.
-4. Repo: `https://github.com/Morkeeth/agent-work-record-witness-ata`
-   The repository is **public** — no invite is needed. Verified 2026-08-30.
+   It failed on purpose and is held. Nothing has ever cleared. The Audit tab reads
+   **0% CLEAR**, which is the honest state, not a broken demo.
 
-**Write actions are token-gated by design and are NOT needed to evaluate the demo.** `POST /clearance`,
-`/break-glass` and `/prove` require an operator token (anonymous writes return 401 — that is the
-security gate working). If you want to exercise a write path, request the operator token via the
-Devpost message thread; the token is held in Secret Manager and mounted to the service, never stored
-in the repo or in a plaintext environment variable.
+3. **Where it runs on Google** — every service on the request path, with the probe that shows it
+   `https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/#stack`
+   Cloud Run, Firestore, GitHub Actions, the application token gate, and Gemini 3.5 via the ADK.
+   The live `/health` payload is rendered on the page.
+
+4. **Repository** — public, clone and run `./demo.sh` with no account and no network
+   `https://github.com/Morkeeth/agent-work-record-witness-ata`
+
+**Cold start:** the first request may take a few seconds while the container wakes. Reload once.
+
+**Write actions are token-gated by design and are not needed to evaluate this.** `POST /clearance`,
+`/break-glass` and `/prove` return **401** to an anonymous caller — that is the security gate
+working, and you can see it from the Google stack tab. To exercise a write path, request the
+operator token in the Devpost message thread. The token is held in Secret Manager and mounted to
+the service; it is never in the repository or in a plaintext environment variable.
+
+_Raw endpoints, if you prefer them: `/health`, `/audit`, `/audit/export`, `/policy`._
 
 # 6 · Built with (Devpost "Built with" field)
 `google-cloud-run` · `firestore` · `vertex-ai` · `gemini-3.5-flash-lite` · `google-adk` ·
