@@ -317,6 +317,9 @@ Every mutating route returns 401 to an anonymous caller.
 - **Branch protection off** — check is advisory until you require `verify-claims`; this repo will
   not call it a required check while protection is off.
 - **One shared bearer token**, not per-agent identity.
+- **Audit reads the whole collection per request** — about 57 Firestore document reads per
+  request. Free at this traffic, a bill and a latency problem at any real one. Measured with
+  the rest of the cost table in [`docs/COST-2026-08-30.md`](docs/COST-2026-08-30.md).
 - **No OpenTelemetry, no Agent Registry, no Model Armor.** Roadmap, never claimed.
 - **No external benchmark.** Every number here is measured on data we assembled: our own
   transcript corpus, our own frozen oracle, our own hand labels. No public dataset exists for
