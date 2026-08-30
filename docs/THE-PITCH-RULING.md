@@ -17,7 +17,7 @@ record for what your agent workforce actually did)?**
 
 ## What each one actually is
 
-**THE GATE.** A required check reads a pull request body, probes each claim against the object,
+**THE GATE.** A verify-claims clearance check reads a pull request body, probes each claim against the object,
 and fails red when the object disagrees. Install is a YAML file. Five minutes.
 
 **THE RECORD.** Every claim, whether it held, who made it, whether the work survived, and the

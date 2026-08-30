@@ -2,6 +2,13 @@
 
 **Run it:** `python3 -m gate.tonight_cases` → exits 1, blocks 3 of 4 real claims.
 
+**P3 · check run summary:** `gate/check_run_summary.py` is wired in `action.yml` (step `summary`,
+after probe, before `post_clearance`). It writes the GitHub step summary, workflow annotations, and
+posts the `witness-findings` Check Run when `GITHUB_TOKEN` + `HEAD_SHA` + `REPO` are set.
+Local test: `PYTHONPATH=. python3 tests/test_check_run_summary.py` → `all green`.
+Live receipt: PR #1 carries both `verify-claims` and `witness-findings` with `conclusion=failure`
+(red by design).
+
 ## Why this is the company, not a feature
 
 Observability scores the **trace** — what the agent did. This gates the **claim** — whether what it

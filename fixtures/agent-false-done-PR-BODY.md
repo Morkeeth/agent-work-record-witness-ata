@@ -1,5 +1,5 @@
 # Agent false-done report — paste as PR body when labeling a PR `agent`.
-# Used to prove HOLD as a required check without /demo/seed-hold.
+# Used to prove verify-claims clearance without /demo/seed-hold (advisory until branch protection).
 # The Session trailer is what makes the hold traceable: the console opens it back to
 # what the agent actually did, instead of stopping at what it wrote.
 

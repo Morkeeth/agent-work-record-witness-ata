@@ -151,7 +151,7 @@ Add under "How we built it":
 ```text
 Integration shape: the GitHub Action runs deterministic probes in the customer's CI —
 no repo read access on our side. Only the verdict and session pointer cross to Cloud Run,
-where Firestore append-only storage and IAM-gated APIs hold the record. ADK + Vertex Gemini
+where Firestore append-only storage and application token-gated APIs hold the record. ADK + Vertex Gemini
 explain HOLD decisions for humans; they never override a probe. Cold eligibility: 1/3 without
 GCP credentials; 3/3 on the deployed path — both measured, not claimed.
 ```

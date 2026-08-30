@@ -270,7 +270,7 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🎯 NOW
 
-**RUN COMPLETE 29 Aug.** P1+P2+P3 live · preflight PASS. Oscar: **film** → `SEALED-PREDICTION` → Devpost.
+**Night-wave 30 Aug.** Sealed prediction draft filled + hashed · stranger path re-verified · embarrassment scrub · P3 documented. Oscar: **film** → Oscar timestamp on prediction → Devpost.
 
 ---
 
@@ -288,6 +288,7 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🪵 LOG
 
+- 2026-08-30 · Night-wave: `./film/preflight.sh` PASS (11/11) · sealed prediction filled with live /hold/ + PR #1 probes · STRANGER-PASS re-run (cold clone exit 0, test_demo 11/11) · scrubbed "required check" in fixture + workflow comment · P3 documented in gate/README · draft SHA-256 `b9f29219…`.
 - 2026-08-29 · Full 48h review; pre-submit plan replaces post-only hack.md.
 - 2026-08-29 · Probed: preflight PASS · eligibility 3/3 · branch unprotected · P1+P2 coded.
 - 2026-08-29 · Handbook pass: HANDBOOK-PASS, SEALED-PREDICTION template, PHASE-TRACKER refresh, STRANGER-PASS, voiceover/preflight sync.
