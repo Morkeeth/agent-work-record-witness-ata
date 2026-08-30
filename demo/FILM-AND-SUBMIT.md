@@ -4,7 +4,7 @@
 
 ## Before you hit record (2 min)
 - Open the flipbook `demo/flipbook.html` once to see the flow; play `demo/voiceover.mp3` as your pace.
-- Open two browser tabs: (A) /hold/?record=H-a6151a95ac  (B) a terminal for the curls.
+- Open two browser tabs: (A) /hold/?record=H-a6151a95ac  (B) /hold/#stack. No terminal on camera.
 - Cold-start: hit /health once first so the container is warm before you record.
 
 ## Teleprompter — click + say (each row ≈ the VO beat)
@@ -16,7 +16,7 @@
 | 1:10 | Scroll the record: PASS/BLOCK/UNVERIFIABLE/HOLD | "The gate reads the object, never the report. Did that commit land. Does that file exist." |
 | 1:35 | The real PR row (H-a6151a95ac), verify-claims red | "A false-done PR. verify-claims goes red, it's blocked, a row opens. The one true claim still passes; the false ones are held." |
 | 2:15 | Break-glass reason + Export JSON | "Every hold opens with a reason, and the reason is recorded. The whole record exports as JSON your CI fills itself." |
-| 2:40 | Tab B — curl /health ; curl /audit | "Live on Cloud Run. Eligibility three of three with creds, one of three cold. Gemini three-five via the ADK explains a verdict; it never overrules it." |
+| 2:40 | Console **Google stack** tab (`/hold/#stack`), then **Audit** tab (`/hold/#audit`) | "Live on Cloud Run. Eligibility three of three with creds, one of three cold. Gemini three-five via the ADK explains a verdict; it never overrules it." |
 | 3:05 | /audit agent_run invoked:true | "One real agent PR went through. It failed on purpose — record H, a six one five one. Nothing has cleared. The product working, not breaking." |
 | 3:30 | Install snippet + the line | "Install is a policy URL and one GitHub action. The Agent Work Record Witness. Run your agents. Check the math." |
 
