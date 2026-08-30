@@ -36,8 +36,8 @@ cd agent-work-record-witness-ata
 ./demo.sh                    # full walkthrough · exits 0
 ./demo.sh --film             # compact — same verdicts, for screen recording
 curl -sS https://fleet-wedge-33kamss2jq-uc.a.run.app/health | head
-# open hold console → PR #1 row (deep link):
-# https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?record=H-a6151a95ac
+# open hold console → the queue, then click the first card (H-a6151a95ac):
+# https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?tab=queue
 # PR checks: https://github.com/Morkeeth/agent-work-record-witness-ata/pull/1/checks
 ```
 

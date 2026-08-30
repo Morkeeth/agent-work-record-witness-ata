@@ -570,6 +570,13 @@ document.getElementById("nav").addEventListener("click", (e) => {
 
 let selected = null;
 let queueHolds = [];
+// The ?record= deep link opens its record ONCE. Without this latch loadQueue
+// re-read the URL on every call, called openClearance, which called tab("queue"),
+// which called loadQueue again — an unbounded /queue loop that also snapped the
+// reader back to the queue every time they clicked another tab. Measured on the
+// live service 2026-08-31: 41 GET /queue in 10.5s, and a click on "Google stack"
+// left tab-queue visible 4.5s later.
+let recordOpened = false;
 
 function prLinks(h) {
   if (!h.repo || !h.pr) return "";
@@ -686,7 +693,8 @@ async function loadQueue() {
     queueHolds = data.holds || [];
     renderStrip(queueHolds);
     const want = params.get("record");
-    if (want) {
+    if (want && !recordOpened) {
+      recordOpened = true;   // set before any await: a re-entrant call must not re-fire
       const hit = queueHolds.find(h => h.id === want);
       if (hit) {
         openClearance(hit);

@@ -247,8 +247,8 @@ Every tab renders the underlying API response in place, so there is nothing to c
    repository. Corrected: 8.1%. The gap was our own probe, not the agents.
 
 2. **The record** — one real agent pull request that went through the gate
-   `https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?record=H-a6151a95ac`
-   It failed on purpose and is held. Nothing has ever cleared. The Audit tab reads
+   `https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?tab=queue`
+   Click the first card in the queue — `H-a6151a95ac`. It failed on purpose and is held. Nothing has ever cleared. The Audit tab reads
    **0% CLEAR**, which is the honest state, not a broken demo.
 
 3. **Where it runs on Google** — every service on the request path, with the probe that shows it
@@ -261,6 +261,7 @@ Every tab renders the underlying API response in place, so there is nothing to c
 
 **Cold start:** the first request may take a few seconds while the container wakes. Reload once.
 
+
 **Write actions are token-gated by design and are not needed to evaluate this.** `POST /clearance`,
 `/break-glass` and `/prove` return **401** to an anonymous caller — that is the security gate
 working, and you can see it from the Google stack tab. To exercise a write path, request the
@@ -268,6 +269,21 @@ operator token in the Devpost message thread. The token is held in Secret Manage
 the service; it is never in the repository or in a plaintext environment variable.
 
 _Raw endpoints, if you prefer them: `/health`, `/audit`, `/audit/export`, `/policy`._
+
+**— end of the §5 paste. Everything below is an operator note, not for Devpost. —**
+
+**Why link 2 is `?tab=queue` and not the older `?record=H-a6151a95ac` deep link.**
+On the deployed revision `?record=` puts the console in an unbounded loop: `loadQueue()`
+re-reads `?record` on every call, calls `openClearance()`, which calls `tab("queue")`,
+which calls `loadQueue()` again. Measured 2026-08-31 with headless Chromium:
+**41 `GET /queue` in 10.5s against the live service** (network-bound) and **8,352 in 10.5s
+against a local copy of the same file**, and a click on "Google stack" left `tab-queue`
+visible 4.5s later — the reader cannot leave the queue. `?tab=queue` measured **1
+`GET /queue`**, the `H-a6151a95ac` card is the first row, one click opens the record with
+its session trace, and every tab still works. The one-line latch that fixes `?record=` is on
+branch `nightrun/l1-shipprep` in `surface/hold/index.html`; it only reaches judges after a
+redeploy, which is why the link was changed instead. **Deploying is optional; changing the
+link is not.**
 
 # 6 · Built with (Devpost "Built with" field)
 `google-cloud-run` · `firestore` · `vertex-ai` · `gemini-3.5-flash-lite` · `google-adk` ·
