@@ -1,0 +1,5 @@
+@voice am_michael
+@lang b
+@pause 300
+
+The backend is live on Google Cloud Run. This is the deployed service, its URL, and its revision. Firestore holds the record. Gemini three point five, through the Agent Development Kit, explains a verdict. It never overrules one.

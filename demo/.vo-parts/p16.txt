@@ -1,0 +1,5 @@
+@voice am_michael
+@lang b
+@pause 300
+
+What is next is the half we are asking for help with. Separating a citation from a claim. Committed as X, and commit X landed, are the same string. Only the speech act differs. And the thing we do not have yet: a single install by somebody who is not us.

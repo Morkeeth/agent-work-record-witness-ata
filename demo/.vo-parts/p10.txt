@@ -1,0 +1,5 @@
+@voice am_michael
+@lang b
+@pause 300
+
+Before we pointed this at anyone else, we pointed it at a month of our own agent output. It said forty one point seven percent of commit claims disagreed with the repository. That number was wrong, and the error was ours. Seventy three of a hundred and three were real commits in a sibling repository on the same disk. The corrected figure is eight point one percent.

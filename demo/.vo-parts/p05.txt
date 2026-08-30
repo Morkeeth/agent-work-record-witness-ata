@@ -1,0 +1,5 @@
+@voice am_michael
+@lang b
+@pause 300
+
+And here is the one it refuses to guess at. The commit checks out. All fourteen tests pass does not, because verifying that would mean running a command lifted from agent prose. It is held, not guessed.

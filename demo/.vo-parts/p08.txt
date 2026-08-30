@@ -1,0 +1,5 @@
+@voice am_michael
+@lang b
+@pause 300
+
+And here is that same service in the Google Cloud console. Cloud Run, us central one, healthy, scaling from zero. The request graph is live, and the logs underneath it are this recording's own traffic arriving at the deployed service, timestamped tonight. Firestore holds every clearance as an append only document. None of this is a screenshot of an intention.

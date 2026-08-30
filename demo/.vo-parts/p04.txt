@@ -1,0 +1,5 @@
+@voice am_michael
+@lang b
+@pause 300
+
+A check that only ever says no is not a check. Here is an honest report. Real commit, real file, and it passes.

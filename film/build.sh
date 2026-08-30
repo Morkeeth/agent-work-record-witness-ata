@@ -44,9 +44,12 @@ if [ "$SILENT" = "1" ]; then
 fi
 
 echo "4/4 · voiceover (local Kokoro — no API, no key) + mux"
-( cd ~/CODE/voice-generation && \
-  ./kvenv/bin/python vo.py ~/CODE/hack-fleet-ata/demo/voiceover.txt \
-    -o ~/CODE/hack-fleet-ata/demo/voiceover.mp3 --preset demo --speed 1.30 --pause 1.45 >/dev/null )
+# One paragraph per beat, rendered separately, then laid onto the picture's own cue
+# times. Rendering the script as one file and matching TOTAL length is not sync.
+python3 film/split_voice.py
+( cd ~/CODE/voice-generation && for f in ~/CODE/hack-fleet-ata/demo/.vo-parts/p*.txt; do \
+    ./kvenv/bin/python vo.py "$f" -o "${f%.txt}.mp3" --preset demo --speed 1.30 >/dev/null; done )
+python3 film/lay_voice.py
 ffmpeg -y -loglevel error -i demo/.picture.mp4 -i demo/voiceover.mp3 \
   -map 0:v -map 1:a -c:v copy -c:a aac -b:a 160k demo/demo-final.mp4
 rm -f demo/.picture.mp4 demo/.t30.mp4 demo/.c30.mp4 demo/.b30.mp4 demo/.seg30.txt

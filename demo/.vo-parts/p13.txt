@@ -1,0 +1,5 @@
+@voice am_michael
+@lang b
+@pause 300
+
+Installing it is a policy URL and one GitHub action. The probe runs inside your own checkout, where the repository already is. Only the verdict and a session pointer cross the network, so this product never needs read access to your code.

@@ -1,0 +1,5 @@
+@voice am_michael
+@lang b
+@pause 300
+
+Every company running AI agents can see two things. How many seats they bought, and how many tokens those agents burned. What they cannot see is whether the work the agents said they did, they actually did.

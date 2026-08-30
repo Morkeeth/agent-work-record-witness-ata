@@ -1,0 +1,5 @@
+@voice am_michael
+@lang b
+@pause 300
+
+Here is a held claim, opened. It resolves all the way back to the session that produced it. That join is the thing no observability tool, no code reviewer and no compliance product holds, because none of them keeps the transcript.

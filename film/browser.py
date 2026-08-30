@@ -53,9 +53,9 @@ def main():
         pg.goto(BASE + "#finding", wait_until="load")
         pg.add_init_script(CURSOR)
         pg.evaluate(CURSOR)
-        pg.wait_for_timeout(4000)
-        pg.mouse.wheel(0, 450); pg.wait_for_timeout(5000)
-        pg.mouse.wheel(0, 450); pg.wait_for_timeout(4000)
+        pg.wait_for_timeout(6000)
+        pg.mouse.wheel(0, 450); pg.wait_for_timeout(7000)
+        pg.mouse.wheel(0, 450); pg.wait_for_timeout(7000)
 
         # 2 · the record — a held claim that opens back to its session
         pg.goto(BASE + "?record=H-a6151a95ac", wait_until="load")
@@ -65,31 +65,29 @@ def main():
 
         # 3 · where it runs on Google
         point(pg, "text=Google stack"); pg.wait_for_timeout(4000)
-        pg.mouse.wheel(0, 500); pg.wait_for_timeout(5000)
         pg.mouse.wheel(0, 500); pg.wait_for_timeout(4000)
 
         # 4 · the queue humans actually open
-        point(pg, "text=Hold queue"); pg.wait_for_timeout(4500)
+        point(pg, "text=Hold queue"); pg.wait_for_timeout(3500)
 
         # 5 · the record, and the number that does not flatter us
-        point(pg, "text=Audit"); pg.wait_for_timeout(6000)
-        pg.mouse.wheel(0, 350); pg.wait_for_timeout(4000)
+        point(pg, "text=Audit"); pg.wait_for_timeout(4000)
 
         # 5b · how a stranger installs it, and the policy it runs under
-        point(pg, "text=Install"); pg.wait_for_timeout(5000)
-        pg.mouse.wheel(0, 450); pg.wait_for_timeout(5000)
-        point(pg, "text=Policy"); pg.wait_for_timeout(5000)
+        point(pg, "text=Install"); pg.wait_for_timeout(7000)
+        pg.mouse.wheel(0, 450); pg.wait_for_timeout(7000)
+        point(pg, "text=Policy"); pg.wait_for_timeout(9000)
 
         # 6 · the check, red on a real pull request
-        pg.goto(PR, wait_until="load"); pg.wait_for_timeout(4000)
+        pg.goto(PR, wait_until="load"); pg.wait_for_timeout(5000)
         pg.evaluate(CURSOR)
         try:
             point(pg, "text=HOLD Outcome Clearance")
-            pg.wait_for_timeout(3000)
+            pg.wait_for_timeout(4000)
             point(pg, "text=verify-claims")
-            pg.wait_for_timeout(7000)
+            pg.wait_for_timeout(17000)
         except Exception:
-            pg.wait_for_timeout(8000)
+            pg.wait_for_timeout(26000)
 
         video = pg.video
         ctx.close(); b.close()

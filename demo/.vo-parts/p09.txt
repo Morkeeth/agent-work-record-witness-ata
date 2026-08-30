@@ -1,0 +1,5 @@
+@voice am_michael
+@lang b
+@pause 300
+
+This is the Agent Work Record Witness, and the gate is only its intake. The record is the product.

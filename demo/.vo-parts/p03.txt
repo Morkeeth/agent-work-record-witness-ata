@@ -1,0 +1,5 @@
+@voice am_michael
+@lang b
+@pause 300
+
+So we check it. The gate takes the claim, turns it into a probe, and runs the probe against the object. Git cat file. Does that commit exist. It does not, so the pull request is blocked.

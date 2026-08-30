@@ -1,0 +1,5 @@
+@voice am_michael
+@lang b
+@pause 300
+
+Run your agents. Check the math.

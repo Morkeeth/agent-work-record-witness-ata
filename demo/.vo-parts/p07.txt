@@ -1,0 +1,5 @@
+@voice am_michael
+@lang b
+@pause 300
+
+And eligibility is not an import. This script calls all three services rather than importing them. With credentials it prints three of three and exits zero. Cold, with no credentials, it prints one of three and exits one, deliberately, because a class name proves an import, not a run.
