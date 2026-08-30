@@ -233,3 +233,33 @@ deployed revision, and on 2026-08-27 the deployed revision disagreed with it.
 - [transcripto](https://github.com/Morkeeth/transcripto) — authorship-gated corpus spine (roadmap provenance)
 - Local `agent-claims-inbox` — claim/repo witness patterns
 - Product composition (the record, the join, Gateway, console, Action) submitted in this repo
+
+---
+
+# 5 · Testing instructions (paste into the Devpost "Testing instructions" field)
+
+**The whole demo is viewable with NO login.** Start here:
+
+1. Live console (opens on a real held record — no credentials needed):
+   `https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?record=H-a6151a95ac`
+   You are looking at one real agent pull request that went through the gate, failed on purpose,
+   and is held. Nothing has cleared (`clear: 0`) — the real row is a HOLD, by design.
+2. Health + Google Cloud proof (no login):
+   `curl -s https://fleet-wedge-33kamss2jq-uc.a.run.app/health`
+   Reports the Cloud Run service, Firestore store, the ADK agent class, `invoked_this_process`
+   and `ever_invoked` (the durable answer, matching `/audit`). **Cold start may hang once — retry.**
+3. The audit record (no login):
+   `curl -s https://fleet-wedge-33kamss2jq-uc.a.run.app/audit`
+   Carries an `agent_run`: `invoked: true`, `google.adk.runners.Runner`, `gemini-3.5-flash-lite`.
+4. Repo: `https://github.com/Morkeeth/agent-work-record-witness-ata`
+   (private? it is shared with `testing@devpost.com` and `cloudhackathons@google.com`.)
+
+**Write actions are token-gated by design and are NOT needed to evaluate the demo.** `POST /clearance`,
+`/break-glass` and `/prove` require an operator token (anonymous writes return 401 — that is the
+security gate working). If you want to exercise a write path, request the operator token via the
+Devpost message thread; the token is held in Secret Manager and mounted to the service, never stored
+in the repo or in a plaintext environment variable.
+
+# 6 · Built with (Devpost "Built with" field)
+`google-cloud-run` · `firestore` · `vertex-ai` · `gemini-3.5-flash-lite` · `google-adk` ·
+`secret-manager` · `github-actions` · `python`
