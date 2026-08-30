@@ -172,7 +172,7 @@ witnesses beyond SHA and path.
 
 ### Architecture
 Source: `docs/ARCHITECTURE.md` (mermaid) → export `docs/architecture.png` for the form.
-**PNG not exported yet** (2026-08-29) — re-export from mermaid before Devpost paste.
+**PNG present** at `docs/architecture.png` (112 KB, exported 2026-08-29) — attach it on paste. Re-export only if `docs/ARCHITECTURE.md` changes.
 Narrate **record first**: the record is the product · the gate is its intake · Action → Cloud Run
 Gateway → Firestore · the join back to the session · console and export are what people open.
 
@@ -252,7 +252,7 @@ deployed revision, and on 2026-08-27 the deployed revision disagreed with it.
    `curl -s https://fleet-wedge-33kamss2jq-uc.a.run.app/audit`
    Carries an `agent_run`: `invoked: true`, `google.adk.runners.Runner`, `gemini-3.5-flash-lite`.
 4. Repo: `https://github.com/Morkeeth/agent-work-record-witness-ata`
-   (private? it is shared with `testing@devpost.com` and `cloudhackathons@google.com`.)
+   The repository is **public** — no invite is needed. Verified 2026-08-30.
 
 **Write actions are token-gated by design and are NOT needed to evaluate the demo.** `POST /clearance`,
 `/break-glass` and `/prove` require an operator token (anonymous writes return 401 — that is the
