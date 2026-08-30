@@ -161,6 +161,8 @@
   document.getElementById('next').onclick=()=>go(i+1);
   document.getElementById('prev').onclick=()=>go(i-1);
   addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')go(i+1);if(e.key==='ArrowLeft')go(i-1);});
-  go(0);
+  // ?f=N renders one frame on load (used for headless capture -> video render)
+  const qf=new URLSearchParams(location.search).get('f');
+  go(qf!==null?parseInt(qf,10)||0:0);
 </script>
 </body></html>
