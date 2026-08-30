@@ -41,6 +41,14 @@ curl -sS https://fleet-wedge-33kamss2jq-uc.a.run.app/health | head
 # PR checks: https://github.com/Morkeeth/agent-work-record-witness-ata/pull/1/checks
 ```
 
+**One warning before you click, so nothing on this path surprises you.** On that card, *"open the
+run that produced this claim"* leaves the console for `claude.ai` and asks you to sign in — and the
+transcript is the operator's, not yours, so signing in will not show it to you. That is the join
+pattern rather than a feature we host: the record stores a pointer to the session, and the
+transcript stays with whoever ran the agent. Everything else on the judge path — the queue, the
+claim, the probe, the evidence, the audit export — is open with no token and no account. The
+console says the same thing in front of the link.
+
 ---
 
 ## The problem
@@ -170,14 +178,14 @@ Our run, against `~/.trace/trace.db`:
 
 **41.7% → 8.1%, and the whole gap was ours.** 73 of 103 "wrong" commit claims were real commits in
 a *different repo on the same disk* — an agent's `cwd` is where it was standing, not where it
-committed, and the check was aimed at the wrong object. Ten more were machinery: a SHA inside a
+committed, and the check was aimed at the wrong object. Eleven more were machinery: a SHA inside a
 command the agent was running, or inside git output it was reading. Six of those, across the
 sample, were **`deadbee` — this repo's own test fixture**, found in transcripts about building this
 gate. The tool for catching false claims about work counted its own test data as agent claims.
 
 **"42% of agent commit claims are wrong" was a real number from a real corpus, and it was false by
-5x.** The only reason it did not become a slide is that the denominator was written down *before
-anyone looked at a claim*:
+5x — the corrected figure is 8.1%, 19 of 236.** The only reason it did not become a slide is
+that the denominator was written down *before anyone looked at a claim*:
 [`docs/CORPUS-PREREGISTRATION-2026-08-27.md`](docs/CORPUS-PREREGISTRATION-2026-08-27.md). **That
 document is the method, and the method is the product.**
 

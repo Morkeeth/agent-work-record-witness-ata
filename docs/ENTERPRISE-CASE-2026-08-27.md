@@ -63,8 +63,8 @@ filter and nobody has checked them. They stay listed and labelled unprobed rathe
 either direction.
 
 **"42% of agent commit claims are wrong" was a real number from a real corpus and it was false by
-5x.** It survives in [`CORPUS-MEASUREMENT-2026-08-27.md`](CORPUS-MEASUREMENT-2026-08-27.md) on
-purpose.
+5x — the corrected figure is 8.1%, 19 of 236.** It survives in
+[`CORPUS-MEASUREMENT-2026-08-27.md`](CORPUS-MEASUREMENT-2026-08-27.md) on purpose.
 
 The only reason it did not become a slide is that the denominator was written down **before anyone
 looked at a claim** — [`CORPUS-PREREGISTRATION-2026-08-27.md`](CORPUS-PREREGISTRATION-2026-08-27.md)

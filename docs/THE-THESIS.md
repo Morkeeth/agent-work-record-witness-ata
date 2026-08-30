@@ -44,13 +44,14 @@ what this catches.
 The first pass said **41.7%** of commit claims disagreed with the repository. That number was
 wrong and the error was ours: 73 of the 103 failures were real commits in a **sibling repository
 on the same disk**, because an agent's recorded working directory is where it was standing, not
-where it committed. Ten more were shas inside shell commands, six of them our own test fixture,
+where it committed. Eleven more were shas inside shell commands, six of them our own test fixture,
 found in transcripts about building this gate. Corrected: **8.1%**, 19 of 236.
 
 "42% of agent claims are wrong" was a real number from a real corpus and it was false by five
-times. The only reason it never shipped is that the denominator was written down before anyone
-looked. Neither figure is an incidence rate and neither is presented as one — hand-labelling put
-extractor precision at 13 of 40 on conversational prose, and the labelled sample ships so you
+times — the corrected figure is **8.1%**, 19 of 236. The only reason it never shipped is that the
+denominator was written down before anyone looked. Neither figure is an incidence rate and
+neither is presented as one — hand-labelling put extractor precision at 13 of 40 on
+conversational prose, and the labelled sample ships so you
 can disagree with it.
 
 That is the argument for the whole category, made against ourselves. A verification layer that

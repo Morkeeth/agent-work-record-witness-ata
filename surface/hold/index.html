@@ -56,25 +56,40 @@
   nav button:hover { color: var(--primary); background: rgba(26,115,232,.04); }
   nav button.on { color: var(--primary); border-bottom-color: var(--primary); background: transparent; }
   main { padding: 1.5rem 1.5rem 3rem; max-width: 960px; margin: 0 auto; }
+  /* The queue was one horizontal flex row with overflow:hidden. Measured 2026-08-31 against
+     the live service's own 7 holds: scrollWidth 3982 vs clientWidth 910, one card fully visible
+     at 1440 and none at 390, with no scroll control — six of seven held releases were
+     unreachable. A queue that hides holds is the failure this product is named after, so it
+     wraps: every card is laid out, nothing is clipped, and the page scrolls the way pages do. */
   .strip {
-    min-height: 4.5rem; border: 1px solid var(--line); background: var(--panel);
-    border-radius: var(--radius); box-shadow: var(--shadow-1);
-    display: flex; align-items: stretch; overflow: hidden;
+    display: grid; gap: 0.75rem;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
   }
   .strip.empty {
-    align-items: center; justify-content: center; color: var(--muted);
+    display: flex; min-height: 4.5rem; align-items: center; justify-content: center;
+    color: var(--muted); background: var(--panel); border: 1px solid var(--line);
+    border-radius: var(--radius); box-shadow: var(--shadow-1);
   }
+  .stripcount { color: var(--muted); font-size: 0.8125rem; margin: 0 0 0.6rem; }
+  .stripcount.hidden { display: none; }
   .mark {
-    flex: 0 0 auto; min-width: 7rem; padding: 0.85rem 1rem;
-    border-right: 1px solid var(--line); background: #fce8e6;
-    border-left: 4px solid var(--hold); cursor: pointer;
+    min-width: 0; padding: 0.85rem 1rem;
+    background: #fce8e6; border: 1px solid var(--line);
+    border-left: 4px solid var(--hold); border-radius: var(--radius);
+    box-shadow: var(--shadow-1); cursor: pointer;
     transition: background 0.15s;
   }
   .mark:hover { background: #fad2cf; }
+  .id { text-transform: none; letter-spacing: 0; font-family: var(--mono); }
+  .mark.on { background: #fad2cf; box-shadow: 0 0 0 2px var(--hold), var(--shadow-1); }
   .mark .v { color: var(--hold); font-weight: 500; font-size: 0.6875rem;
-             letter-spacing: 0.05em; text-transform: uppercase; }
-  .mark .a { font-family: var(--mono); font-size: 0.8125rem; margin-top: 0.35rem; color: var(--ink); }
-  .mark .p { color: var(--muted); font-family: var(--mono); font-size: 0.75rem; margin-top: 0.35rem; }
+             letter-spacing: 0.05em; text-transform: uppercase; overflow-wrap: anywhere; }
+  .mark .who { color: var(--muted); font-size: 0.6875rem; margin-top: 0.2rem;
+               overflow-wrap: anywhere; }
+  .mark .a { font-family: var(--mono); font-size: 0.8125rem; margin-top: 0.35rem; color: var(--ink);
+             overflow-wrap: anywhere; }
+  .mark .p { color: var(--muted); font-family: var(--mono); font-size: 0.75rem; margin-top: 0.35rem;
+             overflow-wrap: anywhere; }
   h1 { font-size: 1.375rem; font-weight: 400; margin: 0 0 0.5rem; letter-spacing: -0.01em; }
   h2 { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.08em;
        color: var(--muted); font-weight: 500; margin: 0 0 0.75rem; }
@@ -121,6 +136,11 @@
   button.act.secondary:hover { background: #e8f0fe; border-color: #d2e3fc; }
   button.act.danger { background: var(--hold); color: #fff; }
   button.act.danger:hover { background: #b31412; }
+  /* Every findings table over-ran its panel at 390px and the Evidence column — the payload —
+     was cut off with no way to reach it. Measured 2026-08-31: detail table 372px inside a
+     340px panel, the Google-stack table 545px inside 292px. Each one scrolls in its own
+     container now; the page itself still never scrolls sideways. */
+  .tablewrap { overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; }
   table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
   th, td { text-align: left; padding: 0.75rem 0.875rem; border-bottom: 1px solid var(--line); vertical-align: top; }
   th { color: var(--muted); font-weight: 500; font-size: 0.75rem; background: #f8f9fa; }
@@ -317,7 +337,7 @@
         <dt>Session join</dt><dd>01Lzbh4XPYTAgCKg1dciFS3Q</dd>
       </dl>
       <div style="margin-top:0.9rem;overflow-x:auto">
-        <table>
+        <div class="tablewrap"><table>
           <thead><tr><th>Verdict</th><th>Claim</th><th>Probe</th><th>Evidence</th></tr></thead>
           <tbody>
             <tr><td><span class="pill hold">BLOCK</span></td><td>committed as deadbee</td>
@@ -327,7 +347,7 @@
                 <td><code>stat docs/auth-migration-2026.md</code></td>
                 <td>NO SUCH PATH in the repo</td></tr>
           </tbody>
-        </table>
+        </table></div>
       </div>
       <p class="note" style="margin:0.8rem 0 0">Note the evidence string on the first row. After the
       corpus finding, the probe says <em>&ldquo;no sibling repos were checked&rdquo;</em> in its own
@@ -345,7 +365,7 @@
 
     <div class="panel">
       <div style="overflow-x:auto">
-        <table>
+        <div class="tablewrap"><table>
           <thead><tr><th>Layer</th><th>What runs there</th><th>How you check it</th></tr></thead>
           <tbody>
             <tr><td><strong>Cloud Run</strong></td>
@@ -379,7 +399,7 @@
                     <strong>Gemini explains. Python decides.</strong></td>
                 <td><code>agent_explanation.invoked</code> on record H-a6151a95ac</td></tr>
           </tbody>
-        </table>
+        </table></div>
       </div>
     </div>
 
@@ -433,6 +453,7 @@
   <section id="tab-queue" class="hidden">
     <h1>Hold queue</h1>
     <p class="lead">Calm default: empty. Humans only see releases the object disproves. <strong>Reading the queue and audit needs no token.</strong></p>
+    <p id="stripCount" class="stripcount hidden"></p>
     <div id="strip" class="strip empty">No agent releases need attention.</div>
     <div class="row">
       <button class="act secondary" id="btnRefresh">Refresh</button>
@@ -487,10 +508,10 @@
         <button class="act secondary" id="btnExport">Export JSON</button>
       </div>
       <div style="margin-top:1rem;overflow-x:auto">
-        <table>
+        <div class="tablewrap"><table>
           <thead><tr><th>When</th><th>Kind</th><th>Decision</th><th>PR / claim</th><th>Actor</th></tr></thead>
           <tbody id="auditBody"></tbody>
-        </table>
+        </table></div>
       </div>
     </div>
   </section>
@@ -597,24 +618,43 @@ function openClearance(h) {
 
 function renderStrip(holds) {
   const el = document.getElementById("strip");
+  const countEl = document.getElementById("stripCount");
   if (!holds.length) {
     el.className = "strip empty";
     el.textContent = "No agent releases need attention.";
+    countEl.className = "stripcount hidden";
+    countEl.textContent = "";
     document.getElementById("detail").classList.add("hidden");
     return;
   }
+  // Say the count before the cards. A judge should never have to infer how many holds
+  // exist from how many happen to fit on screen.
+  countEl.className = "stripcount";
+  countEl.textContent = holds.length + (holds.length === 1
+    ? " release on hold. Click it to see the claim, the probe and the evidence."
+    : " releases on hold, all shown below. Click one to see the claim, the probe and the evidence.");
   el.className = "strip";
+  // Every card carries its release id, repo and actor. Seven holds that all read
+  // "committed as deadbee" are indistinguishable without them, and a queue you cannot
+  // tell apart is a queue you cannot triage.
   el.innerHTML = holds.map(h => {
     const block = (h.blocks && h.blocks[0]) || (h.findings || []).find(f => f.verdict === "BLOCK") || {};
+    const n = (h.findings || []).length;
     return `<div class="mark" data-id="${h.id}">
-      <div class="v">HOLD</div>
+      <div class="v">HOLD · <span class="id">${esc(h.id)}</span></div>
+      <div class="who">${esc(h.repo || "no repo recorded")} · ${esc(h.actor || "no actor recorded")}
+        · ${n} claim${n === 1 ? "" : "s"} probed</div>
       <div class="a">${esc(block.assertion || h.report_preview || h.id)}</div>
       <div class="p">${esc(block.probe || "")} → ${esc(block.evidence || "")}</div>
     </div>`;
   }).join("");
   el.querySelectorAll(".mark").forEach(m => m.addEventListener("click", () => {
     selected = holds.find(h => h.id === m.dataset.id);
+    el.querySelectorAll(".mark").forEach(x => x.classList.toggle("on", x === m));
     showDetail(selected);
+    // The detail panel sits below the token bar, which is off-screen on a phone. Without
+    // this the click looked like it did nothing at 390px.
+    document.getElementById("detail").scrollIntoView({ behavior: "smooth", block: "start" });
   }));
 }
 
@@ -629,11 +669,18 @@ function showDetail(h) {
   // carried no session reference we say so plainly rather than showing an empty field:
   // "not traceable" is a real state of the world and hiding it would be the same class
   // of dishonesty this gate exists to catch.
+  // The link leaves for claude.ai and asks the visitor to sign in. That is honest — the
+  // transcript belongs to whoever ran the agent, and this is the join pattern rather than a
+  // CI feature we host. But a judge must CHOOSE that wall, not walk into it, so the warning
+  // is in front of the link and inside its own label, not in a trailing aside.
   const trace = h.session
     ? `<p class="trace">Trace · Claude Code session <code>${esc(h.session)}</code>
-         · <a href="https://claude.ai/code/session_${encodeURIComponent(h.session)}"
-            target="_blank" rel="noopener">open the run that produced this claim</a>
-         <span class="muted" style="color:var(--muted);font-size:0.85rem"> (join pattern — not a CI product)</span></p>`
+         <span class="muted" style="color:var(--muted);font-size:0.85rem">— the join pattern, not a
+         CI product: the transcript lives in the operator's own Claude account, so the next link
+         leaves this console for claude.ai and asks you to sign in there.</span><br>
+         <a href="https://claude.ai/code/session_${encodeURIComponent(h.session)}"
+            target="_blank" rel="noopener">open the run that produced this claim ↗ (claude.ai —
+            sign-in required, and it will be the operator's account, not yours)</a></p>`
     : `<p class="trace muted">Trace · no session reference in the report. This claim cannot be
          opened back to what the agent actually did.</p>`;
   const sha = h.head_sha
@@ -649,15 +696,15 @@ function showDetail(h) {
     explainBlock = `<p class="trace muted">Gemini explain skipped: ${esc(explain.error)}</p>`;
   }
   d.innerHTML = `
-    <h2>Release ${esc(h.id)}</h2>
+    <h2>Release <span class="id">${esc(h.id)}</span></h2>
     <p><span class="pill hold">${esc(h.gate || h.decision)}</span>
        · ${esc(h.repo || "—")} · ${esc(h.actor || "")}</p>
     ${prLinks(h)}
     ${trace}
     ${sha}
     ${explainBlock}
-    <table><thead><tr><th>Verdict</th><th>Claim</th><th>Probe</th><th>Evidence</th></tr></thead>
-    <tbody>${rows}</tbody></table>
+    <div class="tablewrap"><table><thead><tr><th>Verdict</th><th>Claim</th><th>Probe</th><th>Evidence</th></tr></thead>
+    <tbody>${rows}</tbody></table></div>
     <label>Break-glass reason</label>
     <textarea id="bgReason" placeholder="Why override this hold?"></textarea>
     <label>Actor</label>
