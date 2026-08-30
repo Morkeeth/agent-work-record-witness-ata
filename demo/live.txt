@@ -1,0 +1,17 @@
+file 'live/01.png'
+duration 18.4
+file 'live/02.png'
+duration 18.4
+file 'live/03.png'
+duration 18.4
+file 'live/04.png'
+duration 18.4
+file 'live/05.png'
+duration 18.4
+file 'live/06.png'
+duration 18.4
+file 'live/07.png'
+duration 18.4
+file 'live/08.png'
+duration 18.4
+file 'live/08.png'
