@@ -18,6 +18,8 @@ The backend is live on Google Cloud Run. This is the deployed service, its URL, 
 
 And eligibility is not an import. This script calls all three services rather than importing them. With credentials it prints three of three and exits zero. Cold, with no credentials, it prints one of three and exits one, deliberately, because a class name proves an import, not a run.
 
+And here is that same service in the Google Cloud console. Cloud Run, us central one, healthy, scaling from zero. The request graph is live, and the logs underneath it are this recording's own traffic arriving at the deployed service, timestamped tonight. Firestore holds every clearance as an append only document. None of this is a screenshot of an intention.
+
 This is the Agent Work Record Witness, and the gate is only its intake. The record is the product.
 
 Before we pointed this at anyone else, we pointed it at a month of our own agent output. It said forty one point seven percent of commit claims disagreed with the repository. That number was wrong, and the error was ours. Seventy three of a hundred and three were real commits in a sibling repository on the same disk. The corrected figure is eight point one percent.

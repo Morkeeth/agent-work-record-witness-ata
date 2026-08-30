@@ -51,4 +51,4 @@ Sleep 1s
 Type "# Eligibility is not an import. This CALLS all three services." Enter
 Sleep 2s
 Type "python3 contract/eligibility.py 2>&1 | tail -12" Enter
-Sleep 22s
+Sleep 16s

@@ -17,22 +17,26 @@ SILENT=0
 echo "1/4 · terminal segment (vhs) — real commands, real exit codes"
 vhs film/terminal.tape
 
-echo "2/4 · browser segment (playwright) — the live service"
+echo "2/4 · console + browser segments (playwright) — the live service"
+python3 film/console.py --record   # needs ~/.ata-film-profile: python3 film/console.py --login
 python3 film/browser.py
 
 echo "3/4 · joining"
 ffmpeg -y -loglevel error -i demo/seg-terminal.mp4 \
   -vf "fps=30,scale=1920:1080:flags=lanczos,format=yuv420p" \
   -c:v libx264 -preset medium -crf 21 -an demo/.t30.mp4
+ffmpeg -y -loglevel error -i demo/seg-console.mp4 \
+  -vf "fps=30,scale=1920:1080:flags=lanczos,format=yuv420p" \
+  -c:v libx264 -preset medium -crf 21 -an demo/.c30.mp4
 ffmpeg -y -loglevel error -i demo/seg-browser.mp4 \
   -vf "fps=30,scale=1920:1080:flags=lanczos,format=yuv420p" \
   -c:v libx264 -preset medium -crf 21 -an demo/.b30.mp4
-printf "file '.t30.mp4'\nfile '.b30.mp4'\n" > demo/.seg30.txt
+printf "file '.t30.mp4'\nfile '.c30.mp4'\nfile '.b30.mp4'\n" > demo/.seg30.txt
 ffmpeg -y -loglevel error -f concat -safe 0 -i demo/.seg30.txt -c copy demo/.picture.mp4
 
 if [ "$SILENT" = "1" ]; then
   mv demo/.picture.mp4 demo/demo-silent.mp4
-  rm -f demo/.t30.mp4 demo/.b30.mp4 demo/.seg30.txt
+  rm -f demo/.t30.mp4 demo/.c30.mp4 demo/.b30.mp4 demo/.seg30.txt
   echo "4/4 · WROTE demo/demo-silent.mp4 ($(ffprobe -v error -show_entries format=duration -of csv=p=0 demo/demo-silent.mp4)s)"
   echo "     Record your voice against it, then mux:"
   echo "     ffmpeg -i demo/demo-silent.mp4 -i YOUR.m4a -map 0:v -map 1:a -c:v copy -c:a aac -b:a 160k demo/demo-final.mp4"
@@ -42,10 +46,10 @@ fi
 echo "4/4 · voiceover (local Kokoro — no API, no key) + mux"
 ( cd ~/CODE/voice-generation && \
   ./kvenv/bin/python vo.py ~/CODE/hack-fleet-ata/demo/voiceover.txt \
-    -o ~/CODE/hack-fleet-ata/demo/voiceover.mp3 --preset demo --speed 1.30 --pause 1.15 >/dev/null )
+    -o ~/CODE/hack-fleet-ata/demo/voiceover.mp3 --preset demo --speed 1.30 --pause 1.45 >/dev/null )
 ffmpeg -y -loglevel error -i demo/.picture.mp4 -i demo/voiceover.mp3 \
   -map 0:v -map 1:a -c:v copy -c:a aac -b:a 160k demo/demo-final.mp4
-rm -f demo/.picture.mp4 demo/.t30.mp4 demo/.b30.mp4 demo/.seg30.txt
+rm -f demo/.picture.mp4 demo/.t30.mp4 demo/.c30.mp4 demo/.b30.mp4 demo/.seg30.txt
 
 echo
 echo "WROTE demo/demo-final.mp4  $(ffprobe -v error -show_entries format=duration -of csv=p=0 demo/demo-final.mp4)s"
