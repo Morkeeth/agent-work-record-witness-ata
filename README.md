@@ -318,6 +318,13 @@ Every mutating route returns 401 to an anonymous caller.
   not call it a required check while protection is off.
 - **One shared bearer token**, not per-agent identity.
 - **No OpenTelemetry, no Agent Registry, no Model Armor.** Roadmap, never claimed.
+- **No external benchmark.** Every number here is measured on data we assembled: our own
+  transcript corpus, our own frozen oracle, our own hand labels. No public dataset exists for
+  "agent done-claims labelled against the object", so there is nothing we did not build and
+  cannot tune. That is a real weakness in the evidence and we state it rather than imply an
+  anchor we do not have. The substitutes we do ship are a pre-registered denominator, a frozen
+  holdout, a null arm that beats us, and the labelled sample in `fixtures/` so you can disagree
+  with our labels rather than take them.
 
 **Enterprise surfaces, measured:** Gateway, Observability and Identity are partial. Runtime became
 partial today. Registry and Model Armor are absent and stay on the roadmap. Full measurement:
