@@ -12,6 +12,22 @@ object agreed, who overrode a hold and why, and the session behind every entry.*
 Built for **All Things Agentic**, Fortified Enterprise Fleet track.
 Live: https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/
 
+### The track brief, in the track's own words
+
+The Fortified Enterprise Fleet track asks for agents that *"safely maintain context across weeks
+of asynchronous operations"* and that *"interact with production data without violating enterprise
+compliance, data sovereignty, or security policies."*
+
+- **Context across weeks of asynchronous operations.** The record outlives the pull request. A
+  claim held today opens back to the session that produced it. That join is the thing no
+  observability, code-review or compliance tool holds, because none of them keeps the transcript.
+- **Production data without violating sovereignty.** The probe runs inside your CI, in the
+  checkout you already have. This product never gets read access to your code. Only the verdict
+  and a session pointer cross the network, into an append-only Firestore record you can export
+  whole.
+- **Catalogued for cross-department use.** Partial, and named as partial: one shared bearer token
+  rather than per-agent identity, and no agent registry. Roadmap, not a claim.
+
 ### Judge path (60 seconds)
 
 ```bash
