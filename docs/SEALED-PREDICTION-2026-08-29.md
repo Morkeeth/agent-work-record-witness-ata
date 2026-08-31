@@ -10,8 +10,8 @@
 |-------|--------|
 | Event | All Things Agentic Hackathon · Fortified Enterprise Fleet |
 | Repo | https://github.com/Morkeeth/agent-work-record-witness-ata |
-| Video | **public** YouTube link, pasted at submit (film `demo/demo-final.mp4`, 3:27.6, md5 `3147f34484886a83161f585d5084da44`). Row said *unlisted* until 2026-08-31 04:50 UTC; the rules require *"made publicly visible on YouTube or Vimeo"* |
-| Sealed at | **OSCAR_ONLY** — replace this cell with your local time, then commit. That is the whole seal. |
+| Video | **public** YouTube link, pasted at submit. **CORRECTED 2026-08-31 at seal time:** the film that shipped is `demo/demo-final-v2.mp4`, **3:48.3**, md5 `d327a995166b63ad3a64f248d5104397` — Oscar's 20.7s spoken intro joined ahead of the demo, subtitles re-timed. The row previously cited `demo-final.mp4`, 3:27.6, md5 `3147f344…`, which is the pre-intro cut and is no longer what was submitted. Row also said *unlisted* until 04:50 UTC; the rules require *"made publicly visible on YouTube or Vimeo"* |
+| Sealed at | **Mon 31 Aug 2026 21:56 CEST** — stamped before the 02:00 CEST deadline, on Oscar's instruction. |
 | Deadline | Mon 31 Aug 2026 · 17:00 PDT (Mon 1 Sep 02:00 CEST) |
 
 ---
