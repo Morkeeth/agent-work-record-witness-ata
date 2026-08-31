@@ -373,7 +373,7 @@ Google product occupies it.
 
 **As a built thing, not yet, and the gap should be stated plainly.** An attestation layer means: a
 signed statement, in a format a policy engine ingests, that a policy engine actually enforces. The
-Witness today produces an **append-only record with per-claim evidence** — which is the substance of
+Witness today produces a **durable record with per-claim evidence** — which is the substance of
 an attestation — and stops there. It emits no Grafeas note, signs nothing with KMS, and no BinAuthz
 policy consumes it. `binaryauthorization.googleapis.com` is not even enabled on the project.
 

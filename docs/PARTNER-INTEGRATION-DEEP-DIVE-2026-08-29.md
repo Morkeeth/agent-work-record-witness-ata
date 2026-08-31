@@ -28,7 +28,7 @@ Not legal advice. Not a commitment to build everything here before Devpost.
 | **Gemini / Vertex** | `classify()` in eligibility; task-class path | **Explain BLOCK** on clearance — model narrates findings, never overrules probe | "Gemini decides merge" |
 | **ADK** | `build_agent()` on `/health`; **`POST /agent/run`** with Runner + tool calls | Call **`run_agent()` after HOLD** with findings as context; store receipt on record | `type(LlmAgent)` on `/health` = "agent ran" |
 | **Cloud Run** | `fleet-wedge` live · `/health` · auth on mutating routes | Same service; show `*.run.app` on film | Multi-service mesh |
-| **Firestore** | Append-only record · `H-a6151a95ac` from real Action | Index by `session`, `repo`, `source` for console browse | "Real-time analytics" |
+| **Firestore** | The record · `H-a6151a95ac` from real Action · keyed store, not append-only | Index by `session`, `repo`, `source` for console browse | "Real-time analytics" |
 | **GitHub Actions** | Composite action · PR #1 posts `/clearance` | **Checks API** annotations · pass `session` + `actor` in JSON body | "Required check" (branch unprotected) |
 | **GEAP Sessions** | `session` field on record (foreign key) | **VertexAiSessionService** — resume ADK run with same session id | "Memory Bank" without retrieval |
 | **GEAP Memory Bank** | Not wired | Write clearance summary artifact; read on repeat query | Retrieval loop that does not exist |
@@ -151,7 +151,7 @@ Add under "How we built it":
 ```text
 Integration shape: the GitHub Action runs deterministic probes in the customer's CI —
 no repo read access on our side. Only the verdict and session pointer cross to Cloud Run,
-where Firestore append-only storage and IAM-gated APIs hold the record. ADK + Vertex Gemini
+where Firestore and IAM-gated APIs hold the record. ADK + Vertex Gemini
 explain HOLD decisions for humans; they never override a probe. Cold eligibility: 1/3 without
 GCP credentials; 3/3 on the deployed path — both measured, not claimed.
 ```

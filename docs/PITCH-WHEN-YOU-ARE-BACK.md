@@ -6,7 +6,7 @@
 
 ## The one-liner
 
-**THE AGENT WORK RECORD WITNESS** connects what an agent *claims* to what the repo *contains* — and keeps an append-only record your CI fills automatically.
+**THE AGENT WORK RECORD WITNESS** connects what an agent *claims* to what the repo *contains* — and keeps a record your CI fills automatically. A keyed store, not an append-only log: the API never deletes, but closing a hold rewrites that clearance in place.
 
 ---
 

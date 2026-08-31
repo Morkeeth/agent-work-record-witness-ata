@@ -43,7 +43,7 @@ commit that does not exist — **that screenshot is the growth loop** (the same 
 
 ### Stage 1 — TEAM: the record across all agent PRs (first dollars)
 Once a team has it on several repos, they want the surface: which agents/engineers ship claims that
-**survive** (shipped and stayed vs reverted), an append-only audit of every blocked claim, cross-repo.
+**survive** (shipped and stayed vs reverted), an audit of every blocked claim, cross-repo.
 Paid per active repo or per seat. This is where "prompt propagation" becomes ONE feature, not the
 product.
 

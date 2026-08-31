@@ -70,7 +70,7 @@ produced it. She reads what actually happened before the sentence was written.
 
 Her CTO asks again. She exports the record.
 
-It is an append-only log of every claim an agent made against production code, whether the
+It is a record of every claim an agent made against production code, whether the
 object agreed, every override with its stated reason and author, and a link from each entry to
 the run behind it.
 

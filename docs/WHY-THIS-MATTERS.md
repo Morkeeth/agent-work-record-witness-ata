@@ -26,7 +26,7 @@ and the fine is on a schedule. What makes it a product rather than a checkbox is
 no artifact to hand over.** Not a bad artifact. None. The honest current answer is a spend graph
 and the word of four hundred engineers.
 
-**Why we win it:** an append-only record of every claim, whether the object agreed, every
+**Why we win it:** a durable record of every claim, whether the object agreed, every
 override with the reason someone typed, and a link to the run behind each entry. That is a
 document, and a document is what an auditor takes.
 
