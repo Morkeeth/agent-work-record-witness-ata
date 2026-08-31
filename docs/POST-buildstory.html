@@ -1,0 +1,64 @@
+<h1>The first thing it measured was us</h1>
+
+<!-- Paste target: Medium (or any rich editor). Only h1/h2/p/strong/em/a are used,
+     so nothing here is stripped. Rules require this be PUBLIC, not unlisted. -->
+
+<p><em>I built this for the All Things Agentic hackathon, and I created it for the purposes of entering that hackathon. This is how it got built, including the part where its own headline number was wrong by five times.</em></p>
+
+<h2>The problem I started from</h2>
+
+<p>Every company can now run hundreds of coding agents. Not one of them can check the math afterwards. You can see seats. You can see spend. You cannot see whether the work an agent said it did, it did.</p>
+
+<p>At fleet scale an agent's prose is a production surface that nobody governs. It says "committed as abc1234, all 14 tests pass, wrote the migration" and it scrolls past, and once it scrolls past nothing remembers it. Then six weeks later someone who was not in the room asks what the agent thought it was doing, and there is nothing to open.</p>
+
+<h2>The primitive, which is three operations and not one</h2>
+
+<p>Turn a sentence into a probe. Run the probe against the object. Refuse when you cannot.</p>
+
+<p>The first two are the easy half. "Committed as deadbee" becomes <em>git cat-file -t deadbee</em> and the repository answers. "Wrote docs/auth-migration.md" becomes a stat call. No model in the loop, no reading of the diff, no scoring of the trace. Either the repository agrees or it does not.</p>
+
+<p>The third operation is the half everyone skips. "All 14 tests pass" is also a sentence, and the only way to check it is to run a command lifted out of agent prose. So the gate refuses. It prints UNVERIFIABLE and holds, rather than guessing.</p>
+
+<p>That refusal took the longest to get right and it is the part I would defend hardest. A checker that only ever says no is not a checker. A checker that says yes when it does not know is worse. A tool that reports false claims does not get to make one about itself.</p>
+
+<h2>How it actually got built</h2>
+
+<p>Parallel agents, in separate terminals, each on its own lane, each reporting against an object rather than against a plan. Which is a slightly absurd way to build a thing whose whole subject is that you cannot trust what an agent reports.</p>
+
+<p>That turned out to be the useful part. Every lane produced claims, and I had a gate lying around that probes claims, so the build fed itself. Three separate lanes once agreed on a deletion figure and all three were wrong, because all three had run the same wrong git command. The number was consistent and false, which is the worst combination there is.</p>
+
+<p>The habit that came out of it: write the denominator down before you look at the numerator. It sounds like nothing. It is the only reason the next part is a story about a caught error instead of a story about a shipped one.</p>
+
+<h2>The first number was wrong by five times</h2>
+
+<p>On 27 August, before pointing this at anyone else, I pointed it at a month of my own agent output. 78,618 assistant messages, 52,878 of them written inside one of 74 repositories.</p>
+
+<p>The first pass said <strong>41.7% of commit claims disagreed with the repository</strong>, 103 of 247. Which is a fantastic number. It is a number you build a company slide around.</p>
+
+<p>It was wrong, and the error was mine. 73 of the 103 failures were real commits sitting in a <strong>sibling repository on the same disk</strong>, because an agent's recorded working directory is where it was standing, not where it committed. Eleven more were machinery: a sha inside a shell command the agent was running, or inside git output it was reading. Six were my own test fixture, the string <em>deadbee</em>, showing up in transcripts about building this very gate.</p>
+
+<p>Corrected: <strong>8.1%</strong>, 19 of 236.</p>
+
+<p>"42% of agent claims are wrong" was a real number from a real corpus and it was false by five times. Neither figure is an incidence rate and I do not present either one as such, because hand-labelling put the extractor's precision at 13 of 40 on conversational prose. The labelled sample ships with the repo so you can disagree with me.</p>
+
+<p>So the argument for the whole category got made against myself. A verification layer that has never caught its own author is a verification layer nobody has tested.</p>
+
+<h2>The gate is the intake. The record is the product.</h2>
+
+<p>This is the part I got wrong for about two days. I thought I was building a check. The check is a moment, and the moment passes.</p>
+
+<p>The question that actually arrives is late and comes from someone who was not there. The regulator asks for proof that no agent shipped unverified code. The VP of engineering asks after the incident. The finance lead asks where the 10x went. Four buyers, four unrelated pressures, one missing artifact.</p>
+
+<p>So every verdict becomes a row that outlives the pull request: who claimed what, whether the object agreed, who overrode a hold and the reason they typed, and the session behind each entry. A held claim opens back to the conversation that produced it. No observability tool holds that join, and neither does a code reviewer or a compliance product, because none of them keeps the transcript.</p>
+
+<h2>What is missing, said plainly</h2>
+
+<p>A single install by somebody who is not me. Zero. I wrote the test organisation and scripted its pull requests, which proves the chain and not adoption.</p>
+
+<p>The check is advisory until branch protection requires it, and calling it a required check today would be exactly the kind of sentence this thing exists to catch. There are two real probes, a git object lookup and a path lookup, and everything else is an honest refusal. Nothing in the live record has ever cleared: the audit endpoint reads 0.0 percent cleared without a hold. One real agent pull request went through, went red on purpose, and is still held. Honest state, not a broken demo.</p>
+
+<p>And the open problem, which is the first thing I would want help with: separating a citation from a claim. "Committed as X" and "commit X landed" are the same string. Only the speech act differs, and that is why precision on prose is 13 out of 40. I shipped the two cheap halves, scope to a declared report region and drop machinery, and refused to build a classifier, because the labelled set does not exist and inventing one is the failure this product exists to catch.</p>
+
+<p>Repo, demo and the live console: <a href="https://github.com/Morkeeth/agent-work-record-witness-ata">github.com/Morkeeth/agent-work-record-witness-ata</a></p>
+
+<p>Clone it and run ./demo.sh. No account, no network, no install. The honest report passes with exit 0, the false one blocks with exit 1, and the test claim is held with exit 2. The exit code is the verdict.</p>

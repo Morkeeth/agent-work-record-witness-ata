@@ -1,0 +1,259 @@
+1
+00:00:21,517 --> 00:00:22,577
+Run your agents.
+
+2
+00:00:22,627 --> 00:00:23,617
+Check the math.
+
+3
+00:00:25,717 --> 00:00:28,136
+Every company running AI agents can see two things.
+
+4
+00:00:28,186 --> 00:00:31,427
+How many seats they bought, and how many tokens those agents burned.
+
+5
+00:00:31,477 --> 00:00:35,542
+What they cannot see is whether the work the agents said they did, they actually did.
+
+6
+00:00:36,717 --> 00:00:38,047
+An agent writes a sentence.
+
+7
+00:00:38,097 --> 00:00:39,120
+Committed as deadbee.
+
+8
+00:00:39,170 --> 00:00:44,842
+Nothing checks that sentence against the repository, and at fleet scale, that sentence is what auto-merge reads.
+
+9
+00:00:46,517 --> 00:00:47,219
+So we check it.
+
+10
+00:00:47,269 --> 00:00:51,581
+The gate takes the claim, turns it into a probe, and runs the probe against the object.
+
+11
+00:00:51,631 --> 00:00:52,233
+Git cat file.
+
+12
+00:00:52,283 --> 00:00:53,386
+Does that commit exist.
+
+13
+00:00:53,436 --> 00:00:55,592
+It does not, so the pull request is blocked.
+
+14
+00:00:56,717 --> 00:00:59,252
+A check that only ever says no is not a check.
+
+15
+00:00:59,302 --> 00:01:00,657
+Here is an honest report.
+
+16
+00:01:00,707 --> 00:01:02,792
+Real commit, real file, and it passes.
+
+17
+00:01:04,217 --> 00:01:06,306
+And here is the one it refuses to guess at.
+
+18
+00:01:06,356 --> 00:01:07,401
+The commit checks out.
+
+19
+00:01:07,451 --> 00:01:12,873
+All fourteen tests pass does not, because verifying that would mean running a command lifted from agent prose.
+
+20
+00:01:12,923 --> 00:01:14,067
+It is held, not guessed.
+
+21
+00:01:15,717 --> 00:01:17,734
+The backend is live on Google Cloud Run.
+
+22
+00:01:17,784 --> 00:01:20,627
+This is the deployed service, its URL, and its revision.
+
+23
+00:01:20,677 --> 00:01:22,022
+Firestore holds the record.
+
+24
+00:01:22,072 --> 00:01:26,104
+Gemini three point five, through the Agent Development Kit, explains a verdict.
+
+25
+00:01:26,154 --> 00:01:27,292
+It never overrules one.
+
+26
+00:01:29,217 --> 00:01:30,785
+And eligibility is not an import.
+
+27
+00:01:30,835 --> 00:01:33,922
+This script calls all three services rather than importing them.
+
+28
+00:01:33,972 --> 00:01:36,717
+With credentials it prints three of three and exits zero.
+
+29
+00:01:36,767 --> 00:01:42,992
+Cold, with no credentials, it prints one of three and exits one, deliberately, because a class name proves an import, not a run.
+
+30
+00:01:49,217 --> 00:01:51,917
+And here is that same service in the Google Cloud console.
+
+31
+00:01:51,967 --> 00:01:54,477
+Cloud Run, us central one, healthy, scaling from zero.
+
+32
+00:01:54,527 --> 00:02:01,161
+The request graph is live, and the logs underneath it are this recording's own traffic arriving at the deployed service, timestamped tonight.
+
+33
+00:02:01,211 --> 00:02:03,959
+Firestore holds every clearance as an append only document.
+
+34
+00:02:04,009 --> 00:02:06,092
+None of this is a screenshot of an intention.
+
+35
+00:02:07,217 --> 00:02:11,046
+This is the Agent Work Record Witness, and the gate is only its intake.
+
+36
+00:02:11,096 --> 00:02:12,467
+The record is the product.
+
+37
+00:02:14,717 --> 00:02:18,649
+Before we pointed this at anyone else, we pointed it at a month of our own agent output.
+
+38
+00:02:18,699 --> 00:02:22,495
+It said forty one point seven percent of commit claims disagreed with the repository.
+
+39
+00:02:22,545 --> 00:02:24,576
+That number was wrong, and the error was ours.
+
+40
+00:02:24,626 --> 00:02:28,920
+Seventy three of a hundred and three were real commits in a sibling repository on the same disk.
+
+41
+00:02:28,970 --> 00:02:31,092
+The corrected figure is eight point one percent.
+
+42
+00:02:31,717 --> 00:02:33,082
+Here is a held claim, opened.
+
+43
+00:02:33,132 --> 00:02:36,058
+It resolves all the way back to the session that produced it.
+
+44
+00:02:36,108 --> 00:02:42,792
+That join is the thing no observability tool, no code reviewer and no compliance product holds, because none of them keeps the transcript.
+
+45
+00:02:43,517 --> 00:02:46,953
+Every Google service on the request path, with the probe that shows it.
+
+46
+00:02:47,003 --> 00:02:49,309
+The queue humans actually open, calm by default.
+
+47
+00:02:49,359 --> 00:02:51,273
+And the record, exportable, append only.
+
+48
+00:02:51,323 --> 00:02:52,304
+Zero percent cleared.
+
+49
+00:02:52,354 --> 00:02:55,642
+Nothing has passed, and that is the honest state, not a broken demo.
+
+50
+00:03:00,717 --> 00:03:03,278
+Installing it is a policy URL and one GitHub action.
+
+51
+00:03:03,328 --> 00:03:06,943
+The probe runs inside your own checkout, where the repository already is.
+
+52
+00:03:06,993 --> 00:03:12,517
+Only the verdict and a session pointer cross the network, so this product never needs read access to your code.
+
+53
+00:03:13,217 --> 00:03:14,424
+The policy is explicit.
+
+54
+00:03:14,474 --> 00:03:21,092
+Enforce mode, scoped to pull requests an agent actually opened, with a named break-glass role for the human who overrides.
+
+55
+00:03:21,717 --> 00:03:24,406
+One real agent pull request went through the gate.
+
+56
+00:03:24,456 --> 00:03:25,665
+Verify claims went red.
+
+57
+00:03:25,715 --> 00:03:27,692
+It failed on purpose, and it is held.
+
+58
+00:03:29,217 --> 00:03:31,753
+What is next is the half we are asking for help with.
+
+59
+00:03:31,803 --> 00:03:33,461
+Separating a citation from a claim.
+
+60
+00:03:33,511 --> 00:03:36,243
+Committed as X, and commit X landed, are the same string.
+
+61
+00:03:36,293 --> 00:03:37,609
+Only the speech act differs.
+
+62
+00:03:37,659 --> 00:03:41,367
+And the thing we do not have yet: a single install by somebody who is not us.
+
+63
+00:03:42,217 --> 00:03:43,950
+The Agent Work Record Witness.
+
+64
+00:03:44,000 --> 00:03:44,901
+Run your agents.
+
+65
+00:03:44,951 --> 00:03:45,792
+Check the math.
