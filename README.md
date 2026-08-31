@@ -29,6 +29,14 @@ compliance, data sovereignty, or security policies."*
 - **Catalogued for cross-department use.** Partial, and named as partial: one shared bearer token
   rather than per-agent identity, and no agent registry. Roadmap, not a claim.
 
+### How it works, in one picture
+
+![Architecture: an agent-authored claim is turned into a probe, run against the repository, and the verdict becomes a permanent record](docs/architecture.png)
+
+*Colour carries the verdict, the same three the product emits. The yellow boundary is the record,
+which is the product; the gate above it is only the intake. Transcripto sits outside the boundary
+because it is roadmap and needs a corpus a judge cannot verify.*
+
 ### Judge path (60 seconds)
 
 ```bash
