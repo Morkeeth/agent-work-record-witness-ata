@@ -1,146 +1,264 @@
-# Oscar · click list · Sun 31 Aug 2026
+# Oscar · the morning list · Mon 31 Aug 2026
 
-**Submit closes Mon 1 Sep 02:00 CEST (31 Aug 17:00 PDT).** You wake at 11:00 CEST. 15 hours.
-Steps are ordered so the slowest thing (video upload) is running while you do the rest.
-Every step names its URL and its done-when. Nothing else is in this file.
-Evidence for every claim below: [`docs/SHIP-VERIFICATION-2026-08-31.md`](SHIP-VERIFICATION-2026-08-31.md).
+**Devpost closes Mon 1 Sep 02:00 CEST (31 Aug 17:00 PDT).** You read this at 11:00. **~15 hours.**
+Ordered by what blocks what. Every step carries its URL, its done-when as a **command**, and how
+long it takes. There is **one** ruling for you in here, and it is 30 seconds.
 
 ---
 
-## 0 · Merge the night branch (2 min)
+## The one sentence
+
+**Deploy is not polish. It is the difference between the product and the URL you hand a judge.**
+
+If you submit without deploying, this is what a judge opens — measured this morning in a real
+browser at real viewport widths (`document.documentElement.clientWidth` read inside the page, not
+a cropped screenshot):
+
+| `…/hold/?tab=queue` | live today (`sha 47f5c107`) | after deploy (`sha 5d62eeb9`) |
+|---|---|---|
+| Hold cards **fully readable** at 1440 | **1 of 7** | **7 of 7** |
+| Hold cards **fully readable** at 390 | **0 of 7** | **7 of 7** |
+| Cards **not rendered at all** | 5 at 1440 · 6 at 390 | 0 |
+| A line saying seven exist | **absent** | `7 releases on hold, all shown below.` |
+| Scroll affordance to reach the rest | **none** — `overflow-x: hidden`, `scrollWidth 3982` vs `clientWidth 910` | not needed |
+
+Plus three things the live console gets wrong that the branch fixes:
+
+1. It prints **a git commit sha as a Claude Code session id** and mints a dead `claude.ai` link
+   from it, on 2 of the 7 holds.
+2. It mints `https://github.com/Morkeeth/hack-fleet-ata/pull/phase-a` — **probed today: 404** —
+   from a hold whose `pr` field says `phase-a`.
+3. It says the record is **append-only and "nothing is edited in place."** `cloud/store.py:66`
+   says the opposite in words, and `cloud/service.py:468` does the opposite in code.
+
+All three are the failure this product is named after, on this product's own console.
+
+---
+
+## 0 · Start the video upload (5 min of clicks, then it runs by itself)
+
+Do this **first** and leave the tab open — it is the only thing with a queue in front of it.
+
+- File: `~/Downloads/ATA-demo-final.mp4` — 3:27.6, 15.8 MB, 1920×1080, under the 4:00 cap.
+- https://studio.youtube.com/ → Create → Upload videos → **Visibility: Unlisted**
+- Title: `THE AGENT WORK RECORD WITNESS — All Things Agentic`
+- Captions (optional): `demo/demo-final.srt`, 65 cues.
+
+**Done when:** the watch URL plays in a private window. Step 8 pastes it.
+
+---
+
+## 1 · Merge the night branch (2 min) — this blocks the deploy
 
 ```
 cd ~/CODE/hack-fleet-ata
-git fetch origin && git log --oneline main..origin/nightrun/l1-shipprep
+git fetch origin
+git log --oneline main..origin/nightrun/l1-shipprep
 git merge --no-ff origin/nightrun/l1-shipprep && git push origin main
 ```
-**Done when:** `git log --oneline -1 main` is the merge commit and
-`curl -sI https://raw.githubusercontent.com/Morkeeth/agent-work-record-witness-ata/main/README.md`
-returns 200. The branch changes the judge-facing console link in `README.md` and
-`SUBMISSION-PACK.md` §5 from `?record=` to `?tab=queue`, adds subtitles, and fixes the
-console loop in `surface/hold/index.html`. **Nothing on the branch requires a deploy.**
+
+Eleven commits. The four from last night's wave 4:
+
+| | |
+|---|---|
+| `a5ec00c` | the record is not append-only, and the console said it was |
+| `6bfdcf4` | "across 40 repositories" was never measured. It is 74 |
+| `2161f19` | receipt for the repository count |
+| `779463c` | the console's own security posture was stale, and it under-claimed a Google service |
+
+**Done when:**
+
+```
+git log --oneline -1 main            # the merge commit
+shasum -a 256 surface/hold/index.html
+# must print 5d62eeb97ec120887e62253f90de205a89fb88ffa6bce415a147b1fae6f43575
+```
 
 ---
 
-## 1 · Upload the video, unlisted (start this first, it takes longest)
+## 2 · DEPLOY (10–15 min, most of it Cloud Build waiting)
 
-- File: `~/Downloads/ATA-demo-final.mp4` — 3:27.6, 15.8 MB, 1920×1080, under the 4:00 cap.
-- URL: https://studio.youtube.com/ → Create → Upload videos → **Visibility: Unlisted**
-- Title: `THE AGENT WORK RECORD WITNESS — All Things Agentic`
-- Optional captions: `demo/demo-final.srt` (65 cues, built from the spoken script, not by ear).
+```
+cd ~/CODE/hack-fleet-ata
+bash scripts/deploy_cloud_run.sh
+```
 
-**Done when:** you can open the watch URL in a private window and it plays. Copy that URL —
-step 6 pastes it. Leave the tab open; processing to 1080p can lag the link going live.
+Needs `HOLD_API_TOKEN` in the environment **or** `.hold_api_token` in the repo root (gitignored);
+the script exits 1 with a named error if neither is there. Project `hack-fleet`, region
+`us-central1`, service `fleet-wedge`. Cloud Build — no local Docker.
 
----
+**Done when — this exact command returns this exact string:**
 
-## 2 · Watch the film end to end, once (3:28)
+```
+curl -s https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/ | shasum -a 256
+```
+```
+5d62eeb97ec120887e62253f90de205a89fb88ffa6bce415a147b1fae6f43575
+```
 
-Nobody has. Two places to have an opinion, both listed with timestamps in
-[`docs/SHIP-VERIFICATION-2026-08-31.md`](SHIP-VERIFICATION-2026-08-31.md) §B:
+**It returns `47f5c107918deeece6f5c5f62280918d2d34d751205187274c017befb3f1a49d` right now**
+(read 02:42 UTC today). If it still says `47f5c107…`, the deploy did not land and everything in
+"The one sentence" above is still what a judge sees. Nothing else in this list depends on it, so
+if the deploy fights you, **park it and keep going** — an undeployed submission is still a
+submission, and a missed deadline is not.
 
-- **2:22–2:55** — the narration names the Google-stack tab, the queue and the 0%-cleared audit;
-  the picture stays on the record detail. It is not a narration error and not a cue error: the
-  capture ran through `?record=`, so the console kept yanking itself back to the queue. Same bug
-  as step 0's fix.
-- **2:52** — the Policy panel is on screen for about one second and its Mode box reads
-  `report-only`, while the live `/policy` returns `"mode": "enforce"` and the narrator says
-  "Enforce mode". The box had not finished loading.
+Second check, because the deploy also re-provisions the secret:
 
-**Done when:** you have said ship-as-is or re-cut. Re-cutting costs a deploy plus a re-capture
-(`python3 film/console.py --login` needs your hands) — the honest estimate is 90 minutes and it
-puts a fresh, unwatched revision in front of judges. Shipping as-is costs two soft seconds.
-**Recommendation: ship as-is.** Every spoken claim was checked against the object and holds.
-
----
-
-## 3 · Share the repo with the two graders (2 min)
-
-- URL: https://github.com/Morkeeth/agent-work-record-witness-ata/settings/access
-- Add `testing@devpost.com` and `cloudhackathons@google.com` as collaborators (read).
-
-**Done when:** both appear under "Manage access" as pending or accepted invitations.
-The repo is already public (unauthenticated `curl -sI` → HTTP 200), so this is belt and braces
-the rules ask for, not the access path.
+```
+curl -s https://fleet-wedge-33kamss2jq-uc.a.run.app/health | grep -o '"store": "[a-z]*"'
+# "store": "firestore"
+```
 
 ---
 
-## 4 · Re-probe the live service (90 seconds, do it after step 0)
+## 3 · Watch the film once, end to end (3:28) — and rule on it
+
+Nobody has heard it with human ears. Machine transcription proved the words; it says nothing about
+pace or level. **Three places to have an opinion, all timestamped:**
+
+| Time | What | Cost of caring |
+|---|---|---|
+| **1:40** and **2:28** | The narration says **"append only"** twice (`demo/demo-final.srt` cues 131, 187). Every *text* surface now says the true thing — *"a keyed store, not an append-only log"* — because closing a hold rewrites that clearance in place. The film cannot be edited without a re-cut. | Re-cut = deploy + re-capture + re-record ≈ 90 min, and it puts an unwatched revision in front of judges |
+| **2:22–2:52** | Narration names the Google-stack tab, the queue and the 0%-cleared audit; the picture stays on the record detail. Cause was the `?record=` console loop, now fixed | Re-capture, same 90 min |
+| **2:52** | The Policy panel is on screen ~1 s and its Mode box reads `report-only` while live `/policy` returns `"mode": "enforce"` and the narrator says "Enforce mode". The box had not finished loading | Same |
+
+**Recommendation: ship as-is.** On the "append only" line specifically: a judge who hears it and
+then reads the console — which now says *"Keyed store, not an append-only log … Said here rather
+than found"* — sees a product correcting itself in public, which is the thesis. A judge who hears
+it and reads nothing loses nothing. Neither outcome is worth 90 minutes and an unwatched cut
+fifteen hours out.
+
+**Done when:** you have said ship-as-is or re-cut.
+
+---
+
+## 4 · THE ONE RULING · writer-side session validation
+
+**The question.** `make_clearance_record` (`cloud/hold_api.py:131`) accepts **any string** as a
+session id. Do we tighten it now, or after the deadline?
+
+**Evidence for tightening now.** It is how commit shas got into the session field: 2 of the 7 live
+holds carry a 40-hex sha there, and `git cat-file -t` resolves both to real commits in this repo.
+Untreated, the console printed `Claude Code session c2b1ad98…` and minted a dead claude.ai link
+from it — one value labelled as two different objects, three lines apart.
+
+**Evidence against tightening now.** Three tests **pin the permissiveness**, so the change is a
+contract change, not a bug fix:
+
+```
+tests/test_partner_p1_p2.py:59   "explicit session-id wins over head_sha"  (session_id="TRANSCRIPT99")
+tests/test_partner_p1_p2.py:66-68   make_clearance_record(session="abc123deadbeef",
+                                                          head_sha="abc123deadbeef")
+```
+
+Line 66-68 constructs a record with **the identical value in both fields** — the fixture already
+encodes the exact defect found in production and never asserts it is wrong. Tightening the writer
+breaks all three, and what they encode ("any explicit session beats head_sha") is a decision, not
+an accident.
+
+**Recommendation: POST-DEADLINE. The renderer fix is sufficient for the submission**, for one
+reason that a writer-side fix cannot match: **the seven bad records are already in Firestore.**
+Only the renderer repairs what is already stored. A writer guard changes nothing a judge can see
+today, and rewriting prod records is a write to prod. Verified this morning — all 7 live holds,
+rendered at 1440 and 390:
+
+| hold | `session` | what a judge reads |
+|---|---|---|
+| `H-a6151a95ac`, `H-57b130f397` | `01Lzbh4XPYTAgCKg1dciFS3Q` | real session, link live, sign-in wall named before **and** inside the link label |
+| `H-ae0a3e064a`, `H-196e41b823` | 40-hex sha (`session == head_sha`, checked on both) | **no link** — "that is not a session id — it is this record's own commit sha, repeated into the wrong field" |
+| `H-89d3746a0d` | `TESTP1RUN` | **no link** — shown, not followed. Test data, but rendered honestly |
+| `H-d164970cb4`, `H-0664568267` | absent | "no session reference in the report. This claim cannot be opened back to what the agent actually did." |
+
+`TESTP1RUN` is still test data sitting on a judge surface. Removing it is a **prod write** — your
+click, and not worth it today: the console tells the truth about it.
+
+**Cost of not deciding: zero before the deadline.** The renderer guards every case. This ruling
+only decides what happens to the writer next week.
+
+---
+
+## 5 · Share the repo with the two graders (2 min)
+
+- https://github.com/Morkeeth/agent-work-record-witness-ata/settings/access
+- Add `testing@devpost.com` and `cloudhackathons@google.com` (read).
+
+**Done when:** both show under "Manage access". The repo is already public, so this is the belt
+and braces the rules ask for, not the access path.
+
+---
+
+## 6 · Re-probe the live service (90 seconds, after step 2)
 
 ```
 B=https://fleet-wedge-33kamss2jq-uc.a.run.app
-curl -s $B/health | head -20
+curl -s $B/health
 curl -s $B/policy
 for r in /clearance /break-glass /prove /wedge /policy; do
   echo -n "$r "; curl -s -o /dev/null -w '%{http_code}\n' -X POST -d '{}' $B$r; done
 ```
-**Done when:** `/health` shows `auth_required: true`, `store: firestore`, ADK constructed;
-`/policy` shows `"mode": "enforce"`; all five POSTs return `401`.
-Measured 00:37 CEST today: 5 of 5 were 401, `/demo/seed-hold` was 403, and every read route
-returned 200. If any of that has changed overnight, stop and read
-[`docs/SHIP-VERIFICATION-2026-08-31.md`](SHIP-VERIFICATION-2026-08-31.md) §C before pasting.
+
+**Done when:** `/health` shows `auth_required: true`, `demo_seed_enabled: false`,
+`store: firestore`, ADK class constructed; `/policy` shows `"mode": "enforce"`; **all five POSTs
+return 401.** Read at 02:22 UTC today: exactly that, `/demo/seed-hold` 403, every read route 200,
+`pct_cleared_without_hold` **0.0** over 36 events.
 
 ---
 
-## 5 · Seal the prediction (3 min, before the submit button, not after)
+## 7 · Seal the prediction (3 min — before the submit button, not after)
 
-- File: `docs/SEALED-PREDICTION-2026-08-29.md`
-- Everything is pre-filled except one line. Replace `**OSCAR_ONLY** — timestamp before submit`
-  in the *Sealed at* row with the real local time, then commit.
+`docs/SEALED-PREDICTION-2026-08-29.md`: replace `**OSCAR_ONLY** — timestamp before submit` in the
+*Sealed at* row with the real local time, then commit.
 
-**Done when:** the file has a timestamp and `git log -1 -- docs/SEALED-PREDICTION-2026-08-29.md`
-predates your Devpost submit.
+**Done when:** `git log -1 -- docs/SEALED-PREDICTION-2026-08-29.md` predates your Devpost submit.
 
 ---
 
-## 6 · Paste the Devpost form
+## 8 · Paste the Devpost form (20 min)
 
-- URL: https://allthingsagentichackathon.devpost.com/ → Submit / Manage submission
-- Paste source: **`SUBMISSION-PACK.md` §1 only.** Field by field, top to bottom.
-  Track: **Fortified Enterprise Fleet**.
-- Testing instructions field: **`SUBMISSION-PACK.md` §5, stopping at the
-  "end of the §5 paste" line.** Everything after that line is an operator note — do not paste it.
-- Built with: `SUBMISSION-PACK.md` §6.
-- **Long description / "the story" field, if the form has one beyond "What it does":**
-  [`docs/THE-THESIS.md`](THE-THESIS.md), whole, top to bottom. One page, written tonight, every
-  claim in it carries the evidence it was checked against. It exists so a judge reading one entry
-  can see the layer the entry is the first instrument of. If the form has no such field, paste it
-  as the last block of "What it does" — never in place of §1's opening, which answers the track
-  brief in the track's own words.
-- Video URL: the unlisted YouTube link from step 1.
-- Architecture image: attach `docs/architecture.png` (784×1247, opened and read today, legible).
+https://allthingsagentichackathon.devpost.com/ → Submit / Manage submission ·
+Track: **Fortified Enterprise Fleet**
 
-**Done when:** every required field is green and the four §5 links open in a private window:
-`/hold/#finding`, `/hold/?tab=queue`, `/hold/#stack`, and the repo. All four returned 200 today.
+| Field | Paste from |
+|---|---|
+| Everything except the two below | **`SUBMISSION-PACK.md` §1**, field by field, top to bottom |
+| Testing instructions | **`SUBMISSION-PACK.md` §5**, stopping at the *"end of the §5 paste"* line. Everything after it is an operator note |
+| Built with | `SUBMISSION-PACK.md` §6 |
+| Long description / "the story" | **`docs/THE-THESIS.md`**, whole. If the form has no such field, append it to "What it does" — never in place of §1's opening, which answers the track brief in the track's own words |
+| Video URL | the unlisted YouTube link from step 0 |
+| Architecture image | attach `docs/architecture.png` — 784×1247, 112,086 bytes, opened and read |
+
+**Done when:** every required field is green and these four open in a private window:
+`/hold/#finding`, `/hold/?tab=queue`, `/hold/#stack`, and the repo.
 
 ---
 
-## 7 · Submit
+## 9 · Submit
 
-- URL: the same Devpost submission page → **Submit**.
-
-**Done when:** Devpost shows the submission as **Submitted** (not draft) and the confirmation
-email is in the inbox. Do this before 02:00 CEST, not at 01:55.
-
----
-
-## Optional, only if steps 0–7 are done and there is an hour left
-
-**Deploy the console fix** so the `?record=` link also behaves.
-Runbook: [`docs/REDEPLOY-RUNBOOK-2026-08-29.md`](REDEPLOY-RUNBOOK-2026-08-29.md).
-**Done when:** `python3` + headless Chromium on `/hold/?record=H-a6151a95ac` counts **1**
-`GET /queue` instead of 41, and a click on "Google stack" leaves `tab-stack` visible.
-**Do not start this after 00:00 CEST.** The submission does not need it — step 0 already
-removed the loop from every link a judge is given.
+Same page → **Submit**. **Done when:** Devpost shows **Submitted**, not draft, and the
+confirmation email has arrived. Do this before 02:00 CEST, not at 01:55.
 
 ---
 
 ## Do not, at any point
 
-- Paste "3 of 3" eligibility without the cold "1 of 3" beside it. Both were re-measured today
-  and both are true: **3 of 3, exit 0** with ADC; **1 of 3, exit 1** on a fresh clone in a venv
-  with `requirements.txt` and no credentials.
+- **Paste "3 of 3" eligibility without the cold "1 of 3" beside it.** Both re-measured this
+  morning: **3 OF 3, exit 0** with ADC; **1 OF 3, exit 1** in a credential-stripped shell.
 - Say "required check" — branch protection is off and `verify-claims` is advisory.
+- Say the record is **append-only**. It is a keyed store: the API never deletes, but closing a
+  hold rewrites that clearance in place. Every text surface now says so.
+- Say the token is a **plaintext env var**. It is mounted from Secret Manager
+  (`hold-api-token:latest`) on live revision `fleet-wedge-00014-q2g` — probed 02:44 UTC today.
+  The console claimed the opposite until this morning.
 - Shorten the product name, or call it "HOLD".
-- Quote a live counter (`/audit` event counts move; `pct_cleared_without_hold` is 0.0 and that
-  one is safe to say).
+- Quote a live counter. `/audit` event counts move; `pct_cleared_without_hold` is 0.0 and that one
+  is safe to say.
+
+---
+
+## What was open last night and is now closed
+
+| | |
+|---|---|
+| `contract/eligibility.py` printed `NOT MET 1.` with a **blank reason** cold | Fixed. Now: *"no model answered — classify() returned UNMEASURED after FileNotFoundError"*. Both arms re-run and pasted in `NIGHTRUN-2026-08-31.md` |
+| **"across 40 repositories"** — was a ruling for you | **Settled, not ruled.** The frozen corpus was reconstructed by timestamp and reproduces the artifact on three fields exactly; the answer is **74**. Receipt: `docs/CORPUS-REPO-COUNT-RECEIPT-2026-08-31.md`. Revert if you disagree: `git revert 6bfdcf4` |
+| Secret Manager — "asserted in the pack, not probed" | Probed. The pack was right and the console was wrong |
