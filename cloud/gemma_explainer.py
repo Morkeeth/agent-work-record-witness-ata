@@ -32,18 +32,29 @@ from typing import Any
 from urllib.parse import urlparse
 
 # Open weights, instruction-tuned. Verified answering on 2026-08-31.
-DEFAULT_MODEL = os.environ.get("GEMMA_MODEL", "gemma-4-31b-it")
+DEFAULT_MODEL = os.environ.get("GEMMA_MODEL", "google/gemma-4-31b-it")
 
-# Default is Google's hosted endpoint so a judge with a key gets a working demo.
-# Override to a local server and the same code path keeps every byte in your network.
-DEFAULT_BASE = "https://generativelanguage.googleapis.com/v1beta"
+# Default is the OpenAI-compatible transport, because it is the one that works and the one
+# a self-hosted vLLM or Ollama also speaks. Point GEMMA_BASE_URL at http://localhost:11434/v1
+# and nothing changes in this file: same code path, and no claim text leaves the network.
+DEFAULT_BASE = "https://openrouter.ai/api/v1"
+GOOGLE_BASE = "https://generativelanguage.googleapis.com/v1beta"
 
 # Hosts we know are not the customer's own machine. Anything else is treated as
 # self-hosted only because it is NOT on this list, and the receipt says which test ran.
-_HOSTED = ("googleapis.com", "google.com")
+_HOSTED = ("googleapis.com", "google.com", "openrouter.ai")
 
-# MEASURED 2026-08-31 across six configurations, and the result is the reason the guard
-# below exists rather than a cleverer prompt.
+# TRANSPORTS. Same model, two ways to reach it, and the difference is not cosmetic:
+# it is the whole reason this module works at all. See the measurement note below.
+#
+#   openai   OpenAI-compatible /chat/completions. OpenRouter, vLLM, Ollama, LM Studio all
+#            speak it, so this is ALSO the self-hosted path. A real system prompt and a
+#            real chat template, which is what Gemma needs.
+#   google   Google generativelanguage /generateContent. Kept because it is the first
+#            thing anyone tries. It does not work; the guard catches it.
+#
+# MEASURED 2026-08-31 across six configurations on the GOOGLE transport, and the result is
+# the reason the guard below exists rather than a cleverer prompt.
 #
 #   constraint list, no prefill  -> restates the constraints as a bulleted plan,
 #                                   one run captioned "Draft 1" / "Draft 2"
@@ -57,11 +68,30 @@ _HOSTED = ("googleapis.com", "google.com")
 # record unchecked. That is not a reason to fake it and it is not a reason to drop it.
 # It is a reason to treat a degenerate explanation exactly as the gate treats an
 # unverifiable claim: refuse it, say so, and keep the deterministic finding.
-_PREFILL = "The merge is held because"
+_SYSTEM = (
+    "You explain a CI clearance decision to a human reviewer. The deterministic probes "
+    "have ALREADY decided; never overturn, soften or second-guess a verdict. Reply with "
+    "two or three plain sentences of prose. No bullets, no headings, no preamble."
+)
 
 
-def _key() -> str | None:
-    k = os.environ.get("GEMINI_API_KEY") or os.environ.get("GEMMA_API_KEY")
+def _transport(base: str) -> str:
+    """openai-compatible unless the URL is Google's own generateContent surface."""
+    return "google" if "generativelanguage.googleapis.com" in base else "openai"
+
+
+def _key(transport: str = "openai") -> str | None:
+    """Per transport. A Google endpoint handed an OpenRouter key returns a confusing 400."""
+    if transport == "google":
+        k = os.environ.get("GEMINI_API_KEY")
+        if not k:
+            try:
+                with open(os.path.expanduser("~/.config/keys/gemini.key")) as fh:
+                    return fh.read().strip()
+            except OSError:
+                return None
+        return k.strip()
+    k = (os.environ.get("OPENROUTER_API_KEY") or os.environ.get("GEMMA_API_KEY"))
     if k:
         return k.strip()
     path = os.path.expanduser("~/.config/keys/gemini.key")
@@ -77,7 +107,7 @@ def enabled() -> bool:
     base = os.environ.get("GEMMA_BASE_URL", DEFAULT_BASE)
     if not any(h in urlparse(base).netloc for h in _HOSTED):
         return True          # self-hosted endpoints need no key
-    return _key() is not None
+    return _key(_transport(base)) is not None
 
 
 def leaves_the_network(base: str) -> bool:
@@ -105,37 +135,57 @@ def explain(findings: list[dict[str, Any]], decision: str, gate: str,
         f"- claim: {f.get('assertion')}\n  probe: {f.get('probe')}\n"
         f"  repo answered: {f.get('evidence')}"
         for f in findings)
-    prompt = (f"A CI gate held a merge. The probes already decided.\n\n{lines}\n\n"
-              "Write the reviewer note in two or three plain sentences.")
-    url = f"{base}/models/{model}:generateContent"
-    if hosted:
-        k = _key()
+    user = (f"A CI gate held a merge. The probes already decided.\n\n{lines}\n\n"
+            "Write the reviewer note.")
+    transport = _transport(base)
+    receipt["transport"] = transport
+
+    if transport == "openai":
+        # A real system role and a real chat template. This is what Gemma needs, and it
+        # is why the same model is coherent here and degenerate on the other transport.
+        url = f"{base}/chat/completions"
+        body = json.dumps({
+            "model": model,
+            "messages": [{"role": "system", "content": _SYSTEM},
+                         {"role": "user", "content": user}],
+            "temperature": 0.3,
+            "max_tokens": 220,
+        }).encode()
+        headers = {"Content-Type": "application/json"}
+        if hosted:
+            k = _key("openai")
+            if not k:
+                receipt["error"] = "no OpenRouter key and endpoint is hosted"
+                return receipt
+            headers["Authorization"] = f"Bearer {k}"
+    else:
+        url = f"{base}/models/{model}:generateContent"
+        body = json.dumps({
+            "contents": [{"role": "user", "parts": [{"text": f"{_SYSTEM}\n\n{user}"}]}],
+            "generationConfig": {"maxOutputTokens": 220, "temperature": 0.3},
+        }).encode()
+        headers = {"Content-Type": "application/json"}
+        k = _key("google")
         if not k:
-            receipt["error"] = "no API key and endpoint is hosted"
+            receipt["error"] = "no Gemini API key"
             return receipt
         url = f"{url}?key={k}"
 
-    body = json.dumps({
-        "contents": [
-            {"role": "user", "parts": [{"text": prompt}]},
-            {"role": "model", "parts": [{"text": _PREFILL}]},
-        ],
-        "generationConfig": {"maxOutputTokens": 220, "temperature": 0.2},
-    }).encode()
-
     t0 = time.time()
     try:
-        req = urllib.request.Request(
-            url, data=body, headers={"Content-Type": "application/json"})
+        req = urllib.request.Request(url, data=body, headers=headers)
         with urllib.request.urlopen(req, timeout=timeout_s) as resp:
             data = json.load(resp)
-        parts = data["candidates"][0].get("content", {}).get("parts", [])
-        text = "".join(p.get("text", "") for p in parts).strip()
+        if transport == "openai":
+            text = (data["choices"][0]["message"]["content"] or "").strip()
+        else:
+            parts = data["candidates"][0].get("content", {}).get("parts", [])
+            text = "".join(p.get("text", "") for p in parts).strip()
         if not text:
             receipt["error"] = "model returned no text part"
             return receipt
         receipt["invoked"] = True
-        candidate = _tidy(f"{_PREFILL} {text}")
+        candidate = _tidy(text)
         bad = _degenerate(candidate)
         receipt["usable"] = not bad
         if bad:

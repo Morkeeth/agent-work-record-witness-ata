@@ -1,59 +1,56 @@
-# Gemma as the sovereign explainer: built, measured, NOT enabled
+# Gemma: it was the transport, not the model
 
-Written 31 Aug. **Read this before claiming Gemma anywhere on the submission.**
+Written 31 Aug. The first version of this file said Gemma could not do the job. That was
+wrong, and the way it was wrong is the point.
 
-## Why we wanted it
+## The claim I nearly shipped
 
-The pitch says the probe runs inside the customer's checkout and that "only the verdict
-and a session pointer cross the network". That is true of the PROBE and was quietly false
-of the EXPLANATION: the Gemini path posts finding text — file paths, commit shas, claim
-prose — to a hosted endpoint. Gemma is open-weights, so the same model runs on the
-customer's own hardware. `cloud/gemma_explainer.py` takes `GEMMA_BASE_URL`, so pointing it
-at a local vLLM or Ollama keeps every byte inside the network, and the receipt reports
-`left_the_network` computed from the URL actually called rather than from intent.
-
-That is a real gap in our own claim and this is the right shape of fix.
-
-## What actually happened
-
-`gemma-4-31b-it` and `gemma-4-26b-a4b-it`, via `generativelanguage.googleapis.com`,
-measured 2026-08-31. Eight configurations:
+Eight configurations against `generativelanguage.googleapis.com`, two Gemma models, every
+one unusable:
 
 | Configuration | Result |
 |---|---|
-| constraint list, no prefill | restated the constraints as a bulleted plan, one run captioned "Draft 1" / "Draft 2" |
+| constraint list, no prefill | restated the constraints as a bulleted plan, one captioned "Draft 1" / "Draft 2" |
 | terse completion framing | same bulleted plan |
 | roleplay continuation | same bulleted plan |
-| prefilled model turn, t=0.2 | clean on two findings; on ONE finding collapsed to `own own own` with Korean characters |
+| prefilled model turn, t=0.2 | clean on two findings; on ONE finding collapsed to `own own own`, with Korean characters |
 | prefilled, t=0.7 | collapsed harder, **210 non-latin characters** |
 | prefilled, t=0.7, 26b model | `ownces-ownces-ownces` |
-| `<note>` delimiters, no prefill | tags nested inside themselves, or returned empty |
-| no prefill + last-prose extraction | no prose paragraph present in any of 4 runs |
+| `<note>` delimiters | tags nested inside themselves, or empty |
+| no prefill + prose extraction | no prose paragraph in any of 4 runs |
 
-Six consecutive guarded runs after that: **6 refused, 0 usable.**
+Six guarded runs after that: **6 refused, 0 usable.** The conclusion written at that point
+was "this model is not reliable enough for a compliance record". It named the wrong object.
 
-## What we shipped anyway, and what we did not claim
+## The control that overturned it
 
-**Shipped:** the module, the wiring (`EXPLAINER=gemma`), and a guard that names the defect
-rather than passing gibberish into a compliance record. The guard was watched going red on
-the real collapse before being trusted:
+Same module. Same model. Same prompt. One thing changed: an OpenAI-compatible
+`/chat/completions` transport, which carries a real `system` role and a real chat template.
 
-    repetition loop: 'own' appears 189 times
-    210 non-latin characters in an English note
-    too short to be an explanation (1 words)
+    openai transport (OpenRouter)   6 runs   6 USABLE   0.55s to 1.31s
+    google transport (generateContent, control, same code)   3 runs   3 REFUSED
+        repetition loop: '*' appears 13 times
 
-A degenerate explanation is treated exactly as the gate treats an unverifiable claim:
-refused, with the reason recorded. `EXPLAINER` defaults to `gemini`, so nothing about the
-live demo changed.
+**It was never the model. It was the chat template.** `generateContent` has no system role,
+so the instruction goes into the user turn and Gemma answers the instruction instead of the
+question. Prefilling a `model` turn to force the shape is what triggered the degenerate
+decoding, which is where the Korean characters came from.
 
-**Not claimed:** Gemma is **not** listed as an integrated model on the submission. It is
-called, and it is guarded, and it produces nothing usable, so calling it an integration
-would be the exact overclaim this product exists to catch. The bonus point is worth 0.2 of
-6. It is not worth being the thing a judge greps and finds.
+That is this repository's own thesis landing on its own author for the second time in one
+week: a measurement that was correct about the wrong object. The eight rows above are kept
+rather than deleted, because the wrong conclusion is the useful half.
 
-## What would make it work
+## What ships
 
-A self-hosted Gemma behind vLLM with a proper chat template, which is the deployment this
-module was written for and the one we could not stand up before the deadline. The API path
-is the fallback, and the fallback is what failed. That is a statement about this endpoint,
-not about the model.
+`cloud/gemma_explainer.py`, two transports, `openai` by default.
+
+- **Self-hosting is the same code path.** vLLM, Ollama and LM Studio all speak
+  `/chat/completions`. Set `GEMMA_BASE_URL=http://localhost:11434/v1` and no claim text
+  leaves the network. That closes a real hole in our own pitch: we say only the verdict
+  crosses the network, and the Gemini explainer posts finding text to a hosted endpoint.
+- **The receipt reports `left_the_network` from the URL actually called**, never from
+  configuration intent. On a hosted endpoint that boolean is `true` and it says so.
+- **The guard stays.** It caught the real failure, it was watched going red before it was
+  trusted green, and it is the reason the wrong conclusion was visible rather than silent.
+
+Probes decide. Gemma explains. It never overturns a verdict.
