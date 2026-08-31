@@ -2,12 +2,26 @@
 
 **Run your agents. Check the math.**
 
-Every company can now run hundreds of coding agents. Not one of them can check the math
-afterwards. They can see seats and spend. They cannot see whether the work an agent said it did,
-it did.
+Software just changed hands. Most of the code written this year is written by agents, and the
+constraint moved with it. Writing is cheap now, and **knowing what was actually done is the
+expensive part.** Every company can tell you how many agent seats it bought and how many tokens
+burned. Not one can tell you what those agents did, or how much of what they reported was true.
+
+That gap has no artifact. No audit log, no flight recorder, no lab notebook. An agent finishes,
+writes a paragraph about what it did, an auto-merge rule reads that paragraph, and it scrolls away
+forever. It is a production surface nobody governs and nothing remembers.
+
+**Within five years, "what fraction of our merged code carries a claim nobody checked?" is a
+question a board asks and an insurer prices. Today no company can answer it.**
 
 This is the record of what an agent workforce actually did: **who claimed what, whether the
 object agreed, who overrode a hold and why, and the session behind every entry.**
+
+The primitive is three operations. **Turn a sentence into a probe. Run the probe against the
+object. Refuse when you cannot.** The third is the one everyone skips, and it is why this exists:
+"all 14 tests pass" can only be checked by running a command lifted out of agent prose, so the
+gate says UNVERIFIABLE and holds. A checker that only ever says no is not a checker. A checker
+that says yes when it does not know is worse.
 
 Built for **All Things Agentic**, Fortified Enterprise Fleet track.
 Live: https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/
