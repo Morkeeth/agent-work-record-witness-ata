@@ -104,7 +104,7 @@ curl -s https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/ | shasum -a 256
 ```
 
 **It returns `47f5c107918deeece6f5c5f62280918d2d34d751205187274c017befb3f1a49d` right now**
-(read 02:42 UTC today). If it still says `47f5c107…`, the deploy did not land and everything in
+(read 02:42 UTC, and again at **03:10 UTC** by the adversarial pass — unchanged). If it still says `47f5c107…`, the deploy did not land and everything in
 "The one sentence" above is still what a judge sees. Nothing else in this list depends on it, so
 if the deploy fights you, **park it and keep going** — an undeployed submission is still a
 submission, and a missed deadline is not.
