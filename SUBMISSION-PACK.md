@@ -179,7 +179,7 @@ witnesses beyond SHA and path.
 
 ### Architecture
 Source: `docs/ARCHITECTURE.md` (mermaid) → export `docs/architecture.png` for the form.
-**PNG present** at `docs/architecture.png` (112 KB, exported 2026-08-29) — attach it on paste. Re-export only if `docs/ARCHITECTURE.md` changes.
+**PNG present** at `docs/architecture.png` (236 KB, re-rendered 2026-08-31) — attach it on paste. Source is `docs/architecture.mmd`; re-render with `npx @mermaid-js/mermaid-cli -i docs/architecture.mmd -o docs/architecture.png -b '#ffffff' --scale 2`.
 Narrate **record first**: the record is the product · the gate is its intake · Action → Cloud Run
 Gateway → Firestore · the join back to the session · console and export are what people open.
 
