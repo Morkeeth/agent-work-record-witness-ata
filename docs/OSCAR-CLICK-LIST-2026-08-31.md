@@ -57,14 +57,16 @@ git log --oneline main..origin/nightrun/l1-shipprep
 git merge --no-ff origin/nightrun/l1-shipprep && git push origin main
 ```
 
-Eleven commits. The four from last night's wave 4:
+The `git log` line above prints the exact set — don't trust a count written the night before.
+Last night's wave 4 is these five, newest first:
 
 | | |
 |---|---|
-| `a5ec00c` | the record is not append-only, and the console said it was |
-| `6bfdcf4` | "across 40 repositories" was never measured. It is 74 |
-| `2161f19` | receipt for the repository count |
+| `f9cabc3` | the morning list leads with deploy, and the night's log carries every command |
 | `779463c` | the console's own security posture was stale, and it under-claimed a Google service |
+| `2161f19` | receipt for the repository count |
+| `6bfdcf4` | "across 40 repositories" was never measured. It is 74 |
+| `a5ec00c` | the record is not append-only, and the console said it was |
 
 **Done when:**
 
