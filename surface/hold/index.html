@@ -673,14 +673,35 @@ function showDetail(h) {
   // transcript belongs to whoever ran the agent, and this is the join pattern rather than a
   // CI feature we host. But a judge must CHOOSE that wall, not walk into it, so the warning
   // is in front of the link and inside its own label, not in a trailing aside.
-  const trace = h.session
-    ? `<p class="trace">Trace · Claude Code session <code>${esc(h.session)}</code>
+  // A reference is only followable if it is SHAPED like a session id. The record field
+  // accepts any string, and commit shas HAVE been observed in it (measured 2026-08-31:
+  // 2 of the 7 live holds carried a 40-hex sha that `git cat-file -t` resolves to a real
+  // commit in this repo). Printing "Claude Code session <sha>" and minting a claude.ai
+  // link from it states one object as another and hands the judge a dead link — the exact
+  // wrong-object error this gate exists to catch, on the gate's own console. So: validate
+  // POSITIVELY against known session-id shapes and follow nothing else. A false negative
+  // prints honest text; a false positive mints a dead link, so the asymmetry decides it.
+  const SESSION_SHAPE = /^(?:01[A-Za-z0-9]{22}|[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$/;
+  const sessionRef = h.session == null ? "" : String(h.session).trim();
+  const sessionUsable = SESSION_SHAPE.test(sessionRef);
+  const headSha = h.head_sha == null ? "" : String(h.head_sha).trim();
+  const refIsHeadSha = !!sessionRef && !!headSha &&
+    headSha.toLowerCase().startsWith(sessionRef.toLowerCase());
+  const trace = sessionUsable
+    ? `<p class="trace">Trace · Claude Code session <code>${esc(sessionRef)}</code>
          <span class="muted" style="color:var(--muted);font-size:0.85rem">— the join pattern, not a
          CI product: the transcript lives in the operator's own Claude account, so the next link
          leaves this console for claude.ai and asks you to sign in there.</span><br>
-         <a href="https://claude.ai/code/session_${encodeURIComponent(h.session)}"
+         <a href="https://claude.ai/code/session_${encodeURIComponent(sessionRef)}"
             target="_blank" rel="noopener">open the run that produced this claim ↗ (claude.ai —
             sign-in required, and it will be the operator's account, not yours)</a></p>`
+    : sessionRef
+    ? `<p class="trace muted">Trace · the report carried <code>${esc(sessionRef)}</code> as its
+         session reference, and that is not a session id${refIsHeadSha
+           ? " — it is this record's own commit sha, repeated into the wrong field"
+           : ""}. It is shown, not followed: a link built from the wrong object is the failure
+         this gate exists to catch, so this claim cannot be opened back to what the agent
+         actually did.</p>`
     : `<p class="trace muted">Trace · no session reference in the report. This claim cannot be
          opened back to what the agent actually did.</p>`;
   const sha = h.head_sha
