@@ -4,6 +4,15 @@
 Measured against `~/.trace/trace.db`: **78,618 messages examined, of 144,306 in the corpus** —
 2,672 transcripts, 40 repos, 100 sessions.
 
+> **`40 repos` is wrong and is kept here as the record of it: the measured figure is 74.** This
+> line never had a command beside it and nothing in the repo produces 40 for that object. The
+> frozen population was reconstructed on 2026-08-31 by cutting `~/.trace/trace.db` at
+> `ts <= 2026-08-26T07:33:25.934Z`, which reproduces `corpus_total_messages` 144,306,
+> `examined_messages` 78,618 and `messages_in_a_live_repo` 52,878 **exactly**; the repo count on
+> that exact population is 74 names over 75 checkout roots. Full derivation:
+> `docs/CORPUS-REPO-COUNT-RECEIPT-2026-08-31.md`. **`100 sessions` on this line has the same
+> shape** — round, no command, no producer in the repo. It is UNVERIFIED and was not chased.
+
 > **The heading used to say 144,306, and that was our own defect.** 144,306 is `count(*)` across
 > every role. The scan examines
 > `role='assistant' and is_human=0 and text is not null and length(text)>20` — 65,530 user messages

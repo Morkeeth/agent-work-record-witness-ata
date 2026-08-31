@@ -98,7 +98,8 @@ check, they buy the answer to the question their board already asked.
 
 **3 · The audit of your own measurement.** *Demonstrated, and it is the strongest case in this
 document because the product's first real finding was our own defect.* Pointed at 78,618 real agent
-messages across 40 repositories, the first pass read **41.7%** of commit claims as wrong. The
+messages — 52,878 of them written inside one of **74 repositories** — the first pass read **41.7%**
+of commit claims as wrong. The
 corrected figure is **8.1%**, and the entire gap was our error, not the agents': **73 of 103
 "wrong" commits were real commits in a sibling repository on the same disk.** The probe was aimed at
 the wrong object, which is the exact failure this product is named after. A vendor who shows you a
@@ -165,7 +166,9 @@ security review.
 
 - `./demo.sh` exits 0 from a cold clone, `env -i`, stock Python 3.9.6, no network, no credentials.
   `tests/test_demo.sh` 8 of 8.
-- 78,618 messages examined of 144,306 in the corpus, across 40 repositories.
+- 78,618 messages examined of 144,306 in the corpus; 52,878 of those were written inside one of
+  **74 repositories** (75 checkout roots, one repository checked out twice). Derivation and its
+  four controls: `docs/CORPUS-REPO-COUNT-RECEIPT-2026-08-31.md`.
 - 41.7% raw → **8.1% corrected**, with all eleven exclusions listed by reason rather than silently
   dropped.
 - **What this does not tell you:** 8.1% is not an incidence rate and neither was 41.7%. Hand-labelling

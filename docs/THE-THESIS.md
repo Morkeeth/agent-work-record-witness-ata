@@ -37,9 +37,11 @@ wrote the sentence and there is nothing to open.
 ## The first thing it measured was us
 
 Before this was pointed at anyone else it was pointed at a month of our own agent output:
-78,618 assistant messages out of 144,306 in the corpus, across 40 repositories. Both numbers
-travel together, always, because a result quoted against the wrong denominator is precisely
-what this catches.
+78,618 assistant messages out of 144,306 in the corpus, 52,878 of them written inside one of
+**74 repositories**. All three numbers travel together, always, because a result quoted against
+the wrong denominator is precisely what this catches — the 78,618 span 1,157 working directories
+and only 75 of those are repository roots, so "78,618 across 74 repositories" would itself be the
+error. Receipt: `docs/CORPUS-REPO-COUNT-RECEIPT-2026-08-31.md`.
 
 The first pass said **41.7%** of commit claims disagreed with the repository. That number was
 wrong and the error was ours: 73 of the 103 failures were real commits in a **sibling repository
