@@ -57,8 +57,9 @@ git log --oneline main..origin/nightrun/l1-shipprep
 git merge --no-ff origin/nightrun/l1-shipprep && git push origin main
 ```
 
-The `git log` line above prints the exact set — don't trust a count written the night before.
-Last night's wave 4 is these five, newest first:
+The `git log` line above prints the exact set — don't trust a count written the night before;
+this note has already gone stale twice. Wave 4's substantive commits, newest first (anything after
+them touches only this file and `NIGHTRUN-2026-08-31.md`):
 
 | | |
 |---|---|
