@@ -55,6 +55,24 @@
 
 ---
 
+## Measured objects (night wave · 2026-08-31 UTC)
+
+Every row probed tonight at the object — not copied from another doc.
+
+| Object | Command | Measured |
+|--------|---------|----------|
+| Live `/health` | `curl -sS https://fleet-wedge-33kamss2jq-uc.a.run.app/health` | `ok: true` · `auth_required: true` · `demo_seed_enabled: false` · `store: firestore` · `product: THE AGENT WORK RECORD WITNESS` |
+| Read routes (anon) | `for r in /health /hold/ /audit/export /policy /queue; do curl -sS -o /dev/null -w "%{http_code} $r\n" …; done` | **5/5 → 200** |
+| Mutating routes (anon) | `for r in /clearance /break-glass /prove /wedge /policy; do curl -sS -o /dev/null -w "%{http_code} POST $r\n" -X POST …; done` | **5/5 → 401** |
+| Audit cleared | `curl -sS …/audit \| python3 -c "…pct_cleared_without_hold…"` | **0.0%** cleared without hold · **49** events in `/audit` · **25** in `/audit/export` |
+| Hero record | `curl -sS …/audit/export \| jq '.events[] \| select(.id=="H-a6151a95ac")'` | `gate: BLOCK` · `decision: HOLD` · `session: 01Lzbh4XPYTAgCKg1dciFS3Q` · `head_sha: c99589111f82ca4b8a074220cbb5a358b33f5941` · `agent_invoked: true` · **2** BLOCK findings (`deadbee`, `docs/auth-migration-2026.md`) · `stored_at: 2026-08-29T12:15:09+00:00` |
+| PR #1 checks | `gh api repos/Morkeeth/agent-work-record-witness-ata/commits/c995891…/check-runs` | `verify-claims` → **failure** · `witness-findings` → **failure** (P3) · PR **open** · head `c99589111f82ca4b8a074220cbb5a358b33f5941` |
+| Stranger path | `env -i PATH="$PATH" HOME="$HOME" ./demo.sh` | **exit 0** · `tests/test_demo.sh` **11/11 PASS** (incl. never-say *required check*) |
+| Film preflight | `./film/preflight.sh` | **PASS** · 8 voiceover lines = 8 subtitle cues · hero record present · PR #1 red-by-design |
+| Eligibility (this VM) | `python3 contract/eligibility.py` | **1 OF 3 MET**, exit **1** — ADK only; no ADC/Gemini/Firestore round-trip in this stripped pod. **Not re-claimed as 3/3 here.** Prior 3/3+1/3 pair is in `docs/SHIP-VERIFICATION-2026-08-31.md` §A from a credentialed run. |
+
+---
+
 ## After results (do not fill before submit)
 
 | Actual | Prediction hit? | Lesson # to distil |
@@ -69,3 +87,7 @@ needs you before the submit button.
 **Agent-updated 2026-08-31:** demo-readiness score and its reason, the video row (twice — the
 second time at 04:50 UTC, correcting *unlisted* to *public* against the rules), and one
 falsifier that was measured and closed overnight.
+**Night wave 2026-08-31:** measured-objects table filled from live `/hold/` + PR #1 + stranger
+path; draft hash in footer below.
+
+**Draft sha256:** `b64a22c013d80c5abb039525c7f3239f1d70a25593fe855c43f5a22a6e4e4bda` — computed over this file excluding this line.

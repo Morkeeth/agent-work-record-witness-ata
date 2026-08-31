@@ -270,7 +270,17 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🎯 NOW
 
-**RUN COMPLETE 29 Aug.** P1+P2+P3 live · preflight PASS. Oscar: **film** → `SEALED-PREDICTION` → Devpost.
+**Night wave 2026-08-31.** Sealed prediction measured-objects filled · stranger path re-verified ·
+film preflight PASS · P3 `witness-findings` live on PR #1. Oscar: **Devpost** (paste only — no submit).
+
+---
+
+## 🪵 LOG
+
+- 2026-08-29 · Full 48h review; pre-submit plan replaces post-only hack.md.
+- 2026-08-29 · Probed: preflight PASS · eligibility 3/3 · branch unprotected · P1+P2 coded.
+- 2026-08-29 · Handbook pass: HANDBOOK-PASS, SEALED-PREDICTION template, PHASE-TRACKER refresh, STRANGER-PASS, voiceover/preflight sync.
+- 2026-08-31 · Night wave: live `/hold/` + PR #1 probed into `SEALED-PREDICTION` measured-objects table + draft sha256; `STRANGER-PASS` + `FILM-QUANT-RECEIPT` re-run (`./demo.sh` exit 0, `tests/test_demo.sh` 11/11); P3 receipt on PR #1 `witness-findings`; scrubbed `PITCH-WHEN-YOU-ARE-BACK` + fixture comment.
 
 ---
 
@@ -283,11 +293,3 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 ### Week 2–4
 
 - [ ] Second adoption case · `docs/GOOGLE-STACK.md` standalone · org-lift ruling · branch protection
-
----
-
-## 🪵 LOG
-
-- 2026-08-29 · Full 48h review; pre-submit plan replaces post-only hack.md.
-- 2026-08-29 · Probed: preflight PASS · eligibility 3/3 · branch unprotected · P1+P2 coded.
-- 2026-08-29 · Handbook pass: HANDBOOK-PASS, SEALED-PREDICTION template, PHASE-TRACKER refresh, STRANGER-PASS, voiceover/preflight sync.

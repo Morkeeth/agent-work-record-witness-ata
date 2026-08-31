@@ -140,7 +140,8 @@ clone and one throwaway temp directory. Any Python 3.9+ (stock macOS `python3` i
 ```bash
 git clone https://github.com/Morkeeth/agent-work-record-witness-ata
 cd agent-work-record-witness-ata
-./demo.sh
+./demo.sh    # exits 0 · no network · no key
+# live record (read-only, no token): https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?tab=queue
 ```
 
 It builds a real git repository in front of you, writes three agent done-reports about it, and

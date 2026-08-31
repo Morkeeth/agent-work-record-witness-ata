@@ -1,9 +1,9 @@
-# Film quant receipt · ATA · 29 Aug 2026
+# Film quant receipt · ATA · 29 Aug 2026 (re-probed 31 Aug 2026)
 
-**Runner:** Cloud Agent (preflight + quant probes)  
-**Repo:** `Morkeeth/agent-work-record-witness-ata` @ `dea2409`  
+**Runner:** Cloud Agent (night wave preflight + quant probes)  
+**Repo:** `Morkeeth/agent-work-record-witness-ata` @ `4a45551`  
 **Live URL:** `https://fleet-wedge-33kamss2jq-uc.a.run.app`  
-**Probed at:** 2026-08-29 (UTC)
+**Probed at:** 2026-08-31 21:22 UTC
 
 ---
 
@@ -12,13 +12,15 @@
 | Metric | Result |
 |--------|--------|
 | Preflight checks | **11 ok / 11 total** |
-| `./demo.sh --film` exit code | **0** |
+| `./demo.sh` exit code (cold, no network) | **0** |
+| `tests/test_demo.sh` | **11/11 PASS** |
 | Voiceover / film beat count | **8** (8 spoken lines = 8 subtitle cues) |
 | Hero record `H-a6151a95ac` in `/audit/export` | **yes** |
 | Live `/health` eligibility fields | `auth_required` · `demo_seed_enabled` · `store` |
 | Live `/hold/` Google Material theme | **yes** (`--primary: #1a73e8` · `--sans: "Google Sans"` · `--shadow-1`) |
+| Voiceover/subtitles "required check" | **0 matches** (grep `film/voiceover.txt` `film/subtitles.srt`) |
 
-**Verdict:** PREFLIGHT PASS — safe for Oscar to roll `./film/capture.sh`.
+**Verdict:** PREFLIGHT PASS — film assets match scrubbed copy.
 
 ---
 
@@ -42,12 +44,12 @@
 
 ---
 
-## `./demo.sh --film`
+## `./demo.sh` (stranger path)
 
 | Field | Value |
 |-------|-------|
+| Command | `env -i PATH="$PATH" HOME="$HOME" ./demo.sh` |
 | Exit code | **0** |
-| Beat count | **8** (voiceover `film/voiceover.txt` · preflight 8 lines = 8 SRT cues) |
 | Verdicts shown | PASS (0) · BLOCK (1) · HOLD (2) |
 
 ---
@@ -55,10 +57,24 @@
 ## Hero record · `/audit/export`
 
 | Field | Value |
-|-------|-------|
+|-------|--------|
 | Record ID | `H-a6151a95ac` |
 | Present in export | **yes** |
 | Session | `01Lzbh4XPYTAgCKg1dciFS3Q` |
+| head_sha | `c99589111f82ca4b8a074220cbb5a358b33f5941` |
+| gate / decision | BLOCK / HOLD |
+| agent_invoked | **true** |
+
+---
+
+## PR #1 · checks at object
+
+| Check | Conclusion |
+|-------|------------|
+| `verify-claims` | **failure** |
+| `witness-findings` (P3) | **failure** |
+
+Command: `gh api repos/Morkeeth/agent-work-record-witness-ata/commits/c99589111f82ca4b8a074220cbb5a358b33f5941/check-runs`
 
 ---
 
@@ -71,8 +87,6 @@ Probe: `GET https://fleet-wedge-33kamss2jq-uc.a.run.app/health`
 | `auth_required` | `true` | Writes gated · anon probe closed |
 | `demo_seed_enabled` | `false` | No demo seed on live surface |
 | `store` | `firestore` | GCP Firestore default store |
-
-Additional payload (informational): `product` = THE AGENT WORK RECORD WITNESS · `ok` = true · ADK agent constructed.
 
 ---
 
@@ -98,13 +112,4 @@ PREFLIGHT PASS — safe to run ./film/capture.sh and record.
 
 ---
 
-## Not done (Oscar / post-receipt)
-
-- [ ] Screen recording ?4:00
-- [ ] `docs/SEALED-PREDICTION-2026-08-29.md` Oscar timestamp block
-- [ ] Devpost submit
-- [ ] Deploy without this receipt
-
----
-
-*Live revision `fleet-wedge-00012-5w6` · re-probed 2026-08-29 (UTC)*
+*Re-probed 2026-08-31 UTC · night wave · commit `4a45551`*
