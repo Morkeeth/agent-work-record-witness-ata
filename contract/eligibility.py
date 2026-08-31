@@ -31,11 +31,12 @@ PROBE = (
     "os.chdir(%r)\n"
     "r = {}\n"
     "try:\n"
-    "    from fleet.task_class import classify\n"
+    "    from fleet.task_class import classify, _LAST_ERROR\n"
     "    from contract.gemini_impl import LAST_MODEL\n"
     "    v = classify('fix auth', 'clean up the token validation in auth')\n"
     "    r['gemini'] = {'met': v in ('SAME','DIFFERENT','UNDECIDABLE') and bool(LAST_MODEL),\n"
-    "                   'path': (LAST_MODEL[-1] if LAST_MODEL else None), 'verdict': v}\n"
+    "                   'path': (LAST_MODEL[-1] if LAST_MODEL else None), 'verdict': v,\n"
+    "                   'why': (_LAST_ERROR[-1] if _LAST_ERROR else None)}\n"
     "except Exception as e:\n"
     "    r['gemini'] = {'met': False, 'error': type(e).__name__+': '+str(e)}\n"
     "try:\n"
@@ -60,6 +61,28 @@ PROBE = (
 ) % (REPO, REPO)
 
 
+def gemini_reason(g):
+    """Why requirement 1 was not met, in words, from what was MEASURED.
+
+    `classify()` does not raise when no model can be reached: every unreachable-model
+    condition (no ADC, no key file, a 429, a safety filter, a socket error) collapses to
+    the first-class answer UNMEASURED by design (fleet/task_class.py:73). So the probe
+    caught no exception, `error` was never set, and this line printed `g.get('error','')`
+    -> the empty string. A judge running the check cold saw `NOT MET  1.` followed by a
+    blank line: a verdict with no explanation, which is the exact shape of claim this
+    product exists to refuse. The reason is not invented here -- `classify()` already
+    records the failure type in `_LAST_ERROR` and the probe now carries it out.
+    """
+    if g.get("error"):
+        return g["error"]
+    if g.get("verdict") == "UNMEASURED":
+        why = g.get("why")
+        return ("no model answered — classify() returned UNMEASURED"
+                + (f" after {why}" if why else "")
+                + "; no Gemini rung was reachable, so nothing was measured")
+    return f"path {g.get('path')} -> {g.get('verdict')}"
+
+
 def main():
     env = {k: v for k, v in os.environ.items() if k not in STRIP}
     env["PATH"] = os.path.expanduser("~/google-cloud-sdk/bin") + ":" + env.get("PATH", "")
@@ -78,7 +101,7 @@ def main():
 
     g = f["gemini"]; r1 = g.get("met", False)
     print(f"  {'MET    ' if r1 else 'NOT MET'}  1. Gemini 3.5+ via Gemini API or Vertex AI")
-    print(f"             {'path '+str(g.get('path'))+' -> '+str(g.get('verdict')) if r1 else g.get('error','')}")
+    print(f"             {'path '+str(g.get('path'))+' -> '+str(g.get('verdict')) if r1 else gemini_reason(g)}")
     fr = f["framework"]; r2 = fr.get("met", False)
     print(f"  {'MET    ' if r2 else 'NOT MET'}  2. Google Agent Framework (ADK agent CONSTRUCTED)")
     print(f"             {fr.get('agent_class') if r2 else fr.get('error','')}")

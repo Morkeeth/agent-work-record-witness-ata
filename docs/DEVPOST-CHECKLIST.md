@@ -50,4 +50,15 @@
 
 ## Video ≤4:00
 
-Spine: `SUBMISSION-PACK.md` §2 · voiceover `film/voiceover-vo.txt` · subtitles `film/subtitles.srt`
+**Shipped cut:** `demo/demo-final.mp4` = `~/Downloads/ATA-demo-final.mp4` (byte-identical,
+md5 `3147f34484886a83161f585d5084da44`), **3:27.6**, 1920×1080, 15.8 MB.
+Spoken script: **`demo/voiceover.txt`** · subtitles: **`demo/demo-final.srt`** (65 cues).
+
+`film/voiceover-vo.txt` and `film/subtitles.srt` belong to the **older 3:15 cut** and are not
+what this film says. Do not rehearse from them.
+
+- [ ] **Upload to YouTube, PUBLIC (not unlisted), and paste the watch URL into the Devpost video field.**
+      **Corrected 2026-08-31 04:50 UTC.** This line said *unlisted*. The rules say the submission
+      *"must be uploaded to and made publicly visible on YouTube or Vimeo"*, and the same page writes
+      *"must be public (not unlisted)"* elsewhere. Unlisted is a Stage-One eligibility risk.
+      Devpost wants a hosted link, not a file. This is the long pole — start it first.

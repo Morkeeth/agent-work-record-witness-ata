@@ -43,7 +43,9 @@ _Probed live 2026-08-26 evening. **Company brand: Witness.** Shell repo: this on
 1. ~~Share private repo with judges~~ — **not needed. The repo is PUBLIC** (verified `gh repo view` 2026-08-28: `visibility: PUBLIC`). Anyone with the link can clone it.
 2. **Warm Cloud Run** before film: `curl -s "$(cat .cloud_run_url)/health"` until JSON (not hang).
 3. **One-take ≤4 min** — run `python3 scripts/video_beat_sheet.py` and follow beats below.
-4. Upload to **YouTube or Vimeo** · public (or unlisted-but-link-works logged out) · English.
+4. Upload to **YouTube or Vimeo** · **PUBLIC** · English.
+   **Corrected 2026-08-31 04:50 UTC** — this said *"public (or unlisted-but-link-works logged out)"*.
+   The rules require *"uploaded to and made publicly visible"*. Unlisted does not satisfy it.
 5. Open Devpost submission · paste fields below · attach architecture (mermaid export or screenshot of `docs/ARCHITECTURE.md`) · video URL · repo URL.
 6. **Submit before 17:00 PDT Aug 31.** Paste Devpost project URL + video URL into a receipt note when done.
 

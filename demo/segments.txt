@@ -1,2 +1,6 @@
+# The five segments of the shipped 207.63s cut, in order (measured 2026-08-31).
+file 'seg-intro.mp4'
 file 'seg-terminal.mp4'
+file 'seg-console-trim.mp4'
 file 'seg-browser.mp4'
+file 'seg-outro.mp4'

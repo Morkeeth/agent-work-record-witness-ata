@@ -23,6 +23,14 @@ echo "2/4 · console + browser segments (playwright) — the live service"
 python3 film/console.py --record   # needs ~/.ata-film-profile: python3 film/console.py --login
 python3 film/browser.py
 
+# PROVENANCE, measured 2026-08-31 — this script does NOT reproduce demo/demo-final.mp4.
+# The shipped 207.63s cut is five segments, not three:
+#   seg-intro.mp4 25.00s + seg-terminal.mp4 62.32s + seg-console-trim.mp4 26.07s
+#   + seg-browser.mp4 84.17s + seg-outro.mp4 10.00s  = 207.56s
+# (25 + 62.32 = 87.32s, and lay_voice.py's cue 8 puts the Cloud Run console at 87.3s.)
+# The join below drops the slides and uses the untrimmed console segment. Re-run it and you
+# get a different, shorter film. Fix the join before trusting this script again.
+
 echo "3/4 · joining"
 ffmpeg -y -loglevel error -i demo/seg-terminal.mp4 \
   -vf "fps=30,scale=1920:1080:flags=lanczos,format=yuv420p" \

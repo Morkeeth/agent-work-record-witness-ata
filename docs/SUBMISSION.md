@@ -13,7 +13,7 @@ Live: https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/ · Repo: https://github.
 
 > **Your agents write reports about work they did. This keeps the receipt.**
 > Every claim an agent makes in a pull request is checked against the repository before the merge,
-> and whether it held is written to an append-only record your CI fills by itself. When your board
+> and whether it held is written to a durable record your CI fills by itself. When your board
 > asks whether an AI agent shipped unverified code, you hand them the record instead of an opinion.
 
 **The constraint the whole product obeys, and the one line to remember it by:**
@@ -70,8 +70,14 @@ with no account, offline, on stock Python 3.9.6.** Verified from a cold clone wi
 
 ### Sam, the auditor
 Arrives twice a year and asks for evidence, not assurances. He is not interested in a live
-dashboard, he wants an append-only record with timestamps he can sample. Every hold carries a
-traceable session ID.
+dashboard, he wants a record with timestamps he can sample. Every hold carries a session
+reference when the report carried one, and says so plainly when it did not.
+
+**What he must be told rather than left to find:** this is a keyed store, not an append-only log.
+The API never deletes a document, but closing a hold rewrites that clearance in place
+(`cloud/service.py`, the `/break-glass` route) rather than superseding it, so the prior version is
+not recoverable from the record. Live example today: `H-1d8344f3dc` reads
+`open: false, closed_by_exception: true` at its original `stored_at`.
 
 ---
 
@@ -92,7 +98,8 @@ check, they buy the answer to the question their board already asked.
 
 **3 · The audit of your own measurement.** *Demonstrated, and it is the strongest case in this
 document because the product's first real finding was our own defect.* Pointed at 78,618 real agent
-messages across 40 repositories, the first pass read **41.7%** of commit claims as wrong. The
+messages — 52,878 of them written inside one of **74 repositories** — the first pass read **41.7%**
+of commit claims as wrong. The
 corrected figure is **8.1%**, and the entire gap was our error, not the agents': **73 of 103
 "wrong" commits were real commits in a sibling repository on the same disk.** The probe was aimed at
 the wrong object, which is the exact failure this product is named after. A vendor who shows you a
@@ -134,17 +141,21 @@ with.
 | Layer | What runs there | State |
 |---|---|---|
 | **Cloud Run** | The witness service on the request path. `/health` returns 200, product name, `auth_required: true`, `store: firestore` | ✅ live |
-| **Firestore** | The append-only record. Row `H-a6151a95ac` written by a real GitHub Action, not a seed | ✅ live |
+| **Firestore** | The record. Row `H-a6151a95ac` written by a real GitHub Action, not a seed. Keyed store, not an append-only log — see the auditor note above | ✅ live |
 | **GitHub Actions** | The `verify-claims` check. Runs the local probe, posts the verdict to Cloud Run | ✅ live, PR #1 |
 | **Application token gate** (not IAM) | Cloud Run is **public at the IAM layer by design** so a judge can click the console — the only binding on `fleet-wedge` is `allUsers → roles/run.invoker`. The 401 is application-level: every mutating route is refused without a bearer token by `_require_token()` in `cloud/service.py`, probed 28 Aug. `demo_seed_enabled: false` in production. **Honest limit: one shared token, not per-agent identity, and not IAM.** | ✅ verified, app-level |
 | **Gemini 3.5 via ADK** | `google.adk.runners.Runner` drives an `LlmAgent` (`gemini-3.5-flash-lite`) that *explains* a hold and never decides one. Record `H-a6151a95ac` carries `agent_explanation.invoked: true` | ✅ live |
 
-**Known posture, stated rather than waited for.** `HOLD_API_TOKEN` is a **plaintext environment
-variable** on the Cloud Run service; `secretmanager.googleapis.com` is enabled on the project and
-unused, so anyone with `run.services.get` on `hack-fleet` can read the token. The service runs as
+**Known posture, stated rather than waited for.** `HOLD_API_TOKEN` is mounted from **Secret
+Manager** (`hold-api-token:latest`, secret created 2026-08-30T14:47:08Z) on the live revision
+`fleet-wedge-00014-q2g` — read with `gcloud run services describe fleet-wedge` on 2026-08-31, not
+asserted. It is never in the repository and never a plaintext revision env var, so
+`run.services.get` no longer discloses it. **This paragraph claimed the opposite until 31 Aug**,
+describing a revision that had already been replaced; it is corrected here rather than quietly
+swapped. The service runs as
 the **default compute service account** `568004190078-compute@developer.gserviceaccount.com`, which
-holds `roles/editor` — a principal that can delete the Firestore collection this product calls
-append-only. Both are hackathon-project realities, not design positions.
+holds `roles/editor` — a principal that can delete the Firestore collection this product keeps
+the record in. Both are hackathon-project realities, not design positions.
 
 **The architecture in one sentence:** the probe runs locally in the customer's CI where the
 repository already is, and only the verdict crosses the network, so the product never needs read
@@ -159,7 +170,9 @@ security review.
 
 - `./demo.sh` exits 0 from a cold clone, `env -i`, stock Python 3.9.6, no network, no credentials.
   `tests/test_demo.sh` 8 of 8.
-- 78,618 messages examined of 144,306 in the corpus, across 40 repositories.
+- 78,618 messages examined of 144,306 in the corpus; 52,878 of those were written inside one of
+  **74 repositories** (75 checkout roots, one repository checked out twice). Derivation and its
+  four controls: `docs/CORPUS-REPO-COUNT-RECEIPT-2026-08-31.md`.
 - 41.7% raw → **8.1% corrected**, with all eleven exclusions listed by reason rather than silently
   dropped.
 - **What this does not tell you:** 8.1% is not an incidence rate and neither was 41.7%. Hand-labelling

@@ -75,7 +75,7 @@ rule
 GATE_REPO="$WORK/shop" "$PY" -m gate.outcome_gate "$HONEST"
 HONEST_CODE=$?
 rule
-dim "  exit $HONEST_CODE  (0 PASS · 1 BLOCK · 2 HOLD — the exit code IS the verdict)"
+dim "  exit $HONEST_CODE  (exit codes: 0 means PASS, 1 means BLOCK, 2 means HOLD — the exit code IS the verdict)"
 
 # ------------------------------------------------------------------ false ----
 b "2 · The same agent shape — two false claims"

@@ -77,7 +77,9 @@ auto-merge — an agent's prose is an ungoverned production surface, and once it
 past, nothing remembers it.
 
 THE AGENT WORK RECORD WITNESS is the system of record for agent work: who claimed what,
-whether the object agreed, whether the work survived, and the session behind each claim.
+whether the object agreed, who overrode a hold and the reason they typed, and the session
+behind each claim — recorded when the report carried one, recorded as absent when it did not,
+and never invented.
 
 The gate is how it gets installed and how the record fills. An agent-authored PR hits a
 check; each claim is probed against the object — git cat-file, path exists, test ran.
@@ -94,16 +96,19 @@ scan examines the assistant turns; both numbers travel together because a result
 quoted against the wrong denominator is the thing this product catches — and it found our own defect first. Raw, it said 41.7% of commit claims
 disagreed with the repo. Corrected: 8.1% (19/236). The whole gap was ours. 73 of 103 "wrong"
 claims were real commits in a DIFFERENT repo on the same disk, because an agent's cwd
-is where it was standing, not where it committed. Ten more were shas inside shell
-commands, six of them our OWN test fixture, found in transcripts about building this
-gate. "42% of agent claims are wrong" was a real number from a real corpus and it was
-false by 5x; the only reason it did not ship is that we wrote the denominator down
-before we looked. Neither figure is an incidence rate and we do not present one: hand
-labelling put extractor precision at 13 of 40 on conversational prose, n=13, and the
-labelled sample ships so you can disagree.
+is where it was standing, not where it committed. Eleven more were machinery: a sha
+inside a shell command the agent was running, or inside git output it was reading. In
+the hand-labelled sample of 40 extractions, six were deadbee — this repo's OWN test
+fixture — surfacing in transcripts about building this gate; a sample figure, not a
+subset of the eleven. "42% of agent claims are wrong" was a real number from a real corpus and it was
+false by 5x — the corrected figure is 8.1%, 19 of 236. The only reason it did not ship
+is that we wrote the denominator down before we looked. Neither figure is an incidence
+rate and we do not present one: hand labelling put extractor precision at 13 of 40 on
+conversational prose, n=13, and the labelled sample ships so you can disagree.
 
-That is also how you use it: measure the transcripts you already have BEFORE you install
-anything. `witness-corpus --db <yours>`. Value first, adoption second.
+That is also how you use it: measure the transcripts you already have before you install
+the gate on anything. `pip install -e .` then `witness-corpus --db <yours> --code-root <dir>`.
+Point it at no database and it says so in plain words and exits 2. Value first, adoption second.
 
 Not observability. Not code review. Not a claims inbox.
 Install shape: GitHub Action to Cloud Run policy.
@@ -125,7 +130,9 @@ and credentials you do not have do not count.
 
 Integration shape: the GitHub Action runs deterministic probes in the customer's CI —
 no repo read access on our side. Only the verdict and session pointer cross to Cloud Run,
-where Firestore append-only storage and token-gated APIs hold the record — the gate is an
+where Firestore and token-gated APIs hold the record: every decision is its own document,
+the API never deletes one, and closing a hold appends an exception with its own id and rewrites
+that clearance in place — a mutable keyed store, said plainly, not an append-only log. The gate is an
 application-level bearer token, not IAM; Cloud Run is public at the IAM layer. ADK + Vertex Gemini
 explain HOLD decisions for humans; they never override a probe.
 ```
@@ -247,8 +254,8 @@ Every tab renders the underlying API response in place, so there is nothing to c
    repository. Corrected: 8.1%. The gap was our own probe, not the agents.
 
 2. **The record** — one real agent pull request that went through the gate
-   `https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?record=H-a6151a95ac`
-   It failed on purpose and is held. Nothing has ever cleared. The Audit tab reads
+   `https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?tab=queue`
+   Click the first card in the queue — `H-a6151a95ac`. It failed on purpose and is held. Nothing has ever cleared. The Audit tab reads
    **0% CLEAR**, which is the honest state, not a broken demo.
 
 3. **Where it runs on Google** — every service on the request path, with the probe that shows it
@@ -261,6 +268,7 @@ Every tab renders the underlying API response in place, so there is nothing to c
 
 **Cold start:** the first request may take a few seconds while the container wakes. Reload once.
 
+
 **Write actions are token-gated by design and are not needed to evaluate this.** `POST /clearance`,
 `/break-glass` and `/prove` return **401** to an anonymous caller — that is the security gate
 working, and you can see it from the Google stack tab. To exercise a write path, request the
@@ -268,6 +276,21 @@ operator token in the Devpost message thread. The token is held in Secret Manage
 the service; it is never in the repository or in a plaintext environment variable.
 
 _Raw endpoints, if you prefer them: `/health`, `/audit`, `/audit/export`, `/policy`._
+
+**— end of the §5 paste. Everything below is an operator note, not for Devpost. —**
+
+**Why link 2 is `?tab=queue` and not the older `?record=H-a6151a95ac` deep link.**
+On the deployed revision `?record=` puts the console in an unbounded loop: `loadQueue()`
+re-reads `?record` on every call, calls `openClearance()`, which calls `tab("queue")`,
+which calls `loadQueue()` again. Measured 2026-08-31 with headless Chromium:
+**41 `GET /queue` in 10.5s against the live service** (network-bound) and **8,352 in 10.5s
+against a local copy of the same file**, and a click on "Google stack" left `tab-queue`
+visible 4.5s later — the reader cannot leave the queue. `?tab=queue` measured **1
+`GET /queue`**, the `H-a6151a95ac` card is the first row, one click opens the record with
+its session trace, and every tab still works. The one-line latch that fixes `?record=` is on
+branch `nightrun/l1-shipprep` in `surface/hold/index.html`; it only reaches judges after a
+redeploy, which is why the link was changed instead. **Deploying is optional; changing the
+link is not.**
 
 # 6 · Built with (Devpost "Built with" field)
 `google-cloud-run` · `firestore` · `vertex-ai` · `gemini-3.5-flash-lite` · `google-adk` ·

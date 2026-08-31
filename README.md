@@ -23,8 +23,9 @@ compliance, data sovereignty, or security policies."*
   observability, code-review or compliance tool holds, because none of them keeps the transcript.
 - **Production data without violating sovereignty.** The probe runs inside your CI, in the
   checkout you already have. This product never gets read access to your code. Only the verdict
-  and a session pointer cross the network, into an append-only Firestore record you can export
-  whole.
+  and a session pointer cross the network, into a Firestore record you can export whole. Every
+  decision is its own document and the API never deletes one; closing a hold rewrites that
+  clearance in place, so it is a mutable keyed store rather than an append-only log.
 - **Catalogued for cross-department use.** Partial, and named as partial: one shared bearer token
   rather than per-agent identity, and no agent registry. Roadmap, not a claim.
 
@@ -36,10 +37,18 @@ cd agent-work-record-witness-ata
 ./demo.sh                    # full walkthrough · exits 0
 ./demo.sh --film             # compact — same verdicts, for screen recording
 curl -sS https://fleet-wedge-33kamss2jq-uc.a.run.app/health | head
-# open hold console → PR #1 row (deep link):
-# https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?record=H-a6151a95ac
+# open hold console → the queue, then click the first card (H-a6151a95ac):
+# https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?tab=queue
 # PR checks: https://github.com/Morkeeth/agent-work-record-witness-ata/pull/1/checks
 ```
+
+**One warning before you click, so nothing on this path surprises you.** On that card, *"open the
+run that produced this claim"* leaves the console for `claude.ai` and asks you to sign in — and the
+transcript is the operator's, not yours, so signing in will not show it to you. That is the join
+pattern rather than a feature we host: the record stores a pointer to the session, and the
+transcript stays with whoever ran the agent. Everything else on the judge path — the queue, the
+claim, the probe, the evidence, the audit export — is open with no token and no account. The
+console says the same thing in front of the link.
 
 ---
 
@@ -90,7 +99,7 @@ relationship with this product, forever**, which is why it survives contact.
 show them: how many claims the fleet made, how many the object disagreed with, **which of those
 open back to the session that produced them**, and who overrode a hold with the reason they typed.
 
-**Week twelve, the export.** An append-only record, per claim, with the run behind each entry.
+**Week twelve, the export.** A record, per claim, with the run behind each entry.
 **That is the answer to "prove no agent shipped unverified", and it is a document.**
 
 **The join is moment two, and it is the part no CI product can copy.** Zenity governs agent
@@ -170,14 +179,14 @@ Our run, against `~/.trace/trace.db`:
 
 **41.7% → 8.1%, and the whole gap was ours.** 73 of 103 "wrong" commit claims were real commits in
 a *different repo on the same disk* — an agent's `cwd` is where it was standing, not where it
-committed, and the check was aimed at the wrong object. Ten more were machinery: a SHA inside a
+committed, and the check was aimed at the wrong object. Eleven more were machinery: a SHA inside a
 command the agent was running, or inside git output it was reading. Six of those, across the
 sample, were **`deadbee` — this repo's own test fixture**, found in transcripts about building this
 gate. The tool for catching false claims about work counted its own test data as agent claims.
 
 **"42% of agent commit claims are wrong" was a real number from a real corpus, and it was false by
-5x.** The only reason it did not become a slide is that the denominator was written down *before
-anyone looked at a claim*:
+5x — the corrected figure is 8.1%, 19 of 236.** The only reason it did not become a slide is
+that the denominator was written down *before anyone looked at a claim*:
 [`docs/CORPUS-PREREGISTRATION-2026-08-27.md`](docs/CORPUS-PREREGISTRATION-2026-08-27.md). **That
 document is the method, and the method is the product.**
 
