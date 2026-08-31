@@ -1,32 +1,70 @@
+%%{init: {
+  "theme": "base",
+  "themeVariables": {
+    "fontFamily": "Helvetica, Arial, sans-serif",
+    "fontSize": "14px",
+    "primaryColor": "#ffffff",
+    "primaryTextColor": "#202124",
+    "primaryBorderColor": "#dadce0",
+    "lineColor": "#5f6368",
+    "tertiaryColor": "#f8f9fa",
+    "clusterBkg": "#f8f9fa",
+    "clusterBorder": "#1a73e8"
+  },
+  "themeCSS": ".nodeLabel, .edgeLabel, .cluster-label, .nodeLabel p, .edgeLabel p, .cluster-label p, .label, .label span, .label div { font-family: Helvetica, Arial, sans-serif; }",
+  "flowchart": { "curve": "linear", "nodeSpacing": 40, "rankSpacing": 46 }
+}}%%
 flowchart TB
-  PR["Agent-authored PR<br/>a done-claim in the body"]
-  A["GitHub Action<br/>verify-claims<br/><i>advisory today · 'required' is roadmap</i>"]
-  P["outcome_gate.py<br/>probe claim vs OBJECT<br/>git SHA · path · test"]
-  V{"claim survives<br/>its own probe?"}
-  M["merge proceeds"]
-  CL["POST /clearance<br/><i>token required</i>"]
+  PR["<b>Agent-authored PR</b><br/>a done-claim in the body"]
+  A["<b>GitHub Action</b> · verify-claims<br/><i>advisory today — 'required' is roadmap</i>"]
+  P["<b>outcome_gate.py</b><br/>turns each sentence into a probe<br/>git cat-file · stat · refuse"]
+  V{"does the claim<br/>survive its<br/>own probe?"}
 
-  subgraph Product["THE RECORD · this is the product"]
+  M["<b>PASS</b> — merge proceeds<br/><i>exit 0</i>"]
+  CL["<b>BLOCK / HOLD</b> — POST /clearance<br/><i>exit 1 · exit 2 · token required</i>"]
+
+  subgraph Product["THE RECORD — this is the product. The gate is only the intake."]
     direction TB
-    CR["Cloud Run<br/>the gateway service<br/><i>us-central1 · public URL</i>"]
-    FS[("Firestore<br/>every claim · its verdict<br/>every break-glass reason")]
+    CR["<b>Cloud Run</b> · the gateway service<br/><i>us-central1 · public URL</i>"]
+    FS[("<b>Firestore</b><br/>every claim · its verdict · every break-glass reason<br/><i>keyed store, not an append-only log</i>")]
+    Q["<b>/hold/ console</b> — the Hold queue"]
+    JOIN["<b>the join</b><br/>a held claim opens back to<br/>the session that produced it"]
+    EX["<b>GET /audit/export</b><br/>the compliance artifact"]
+    BG["<b>POST /break-glass</b><br/><i>a typed reason is required</i>"]
     CR --> FS
-    Q["/hold/ console · the Hold queue"]
-    JOIN["the join<br/>a held claim opens back<br/>to the session that produced it"]
-    EX["GET /audit/export<br/>the compliance artifact"]
-    BG["POST /break-glass<br/><i>reason required</i>"]
     FS --> Q --> JOIN
     FS --> EX
     Q --> BG --> FS
   end
 
-  AG["ADK LlmAgent constructed<br/>Vertex Gemini 3.5<br/>explains, never overrules"]
-  SV["Transcripto corpus → authorship gate → survival<br/><i>ROADMAP — not in this submission;<br/>needs a corpus a judge cannot verify</i>"]
+  AG["<b>ADK LlmAgent</b> · Vertex Gemini 3.5<br/><i>explains a verdict, never overrules one</i>"]
+  SV["Transcripto — corpus → authorship → survival<br/><i>ROADMAP, outside this submission:<br/>it needs a corpus a judge cannot verify</i>"]
 
   PR --> A --> P --> V
   V -- "yes" --> M
-  V -- "no · the gate is the intake" --> CL
+  V -- "no" --> CL
   CL --> CR
   CL -.-> AG
   JOIN -.-> SV
   SV -.-> Q
+
+  classDef pass  fill:#e6f4ea,stroke:#188038,stroke-width:2px,color:#0d652d;
+  classDef hold  fill:#fce8e6,stroke:#d93025,stroke-width:2px,color:#a50e0e;
+  classDef probe fill:#ffffff,stroke:#1a73e8,stroke-width:2px,color:#202124;
+  classDef store fill:#e8f0fe,stroke:#1a73e8,stroke-width:1.5px,color:#202124;
+  classDef quiet fill:#ffffff,stroke:#dadce0,stroke-width:1px,color:#202124;
+  classDef road  fill:#f8f9fa,stroke:#dadce0,stroke-width:1px,color:#5f6368;
+
+  class M pass;
+  class CL hold;
+  class P,V probe;
+  class CR,FS,Q,JOIN,EX,BG store;
+  class PR,A,AG quiet;
+  class SV road;
+
+  %% edges are numbered in declaration order: 0-5 are inside the subgraph,
+  %% 6 PR>A, 7 A>P, 8 P>V, 9 V-yes>PASS, 10 V-no>HOLD, 11 HOLD>CloudRun.
+  %% Colour carries the verdict, the same three the product emits. Nothing else is coloured.
+  linkStyle 9  stroke:#188038,stroke-width:3px;
+  linkStyle 10 stroke:#d93025,stroke-width:3px;
+  linkStyle 11 stroke:#d93025,stroke-width:3px;
