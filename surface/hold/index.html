@@ -506,7 +506,9 @@
 
   <section id="tab-audit" class="hidden">
     <h1>Audit</h1>
-    <p class="lead">Append-only clearance decisions. Click a clearance row to open the full release detail.</p>
+    <p class="lead">Every clearance decision, and what the object said. The API never deletes a
+      row &mdash; but this is a <b>keyed store, not an append-only log</b>: closing a hold rewrites that
+      clearance in place. Click a clearance row to open the full release detail.</p>
     <div class="panel">
       <div class="stat" id="pct">—</div>
       <div style="color:var(--muted);font-size:0.85rem">% of clearance events that were CLEAR (no hold)</div>

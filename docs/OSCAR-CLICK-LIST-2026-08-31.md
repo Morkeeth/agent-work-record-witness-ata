@@ -14,7 +14,7 @@ If you submit without deploying, this is what a judge opens — measured this mo
 browser at real viewport widths (`document.documentElement.clientWidth` read inside the page, not
 a cropped screenshot):
 
-| `…/hold/?tab=queue` | live today (`sha 47f5c107`) | after deploy (`sha 5d62eeb9`) |
+| `…/hold/?tab=queue` | live today (`sha 47f5c107`) | after deploy (`sha 12e0db09`) |
 |---|---|---|
 | Hold cards **fully readable** at 1440 | **1 of 7** | **7 of 7** |
 | Hold cards **fully readable** at 390 | **0 of 7** | **7 of 7** |
@@ -62,11 +62,11 @@ git merge --no-ff origin/nightrun/l1-shipprep && git push origin main
 ```
 
 The `git log` line above prints the exact set — don't trust a count written the night before;
-this note has already gone stale twice. Wave 4's substantive commits, newest first (anything after
-them touches only this file and `NIGHTRUN-2026-08-31.md`):
+this note has already gone stale three times. Wave 4's substantive commits, newest first:
 
 | | |
 |---|---|
+| *(adversarial pass)* | the Audit tab said **"Append-only clearance decisions"** — the same page's own Google-stack row says the opposite, 131 lines up. Fixed, plus the thesis's six-of-eleven. **This is why the target sha below is `12e0db09` and not `5d62eeb9`** |
 | `f9cabc3` | the morning list leads with deploy, and the night's log carries every command |
 | `779463c` | the console's own security posture was stale, and it under-claimed a Google service |
 | `2161f19` | receipt for the repository count |
@@ -78,7 +78,7 @@ them touches only this file and `NIGHTRUN-2026-08-31.md`):
 ```
 git log --oneline -1 main            # the merge commit
 shasum -a 256 surface/hold/index.html
-# must print 5d62eeb97ec120887e62253f90de205a89fb88ffa6bce415a147b1fae6f43575
+# must print 12e0db0982ed91c53c0c0c9ae9e492482bb536b83bfde2f68939f5c032e99eec
 ```
 
 ---
@@ -100,7 +100,7 @@ the script exits 1 with a named error if neither is there. Project `hack-fleet`,
 curl -s https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/ | shasum -a 256
 ```
 ```
-5d62eeb97ec120887e62253f90de205a89fb88ffa6bce415a147b1fae6f43575
+12e0db0982ed91c53c0c0c9ae9e492482bb536b83bfde2f68939f5c032e99eec
 ```
 
 **It returns `47f5c107918deeece6f5c5f62280918d2d34d751205187274c017befb3f1a49d` right now**
@@ -125,7 +125,7 @@ pace or level. **Three places to have an opinion, all timestamped:**
 
 | Time | What | Cost of caring |
 |---|---|---|
-| **1:40** and **2:28** | The narration says **"append only"** twice (`demo/demo-final.srt` cues 131, 187). Every *text* surface now says the true thing — *"a keyed store, not an append-only log"* — because closing a hold rewrites that clearance in place. The film cannot be edited without a re-cut. | Re-cut = deploy + re-capture + re-record ≈ 90 min, and it puts an unwatched revision in front of judges |
+| **1:40** and **2:28** | The narration says **"append only"** twice (`demo/demo-final.srt` cues **33** and **47** — 65 cues in the file; 131/187 were the grep *line* numbers). Every *text* surface now says the true thing — *"a keyed store, not an append-only log"* — because closing a hold rewrites that clearance in place. The film cannot be edited without a re-cut. | Re-cut = deploy + re-capture + re-record ≈ 90 min, and it puts an unwatched revision in front of judges |
 | **2:22–2:52** | Narration names the Google-stack tab, the queue and the 0%-cleared audit; the picture stays on the record detail. Cause was the `?record=` console loop, now fixed | Re-capture, same 90 min |
 | **2:52** | The Policy panel is on screen ~1 s and its Mode box reads `report-only` while live `/policy` returns `"mode": "enforce"` and the narrator says "Enforce mode". The box had not finished loading | Same |
 
@@ -269,3 +269,6 @@ confirmation email has arrived. Do this before 02:00 CEST, not at 01:55.
 | `contract/eligibility.py` printed `NOT MET 1.` with a **blank reason** cold | Fixed. Now: *"no model answered — classify() returned UNMEASURED after FileNotFoundError"*. Both arms re-run and pasted in `NIGHTRUN-2026-08-31.md` |
 | **"across 40 repositories"** — was a ruling for you | **Settled, not ruled.** The frozen corpus was reconstructed by timestamp and reproduces the artifact on three fields exactly; the answer is **74**. Receipt: `docs/CORPUS-REPO-COUNT-RECEIPT-2026-08-31.md`. Revert if you disagree: `git revert 6bfdcf4` |
 | Secret Manager — "asserted in the pack, not probed" | Probed. The pack was right and the console was wrong |
+| **Found by the adversarial pass, after the list above was written** | `surface/hold/index.html:509` still read *"Append-only clearance decisions."* on the **Audit tab** — while line 378 of the same file said *"Keyed store, not an append-only log"*. The **Do not** list above, claiming "every text surface now says so", was false when it was written. Fixed; it is true now. Re-verified: `grep -niI "append.only" surface/hold/index.html` returns two lines, both the correcting form |
+| Same pass | `docs/THE-THESIS.md` (the Devpost long description) said *"Eleven more were shas inside shell commands, **six of them** our own test fixture"*. The only receipted six is **6 of the hand-labelled 40**, not a subset of the 11 — `gate/corpus_scan.py:16-17`, and `docs/ENTERPRISE-CASE-2026-08-27.md:48` keeps the hedge *"across the sample"* that the thesis had dropped. Rewritten to say the sample figure and name it as one |
+| Same pass | Step 3's film row cited *"cues 131, 187"* of a file with **65 cues** — those were grep *line* numbers. Real cues are **33** and **47**; the timestamps 1:40 / 2:28 were correct |

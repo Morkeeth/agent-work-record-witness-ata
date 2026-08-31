@@ -46,8 +46,10 @@ error. Receipt: `docs/CORPUS-REPO-COUNT-RECEIPT-2026-08-31.md`.
 The first pass said **41.7%** of commit claims disagreed with the repository. That number was
 wrong and the error was ours: 73 of the 103 failures were real commits in a **sibling repository
 on the same disk**, because an agent's recorded working directory is where it was standing, not
-where it committed. Eleven more were shas inside shell commands, six of them our own test fixture,
-found in transcripts about building this gate. Corrected: **8.1%**, 19 of 236.
+where it committed. Eleven more were machinery — a sha inside a shell command the agent was
+*running*, or inside fenced git output it was *reading*. In the hand-labelled sample of 40
+extractions, six were our own test fixture `deadbee`, surfacing in transcripts about building
+this gate — a sample figure, not a subset of the eleven. Corrected: **8.1%**, 19 of 236.
 
 "42% of agent claims are wrong" was a real number from a real corpus and it was false by five
 times — the corrected figure is **8.1%**, 19 of 236. The only reason it never shipped is that the
