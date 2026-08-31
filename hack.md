@@ -112,7 +112,7 @@ Multi-model panel (Grok · Composer · GPT) on aspects **beyond** partner depth 
 | Layer | Line |
 |-------|------|
 | Problem | You can count agent seats; you cannot count true claims. |
-| Product | Append-only **receipt** — who claimed what, what the repo said, who overrode. |
+| Product | The **record** — who claimed what, what the repo said, who overrode. A keyed store, not an append-only log: the API never deletes, but closing a hold rewrites that clearance in place. |
 | Mechanism | Probes decide; Gemini explains; never runs commands from a report. |
 | Moat | Zenity/Qodo/Langfuse don't hold the transcript — can't open a blocked claim to the run. |
 
