@@ -374,8 +374,10 @@
                     <code>us-central1</code>.</td>
                 <td><code>GET /health</code> &rarr; payload below</td></tr>
             <tr><td><strong>Firestore</strong></td>
-                <td>The append-only record. Every clearance, hold and break-glass exception is a
-                    document; nothing is edited in place.</td>
+                <td>The record. Every clearance, hold and exception is a document and the API
+                    never deletes one. <b>Keyed store, not an append-only log</b> &mdash; closing a
+                    hold rewrites that clearance to <code>open: false</code> in place, so the prior
+                    version is gone. Live: <code>H-1d8344f3dc</code>. Said here rather than found.</td>
                 <td><code>"store": "firestore"</code> on <code>/health</code>;
                     <code>GET /audit/export</code></td></tr>
             <tr><td><strong>GitHub Actions</strong></td>
@@ -441,7 +443,7 @@
       service; <code>secretmanager.googleapis.com</code> is enabled on the project and unused. The service
       runs as the <strong>default compute service account</strong>
       <code>568004190078-compute@developer.gserviceaccount.com</code>, which holds
-      <code>roles/editor</code> &mdash; the principal behind an append-only record can delete the
+      <code>roles/editor</code> &mdash; the principal behind the record can delete the
       collection. Both are open items, not design positions.</p>
       <p style="margin:0">The gap is measured rather than glossed: <code>docs/GEAP-GAP-2026-08-27.md</code>
       walks all seven surfaces at the object and marks each one present, partial or absent, including
@@ -599,10 +601,26 @@ let queueHolds = [];
 // left tab-queue visible 4.5s later.
 let recordOpened = false;
 
+// The chain. Same asymmetry as the session reference below: a link is only minted from a
+// value that is SHAPED like the object the URL claims. `pr` is a free-text field on the
+// record and a non-numeric value has been observed in it (measured 2026-08-31 against the
+// live service: hold H-d164970cb4 carries pr="phase-a", repo="Morkeeth/hack-fleet-ata";
+// the console minted https://github.com/Morkeeth/hack-fleet-ata/pull/phase-a, which
+// returns 404 — a dead link on the judge's console, built by stating a phase label as a
+// pull-request number). GitHub PR numbers are positive integers, so validate positively
+// and follow nothing else. The reference is still SHOWN: an unfollowable chain reference
+// is a real state of the world and hiding it would be the same dishonesty this gate catches.
 function prLinks(h) {
   if (!h.repo || !h.pr) return "";
   const repo = esc(h.repo);
-  const pr = esc(String(h.pr));
+  const raw = String(h.pr).trim();
+  const pr = esc(raw);
+  if (!/^[1-9][0-9]*$/.test(raw)) {
+    return `<p class="trace muted">Chain · the record names <code>${pr}</code> in
+      <code>${repo}</code> as its pull request, and that is not a pull-request number. It is
+      shown, not followed: a link built from the wrong object is the failure this gate exists
+      to catch.</p>`;
+  }
   return `<p class="trace">Chain ·
     <a href="https://github.com/${repo}/pull/${pr}" target="_blank" rel="noopener">PR #${pr}</a>
     · <a href="https://github.com/${repo}/pull/${pr}/checks" target="_blank" rel="noopener">verify-claims + witness-findings</a>

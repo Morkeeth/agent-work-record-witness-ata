@@ -23,8 +23,9 @@ compliance, data sovereignty, or security policies."*
   observability, code-review or compliance tool holds, because none of them keeps the transcript.
 - **Production data without violating sovereignty.** The probe runs inside your CI, in the
   checkout you already have. This product never gets read access to your code. Only the verdict
-  and a session pointer cross the network, into an append-only Firestore record you can export
-  whole.
+  and a session pointer cross the network, into a Firestore record you can export whole. Every
+  decision is its own document and the API never deletes one; closing a hold rewrites that
+  clearance in place, so it is a mutable keyed store rather than an append-only log.
 - **Catalogued for cross-department use.** Partial, and named as partial: one shared bearer token
   rather than per-agent identity, and no agent registry. Roadmap, not a claim.
 
@@ -98,7 +99,7 @@ relationship with this product, forever**, which is why it survives contact.
 show them: how many claims the fleet made, how many the object disagreed with, **which of those
 open back to the session that produced them**, and who overrode a hold with the reason they typed.
 
-**Week twelve, the export.** An append-only record, per claim, with the run behind each entry.
+**Week twelve, the export.** A record, per claim, with the run behind each entry.
 **That is the answer to "prove no agent shipped unverified", and it is a document.**
 
 **The join is moment two, and it is the part no CI product can copy.** Zenity governs agent

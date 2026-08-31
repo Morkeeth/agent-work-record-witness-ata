@@ -94,7 +94,7 @@ Four verdicts: **PASS · BLOCK · UNVERIFIABLE · HOLD.** Never runs a command f
 ## 📣 PROMISE LINE
 
 **Promise.** When an agent says it shipped, CI **checks each claim against the repo before merge**
-and writes what held to an append-only record your auditor can sample.
+and writes what held to a durable record your auditor can sample.
 
 **Constraint.** Code decides what is confirmed — never the model.
 

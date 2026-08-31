@@ -77,7 +77,9 @@ auto-merge — an agent's prose is an ungoverned production surface, and once it
 past, nothing remembers it.
 
 THE AGENT WORK RECORD WITNESS is the system of record for agent work: who claimed what,
-whether the object agreed, whether the work survived, and the session behind each claim.
+whether the object agreed, who overrode a hold and the reason they typed, and the session
+behind each claim — recorded when the report carried one, recorded as absent when it did not,
+and never invented.
 
 The gate is how it gets installed and how the record fills. An agent-authored PR hits a
 check; each claim is probed against the object — git cat-file, path exists, test ran.
@@ -102,8 +104,9 @@ is that we wrote the denominator down before we looked. Neither figure is an inc
 rate and we do not present one: hand labelling put extractor precision at 13 of 40 on
 conversational prose, n=13, and the labelled sample ships so you can disagree.
 
-That is also how you use it: measure the transcripts you already have BEFORE you install
-anything. `witness-corpus --db <yours>`. Value first, adoption second.
+That is also how you use it: measure the transcripts you already have before you install
+the gate on anything. `pip install -e .` then `witness-corpus --db <yours> --code-root <dir>`.
+Point it at no database and it says so in plain words and exits 2. Value first, adoption second.
 
 Not observability. Not code review. Not a claims inbox.
 Install shape: GitHub Action to Cloud Run policy.
@@ -125,7 +128,9 @@ and credentials you do not have do not count.
 
 Integration shape: the GitHub Action runs deterministic probes in the customer's CI —
 no repo read access on our side. Only the verdict and session pointer cross to Cloud Run,
-where Firestore append-only storage and token-gated APIs hold the record — the gate is an
+where Firestore and token-gated APIs hold the record: every decision is its own document,
+the API never deletes one, and closing a hold appends an exception with its own id and rewrites
+that clearance in place — a mutable keyed store, said plainly, not an append-only log. The gate is an
 application-level bearer token, not IAM; Cloud Run is public at the IAM layer. ADK + Vertex Gemini
 explain HOLD decisions for humans; they never override a probe.
 ```

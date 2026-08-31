@@ -13,7 +13,7 @@ Live: https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/ · Repo: https://github.
 
 > **Your agents write reports about work they did. This keeps the receipt.**
 > Every claim an agent makes in a pull request is checked against the repository before the merge,
-> and whether it held is written to an append-only record your CI fills by itself. When your board
+> and whether it held is written to a durable record your CI fills by itself. When your board
 > asks whether an AI agent shipped unverified code, you hand them the record instead of an opinion.
 
 **The constraint the whole product obeys, and the one line to remember it by:**
@@ -70,8 +70,14 @@ with no account, offline, on stock Python 3.9.6.** Verified from a cold clone wi
 
 ### Sam, the auditor
 Arrives twice a year and asks for evidence, not assurances. He is not interested in a live
-dashboard, he wants an append-only record with timestamps he can sample. Every hold carries a
-traceable session ID.
+dashboard, he wants a record with timestamps he can sample. Every hold carries a session
+reference when the report carried one, and says so plainly when it did not.
+
+**What he must be told rather than left to find:** this is a keyed store, not an append-only log.
+The API never deletes a document, but closing a hold rewrites that clearance in place
+(`cloud/service.py`, the `/break-glass` route) rather than superseding it, so the prior version is
+not recoverable from the record. Live example today: `H-1d8344f3dc` reads
+`open: false, closed_by_exception: true` at its original `stored_at`.
 
 ---
 
@@ -134,7 +140,7 @@ with.
 | Layer | What runs there | State |
 |---|---|---|
 | **Cloud Run** | The witness service on the request path. `/health` returns 200, product name, `auth_required: true`, `store: firestore` | ✅ live |
-| **Firestore** | The append-only record. Row `H-a6151a95ac` written by a real GitHub Action, not a seed | ✅ live |
+| **Firestore** | The record. Row `H-a6151a95ac` written by a real GitHub Action, not a seed. Keyed store, not an append-only log — see the auditor note above | ✅ live |
 | **GitHub Actions** | The `verify-claims` check. Runs the local probe, posts the verdict to Cloud Run | ✅ live, PR #1 |
 | **Application token gate** (not IAM) | Cloud Run is **public at the IAM layer by design** so a judge can click the console — the only binding on `fleet-wedge` is `allUsers → roles/run.invoker`. The 401 is application-level: every mutating route is refused without a bearer token by `_require_token()` in `cloud/service.py`, probed 28 Aug. `demo_seed_enabled: false` in production. **Honest limit: one shared token, not per-agent identity, and not IAM.** | ✅ verified, app-level |
 | **Gemini 3.5 via ADK** | `google.adk.runners.Runner` drives an `LlmAgent` (`gemini-3.5-flash-lite`) that *explains* a hold and never decides one. Record `H-a6151a95ac` carries `agent_explanation.invoked: true` | ✅ live |
@@ -143,8 +149,8 @@ with.
 variable** on the Cloud Run service; `secretmanager.googleapis.com` is enabled on the project and
 unused, so anyone with `run.services.get` on `hack-fleet` can read the token. The service runs as
 the **default compute service account** `568004190078-compute@developer.gserviceaccount.com`, which
-holds `roles/editor` — a principal that can delete the Firestore collection this product calls
-append-only. Both are hackathon-project realities, not design positions.
+holds `roles/editor` — a principal that can delete the Firestore collection this product keeps
+the record in. Both are hackathon-project realities, not design positions.
 
 **The architecture in one sentence:** the probe runs locally in the customer's CI where the
 repository already is, and only the verdict crosses the network, so the product never needs read

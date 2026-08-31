@@ -118,8 +118,13 @@ the clearance path itself: record `H-a6151a95ac`, written by a real GitHub Actio
 enabled on `hack-fleet` and unused, so anyone with `run.services.get` can read it. And the service
 runs as the **default compute service account**
 `568004190078-compute@developer.gserviceaccount.com`, which holds `roles/editor`: the principal
-behind an append-only record can delete the collection. Neither is a design position; both are
-open items.
+behind the record can delete the collection. Neither is a design position; both are open items.
+
+**And the record is a keyed store, not an append-only log.** `FirestoreStore.put` does
+`document(id).set(record)` (`cloud/store.py`), so closing a hold via `/break-glass` rewrites that
+clearance document in place to `open: false` rather than superseding it. The exception is appended
+with its own `E-` id and the API never deletes, but the prior version of a closed clearance is not
+recoverable from the record. Named here rather than found by a reader.
 
 ## The seven enterprise surfaces, measured before tonight
 
