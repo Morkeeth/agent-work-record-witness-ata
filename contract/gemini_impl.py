@@ -43,8 +43,14 @@ VERTEX_URL = ("https://aiplatform.googleapis.com/v1/projects/{p}/locations/globa
 # value 20 -- twenty per DAY PER MODEL, not a rate limit. That is why 40-second backoffs
 # never rescued it. Every entry is "3.5 or newer" so admissibility holds whichever answers,
 # and each carries its own 20/day. Verified present in the live /v1beta/models list.
+# gemini-3.1-flash-lite WAS on this list and has been removed 2026-08-31. The contest
+# requires "Gemini 3.5 or newer"; 3.1 is not, and the comment above claimed every entry
+# qualified while the list under it disagreed. If that rung had answered under quota, the
+# entry's own eligibility claim would have been false. Caught by reading the object.
 LADDER = ["gemini-3.5-flash-lite", "gemini-3.6-flash", "gemini-3.7-flash",
-          "gemini-3.1-flash-lite", "gemini-3.5-flash"]
+          "gemini-3.5-flash"]
+assert all(float(m.split("-")[1]) >= 3.5 for m in LADDER), \
+    f"contest requires Gemini 3.5+; ladder contains an older model: {LADDER}"
 DEFAULT_MODEL = LADDER[0]
 ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/{m}:generateContent"
 
