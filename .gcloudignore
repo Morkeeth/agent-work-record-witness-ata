@@ -7,3 +7,6 @@
 *.key
 NEXT-STEPS.md
 fixtures/org-repo/.cursor/rules/propagated-skill.md
+.worktrees/
+demo/
+film/
