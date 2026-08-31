@@ -22,7 +22,7 @@ a cropped screenshot):
 | A line saying seven exist | **absent** | `7 releases on hold, all shown below.` |
 | Scroll affordance to reach the rest | **none** — `overflow-x: hidden`, `scrollWidth 3982` vs `clientWidth 910` | not needed |
 
-Plus three things the live console gets wrong that the branch fixes:
+Plus four things the live console gets wrong that the branch fixes:
 
 1. It prints **a git commit sha as a Claude Code session id** and mints a dead `claude.ai` link
    from it, on 2 of the 7 holds.
@@ -30,6 +30,10 @@ Plus three things the live console gets wrong that the branch fixes:
    from a hold whose `pr` field says `phase-a`.
 3. It says the record is **append-only and "nothing is edited in place."** `cloud/store.py:66`
    says the opposite in words, and `cloud/service.py:468` does the opposite in code.
+4. It says `HOLD_API_TOKEN` is a **plaintext environment variable** and Secret Manager is
+   **"enabled and unused."** Probed 02:44 UTC today: the live revision mounts it from
+   `hold-api-token:latest`. That one is false in the direction nobody audits — it *under-claims*
+   a real Google Cloud integration in a track scored 30% on architecture.
 
 All three are the failure this product is named after, on this product's own console.
 
