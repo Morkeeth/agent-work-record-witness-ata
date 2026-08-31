@@ -30,6 +30,7 @@ Not observability. Not code review. Not a claims inbox.
 - **Google ADK**, an LlmAgent constructed on the gateway and visible in `/health`.
 - **Cloud Run** as the gateway, **Firestore** as the record, **Secret Manager** holding the operator token so no revision ever stores it in plaintext.
 - **GitHub Actions**, an agent-scoped workflow posting to `/clearance`.
+- **Gemma 4 31B** as a second explainer, for a customer who cannot send claim text off their own network. It is open weights, so `GEMMA_BASE_URL` points at a self-hosted vLLM or Ollama and the same code path keeps every byte inside. The receipt reports `left_the_network` from the URL actually called, never from configuration intent. It is served over an OpenAI-compatible endpoint rather than Google's `generateContent`, which has no system role and degenerates without a chat template. Eight configurations were measured before that was understood and the failing ones are kept, not deleted, in `docs/GEMMA-NEGATIVE-RESULT-2026-08-31.md`.
 - Deterministic Python decides CLEAR or HOLD. **Gemini writes the paragraph a human reads underneath, and never overrules a probe.** Reverse those two and the gate becomes another thing that guesses fluently.
 
 The architecture is the moat, not the model. The probe runs **inside the customer's own checkout**, where the repository already is. Only the verdict and a session pointer cross the network. This product never needs read access to your code, which is what makes it installable at a bank.

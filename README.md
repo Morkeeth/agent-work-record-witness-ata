@@ -26,6 +26,8 @@ that says yes when it does not know is worse.
 Built for **All Things Agentic**, Fortified Enterprise Fleet track.
 Live: https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/
 
+Gemini 3.5 via Vertex AI and **Gemma 4 31B** both explain a hold; deterministic probes decide it. Gemma is the self-hostable path: point `GEMMA_BASE_URL` at your own vLLM and no claim text leaves your network.
+
 ### The track brief, in the track's own words
 
 The Fortified Enterprise Fleet track asks for agents that *"safely maintain context across weeks

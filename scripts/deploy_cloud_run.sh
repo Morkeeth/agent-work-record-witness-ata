@@ -59,8 +59,8 @@ gcloud run deploy "$SERVICE" \
   --region "$REGION" \
   --platform managed \
   --allow-unauthenticated \
-  --set-env-vars "GEMINI_MODEL=gemini-3.5-flash-lite,GOOGLE_CLOUD_PROJECT=${PROJECT},FLEET_STORE=firestore,HOLD_DEMO_MODE=${HOLD_DEMO_MODE}" \
-  --set-secrets "HOLD_API_TOKEN=${SECRET_NAME}:latest" \
+  --set-env-vars "GEMINI_MODEL=gemini-3.5-flash-lite,GOOGLE_CLOUD_PROJECT=${PROJECT},FLEET_STORE=firestore,HOLD_DEMO_MODE=${HOLD_DEMO_MODE},EXPLAINER=${EXPLAINER:-gemma},GEMMA_MODEL=${GEMMA_MODEL:-google/gemma-4-31b-it}" \
+  --set-secrets "HOLD_API_TOKEN=${SECRET_NAME}:latest,OPENROUTER_API_KEY=openrouter-api-key:latest" \
   --memory 1Gi \
   --timeout 300 \
   --max-instances 3 \
