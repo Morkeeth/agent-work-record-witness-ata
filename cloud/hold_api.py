@@ -203,12 +203,29 @@ def attach_agent_explanation(
         "and what the reviewer should check next."
     )
     sid = (session_id or record.get("session") or record.get("id") or "witness-clearance")
-    try:
-        from cloud.agent import run_agent
 
-        receipt = run_agent(prompt=prompt, session_id=str(sid), timeout_s=45.0)
-    except Exception as e:
-        receipt = {"invoked": False, "error": f"{type(e).__name__}: {e}"}
+    # EXPLAINER selects the backend. Both explain; neither decides. Gemma exists so a
+    # customer who cannot send claim text off their network still gets an explanation:
+    # it is open-weights, so GEMMA_BASE_URL can point at their own vLLM or Ollama.
+    backend = os.environ.get("EXPLAINER", "gemini").strip().lower()
+    if backend == "gemma":
+        try:
+            from cloud import gemma_explainer
+
+            receipt = gemma_explainer.explain(
+                findings, str(evaluation.get("decision")), str(evaluation.get("gate")))
+        except Exception as e:
+            receipt = {"invoked": False, "backend": "gemma",
+                       "error": f"{type(e).__name__}: {e}"}
+    else:
+        try:
+            from cloud.agent import run_agent
+
+            receipt = run_agent(prompt=prompt, session_id=str(sid), timeout_s=45.0)
+            receipt.setdefault("backend", "gemini")
+        except Exception as e:
+            receipt = {"invoked": False, "backend": "gemini",
+                       "error": f"{type(e).__name__}: {e}"}
 
     record["agent_explanation"] = receipt
     record["agent_invoked"] = bool(receipt.get("invoked"))
