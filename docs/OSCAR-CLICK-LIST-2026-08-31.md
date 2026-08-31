@@ -6,14 +6,17 @@ Ordered by what blocks what. Every step carries its URL, its done-when as a **co
 long it takes.
 
 **What this costs you: about one hour of attention.** ≈50 min if the deploy behaves, ≈1h15 if it
-fights. Sum of the steps below: 5 + 2 + 15 + 5 + 0.5 + 2 + 1.5 + 3 + 20 + 2 ≈ **56 min**, of which
+fights. The eleven steps below sum to 5 + 2 + 15 + 5 + 0.5 + 2 + 1.5 + 3 + 20 + **10** + 2 ≈ **66 min**,
+and **10 of those are step 8b, which is optional** — so the required path is **≈56 min**, of which
 ~20 min is waiting (Cloud Build) or watching (the film). The YouTube upload processes in the
 background and does not sit in that hour. It is not two hours. It is also not twenty minutes.
 
-**There are two rulings for you in here, not one.** Step 3 (ship the film as-is, or re-cut) and
-step 4 (tighten the writer now, or after the deadline). Each is 30 seconds *once you are standing
-in front of it* — step 3 asks you to watch 3:28 first. **Both carry a recommendation, and taking
-both recommendations costs you nothing before the deadline.**
+**There are two rulings for you in here, plus one optional call.** Step 3 (ship the film as-is, or
+re-cut) and step 4 (tighten the writer now, or after the deadline) are the rulings — each 30 seconds
+*once you are standing in front of it*, though step 3 asks you to watch 3:28 first. **Both carry a
+recommendation, and taking both recommendations costs you nothing before the deadline.** Step 8b is
+the third thing that needs you to say yes or no; it is 10 minutes, outside the hour, and skippable
+for a known price.
 
 > ⚠️ **READ STEP 0 BEFORE YOU UPLOAD ANYTHING.** The visibility setting in every earlier
 > version of this pack was wrong against the contest rules. It is fixed below. Getting it
@@ -50,7 +53,7 @@ Plus four things the live console gets wrong that the branch fixes:
    `hold-api-token:latest`. That one is false in the direction nobody audits — it *under-claims*
    a real Google Cloud integration in a track scored 30% on architecture.
 
-All three are the failure this product is named after, on this product's own console.
+All four are the failure this product is named after, on this product's own console.
 
 ---
 
@@ -61,13 +64,16 @@ Do this **first** and leave the tab open — it is the only thing with a queue i
 - File: `~/Downloads/ATA-demo-final.mp4` — re-measured 04:40 UTC today:
   `kMDItemDurationSeconds = 207.634` (**3:27.6**), 1920×1080, 15,797,684 bytes, md5
   `3147f34484886a83161f585d5084da44` — byte-identical to `demo/demo-final.mp4`. Under the 4:00 cap.
-- https://studio.youtube.com/ → Create → Upload videos → **Visibility: PUBLIC**
+- https://studio.youtube.com/ → Create → Upload videos → **Visibility: Unlisted to start, then
+  Public after step 3.** Two stages on purpose — see the box below. **It must read Public before
+  you paste the link in step 8.**
 - Title: `THE AGENT WORK RECORD WITNESS — All Things Agentic`
 - Captions: attach `demo/demo-final.srt`, 65 cues. English narration, so subtitles satisfy the
   rule either way — attach them anyway, it is one more click.
 
-> 🚨 **PUBLIC, NOT UNLISTED. This is a correction, and it is the one thing in this list that can
-> void the entry.** Every earlier version of this pack — this step, `docs/DEVPOST-CHECKLIST.md`,
+> 🚨 **THE FINAL STATE MUST BE PUBLIC, NOT UNLISTED — and unlisted is only ever a staging state
+> here, never where you leave it. This is a correction, and it is the one thing in this list that
+> can void the entry.** Every earlier version of this pack — this step, `docs/DEVPOST-CHECKLIST.md`,
 > `docs/internal/OSCAR-SUBMIT.md` — said *Unlisted*. The contest rules say otherwise, verbatim,
 > read from https://allthingsagentichackathon.devpost.com/rules at **04:44 UTC today**:
 >
@@ -79,12 +85,22 @@ Do this **first** and leave the tab open — it is the only thing with a queue i
 > content it writes *"The content must be public (**not unlisted**)."* Unlisted is a documented
 > non-compliance on this specific hackathon. **Set it to Public.**
 >
-> The film is safe to make public: it contains no token, no credential, and no personal data —
-> it is the product console, the Google Cloud console, and a corpus result. All three text
-> surfaces have been corrected in this branch.
+> **Why two stages, and not just Public now.** Nobody has watched this film with human eyes —
+> step 3 exists because of that, and it is honest about it. So *whether the frames are safe to
+> publish is unverified.* What is known comes from the transcript and the shot list, not from the
+> pixels: the picture is the product console, the Google Cloud console and corpus output. The one
+> thing worth a human look is the **Cloud console top bar, which normally carries the signed-in
+> account**. Upload Unlisted so the processing queue starts immediately, watch it at step 3 with
+> that in mind, then flip to Public. Publishing is irreversible in a way that unlisted is not.
 
-**Done when:** the watch URL plays in a **logged-out** private window **and** the video's
-Visibility column in YouTube Studio reads `Public`. Step 8 pastes the link.
+**Done when — two checks, at two different times:**
+
+1. **Now:** the upload is processing and the watch URL plays for you.
+2. **After step 3, before step 8:** YouTube Studio's Visibility column reads `Public`, and the
+   watch URL plays in a **logged-out** private window.
+
+**If step 3 shows something in frame you do not want public, that is a re-cut decision and it
+changes step 3's recommendation.** Nothing in the transcript suggests it will.
 
 ---
 
@@ -158,7 +174,7 @@ curl -s https://fleet-wedge-33kamss2jq-uc.a.run.app/health | grep -o '"store": "
 
 ---
 
-## 3 · Watch the film once, end to end (3:28) — and rule on it
+## 3 · RULING ONE OF TWO · watch the film once, end to end (3:28), and rule on it
 
 Nobody has heard it with human ears. Machine transcription proved the words; it says nothing about
 pace or level. **Three places to have an opinion, all timestamped:**
@@ -175,11 +191,16 @@ than found"* — sees a product correcting itself in public, which is the thesis
 it and reads nothing loses nothing. Neither outcome is worth 90 minutes and an unwatched cut
 fifteen hours out.
 
-**Done when:** you have said ship-as-is or re-cut.
+**While it plays, do the one job no machine did:** look at the **Google Cloud console top bar**
+around **1:28–1:40** (cues 30–32) for a signed-in account or anything else you would not publish.
+That is the check that lets step 0 flip from Unlisted to Public.
+
+**Done when:** you have said ship-as-is or re-cut, **and** you have flipped the YouTube video to
+**Public** (or decided not to, which is a re-cut).
 
 ---
 
-## 4 · THE ONE RULING · writer-side session validation
+## 4 · RULING TWO OF TWO · writer-side session validation (30 seconds)
 
 **The question.** `make_clearance_record` (`cloud/hold_api.py:131`) accepts **any string** as a
 session id. Do we tighten it now, or after the deadline?
@@ -291,7 +312,8 @@ this recording's own traffic"* — the rules require the video demonstrate the b
 Google Cloud, and it does. Cue numbers read from the cue index, not from `grep -n`; that mistake
 was made once already in this document and is called out at the bottom).
 
-**Done when:** every required field is green and these four open in a private window:
+**Done when:** every required field is green, **the YouTube video's Visibility reads `Public`**
+(the rules require it — step 0), and these four open in a private window:
 `/hold/#finding`, `/hold/?tab=queue`, `/hold/#stack`, and the repo. **These four do not depend on
 step 2** — the tab router (`params.get("tab") || location.hash`) is byte-present on the live
 revision too, checked 04:45 UTC, so they open whether or not the deploy landed. What the deploy
@@ -326,8 +348,12 @@ said no. Skipping costs 0.4 and nothing else — **do not let this delay step 9.
 
 ## 9 · Submit
 
-Same page → **Submit**. **Done when:** Devpost shows **Submitted**, not draft, and the
-confirmation email has arrived. Do this before 02:00 CEST, not at 01:55.
+Same page → **Submit**. **Last look before you click: is the YouTube video Public?** It is the
+only field in this pack that was wrong against the rules, and the only one that is invisible from
+the Devpost form.
+
+**Done when:** Devpost shows **Submitted**, not draft, and the confirmation email has arrived.
+Do this before 02:00 CEST, not at 01:55.
 
 ---
 
@@ -362,7 +388,7 @@ confirmation email has arrived. Do this before 02:00 CEST, not at 01:55.
 
 ## Found by the taper pass, 04:30–05:00 UTC, walking this list as a stranger
 
-The pass had one job: read every sentence here against the thing it cites. **Six did not survive**, and one of them was written by the pass itself.
+The pass had one job: read every sentence here against the thing it cites. **Ten did not survive** — and **three of those ten were written by this pass**, in the hours it spent hunting the defect. That is the honest yield, and the rate at which the fix reintroduces the bug is the finding.
 
 | | |
 |---|---|
@@ -372,6 +398,12 @@ The pass had one job: read every sentence here against the thing it cites. **Six
 | **The bonus points were missing entirely** — up to +0.4 on a 6-point score, for two public posts. No earlier document in this repo mentions them. Now step 8b, marked as yours because posting is outward |
 | **The document falsified its own grep.** The last row of the previous section claimed `grep -rniI "six of them our" .` *"now returns nothing"*. It returns one hit — **that row**, which quotes the phrase in order to say it was removed. The claim was false the instant it was written, in the document whose whole subject is claims that their own source contradicts. Re-scoped to the judge-facing surfaces, where it is true and exit 1 |
 | **The Google Cloud console beat had no citation**, and the first citation this pass wrote was **wrong** — cues 28–30, taken from the wrong index. The real cues are **30–32** at 1:28.5–1:40.4. Caught and corrected before commit. It is the same grep-line-vs-cue-number error this document already records once, made a second time by the pass hunting it |
+
+| **"Plus four things the live console gets wrong" … thirteen lines later, "All three are the failure this product is named after."** Four items are numbered between them. The pass quoted this section twice tonight and did not read it as a stranger either time — it took a second reviewer. Now "All four". **This one was missed by the pass, not found by it** |
+| **The pass's own new header went stale inside the same session.** It summed "the steps below" over ten terms, then the pass added an eleventh step (8b) underneath it and did not re-add. It also said "two rulings" while 8b's own done-when is *"or you have said no"* — a third thing needing his voice, by the exact test used to promote step 3 to a ruling. Rewritten to separate the two rulings from the one optional call, and the sum now names 8b and marks it optional |
+| 🚨 **The pass asserted the film was safe to publish, having watched none of it.** The sentence read *"The film is safe to make public: it contains no token, no credential, and no personal data."* Its only sources were the transcript and the shot list — **not the pixels** — in a document whose step 3 exists precisely because nobody has watched it. A frame of the Google Cloud console normally carries the signed-in account in its top bar. The claim has been replaced with what is actually known and what is not, and **step 0 is now two stages**: Unlisted so the queue starts, Public only after the step-3 watch, with the flip guarded again at step 8 and step 9 |
+
+| **Step 4's own heading read "THE ONE RULING"** — surviving the header fix that had just established there are two, and contradicting it from the table of contents. Headings now read **RULING ONE OF TWO** (step 3) and **RULING TWO OF TWO** (step 4), so the count is legible from the section list without reading a word of body text |
 
 **Re-confirmed by command, not by re-reading the note:**
 
