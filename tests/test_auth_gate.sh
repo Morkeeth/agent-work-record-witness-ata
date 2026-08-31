@@ -9,33 +9,40 @@ export HOLD_API_TOKEN=test-token-abc
 export FLEET_STORE=memory
 export HOLD_DEMO_MODE=0
 export HOLD_AGENT_EXPLAIN=0
-# Pick a port nothing is on. 2026-08-31: an orphaned gateway from an earlier session was
-# listening on the hard-coded 8791 with auth_required=false. This script bound nothing,
-# never noticed, and graded THAT process — reporting five security FAILures against a
-# codebase that was fine. A test that does not check it is talking to its own server is a
-# test that can be correct about the wrong object, which is the failure this repo exists
-# to catch. So: find a free port, then prove the health response came from OUR process.
-PORT=""
-for p in $(seq 8791 8830); do
-  if ! (exec 3<>/dev/tcp/127.0.0.1/$p) 2>/dev/null; then PORT=$p; break; fi
-  exec 3<&- 2>/dev/null; exec 3>&- 2>/dev/null
-done
-[ -n "$PORT" ] || { echo "  FAIL  no free port in 8791-8830"; exit 1; }
+# L10 sweep 2026-08-31 07:0x -- PORT was hard-coded to 8791. Proven live at 07:0x:
+#   lsof -nP -iTCP:8791 -sTCP:LISTEN
+#   Python 12395 morkeeth ... TCP *:8791 (LISTEN)   started Fri Aug 28 19:23:05 2026
+# A stale `python3 -m cloud.service` from three days earlier owned the port, so this script's own
+# server could not bind, and every curl below hit the ORPHAN. Output was five security FAILures
+# about a process that is not the product under test:
+#   FAIL anon POST /clearance -> 201 / /policy -> 200 / /wedge -> 500 ...
+# Two changes: take a free port from the OS, and refuse to grade anything that is not the server
+# this script started. A setup failure now exits 9 and says so, instead of printing security FAILs.
+cd "$(dirname "$0")/.."
+PORT=$(python3 -c 'import socket;s=socket.socket();s.bind(("127.0.0.1",0));print(s.getsockname()[1]);s.close()')
 export PORT
 python3 -m cloud.service >/tmp/hold_test.log 2>&1 &
 SRV=$!
 trap "kill $SRV 2>/dev/null" EXIT
-for i in $(seq 1 40); do curl -sf "http://127.0.0.1:$PORT/health" >/dev/null 2>&1 && break; sleep 0.25; done
+up=0
+for i in $(seq 1 40); do curl -sf "http://127.0.0.1:$PORT/health" >/dev/null 2>&1 && { up=1; break; }; sleep 0.25; done
+if [ "$up" != "1" ]; then
+  echo "  SETUP FAILURE  server did not answer /health on 127.0.0.1:$PORT -- the product was NOT tested."
+  sed 's/^/    | /' /tmp/hold_test.log | tail -20
+  exit 9
+fi
 if ! kill -0 "$SRV" 2>/dev/null; then
-  echo "  FAIL  the test gateway died before the probes ran — nothing below would be about it:"
-  tail -3 /tmp/hold_test.log
-  exit 1
+  echo "  SETUP FAILURE  the server this script started (pid $SRV) is dead; something else answered :$PORT."
+  exit 9
 fi
-if ! curl -sS "http://127.0.0.1:$PORT/health" | grep -q '"auth_required": true'; then
-  echo "  FAIL  the server on :$PORT reports auth_required=false — it is not this test's server"
-  exit 1
-fi
-echo "  (test gateway pid $SRV on :$PORT, auth on)"
+OWNER=$(lsof -nP -iTCP:"$PORT" -sTCP:LISTEN -t 2>/dev/null | tr '\n' ' ')
+case " $OWNER " in
+  *" $SRV "*) : ;;
+  *) echo "  SETUP FAILURE  :$PORT is served by pid(s) [$OWNER], not by the server this script started (pid $SRV)."
+     echo "                 Refusing to grade a process that is not the product. Nothing below was run."
+     exit 9 ;;
+esac
+echo "  setup  pid $SRV serving 127.0.0.1:$PORT (verified owner)"
 fail=0
 for route in /clearance /break-glass /policy /wedge /prove; do
   code=$(curl -sS -o /dev/null -w '%{http_code}' -X POST -H 'Content-Type: application/json' \
