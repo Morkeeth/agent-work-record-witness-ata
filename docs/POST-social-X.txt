@@ -1,16 +1,24 @@
-built a thing for the All Things Agentic hackathon that checks whether your coding agents actually did what they said they did.
+spent an hour today convinced gemma was broken.
 
-it turns each sentence in a done-report into a probe and runs it against the repo. "committed as deadbee" becomes git cat-file -t deadbee. nothing reads the reasoning, nothing scores the trace. either the object agrees or it doesnt.
+i was wiring it in as a second explainer for my hackathon build, the one that checks whether your coding agents actually did what they said. gemma is open weights so you can run it on your own hardware, which is the whole point when the text youre sending is your own repo paths.
 
-first thing i pointed it at was a month of my own agent output. it said 41.7% of commit claims disagreed with the repo. 103 out of 247.
+eight configurations. every one unusable.
 
-that number was wrong. 73 of the failures were real commits in a sibling repo on the same disk, because an agent records where it was standing, not where it committed. the real number is 8.1%.
+google's generativelanguage api gave me "own own own own own" 189 times in a row, with korean characters in the middle of an english sentence. bumped the temperature, it got worse. 210 non latin characters. tried the smaller model, got "ownces-ownces-ownces".
 
-the only reason the wrong one never shipped is that the denominator got written down before anyone looked.
+i wrote the file. "not reliable enough for a compliance record."
 
-and it refuses to check "all 14 tests pass". says UNVERIFIABLE and holds, because verifying that means running a command lifted out of agent prose. a tool that reports false claims doesnt get to make one about itself.
+then i changed one thing. same model, same prompt, openai compatible /chat/completions instead.
 
-[OSCAR: your line here. the refusal is the best part and you say it better than i do]
+6 runs, 6 clean answers, 0.55 seconds.
+
+it was never the model. generateContent has no system role, so the instruction lands in the user turn and gemma answers the instruction instead of the question. every workaround i tried to force the shape is what caused the garbage.
+
+the thing i spent this week building catches claims that are correct about the wrong object.
+
+and then i made one, about my own tool, and nearly shipped it.
+
+[OSCAR: your line here. this is the bit where you land it and youll do it better than me]
 
 built for #AllThingsAgenticHackathon
 
