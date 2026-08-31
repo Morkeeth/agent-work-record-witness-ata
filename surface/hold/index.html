@@ -439,8 +439,12 @@
       naming a managed product we have not wired is the sharpest available lie in a submission that
       is about false claims.</p>
       <p style="margin:0 0 0.5rem"><strong>Known posture, said first rather than found.</strong>
-      <code>HOLD_API_TOKEN</code> is a <strong>plaintext environment variable</strong> on the Cloud Run
-      service; <code>secretmanager.googleapis.com</code> is enabled on the project and unused. The service
+      <code>HOLD_API_TOKEN</code> is mounted from <strong>Secret Manager</strong>
+      (<code>hold-api-token:latest</code>) on the live revision <code>fleet-wedge-00014-q2g</code>
+      &mdash; probed 2026-08-31, not asserted. It is never in the repository and never a plaintext
+      revision env var. <em>This paragraph said the opposite until today: it described an older
+      revision and nobody re-probed it, which is this product's own failure mode pointed at its own
+      console.</em> What is still open: the service
       runs as the <strong>default compute service account</strong>
       <code>568004190078-compute@developer.gserviceaccount.com</code>, which holds
       <code>roles/editor</code> &mdash; the principal behind the record can delete the

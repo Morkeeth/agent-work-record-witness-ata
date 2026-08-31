@@ -114,8 +114,11 @@ the clearance path itself: record `H-a6151a95ac`, written by a real GitHub Actio
 `invoked: false`, and no tool calls. A receipt that cannot fail is not a receipt.
 
 **Two posture facts about that token gate, stated rather than waited for.** `HOLD_API_TOKEN` is a
-**plaintext environment variable** on the Cloud Run service — `secretmanager.googleapis.com` is
-enabled on `hack-fleet` and unused, so anyone with `run.services.get` can read it. And the service
+**Secret Manager reference** on the Cloud Run service — the live revision `fleet-wedge-00014-q2g`
+mounts `HOLD_API_TOKEN` from `hold-api-token:latest` (`--set-secrets` in
+`scripts/deploy_cloud_run.sh`), probed 2026-08-31, so `run.services.get` does not disclose it.
+This line said "plaintext environment variable" until 31 Aug and was describing a superseded
+revision. What remains open: the service
 runs as the **default compute service account**
 `568004190078-compute@developer.gserviceaccount.com`, which holds `roles/editor`: the principal
 behind the record can delete the collection. Neither is a design position; both are open items.

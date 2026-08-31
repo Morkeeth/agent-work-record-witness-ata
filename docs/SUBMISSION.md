@@ -146,9 +146,13 @@ with.
 | **Application token gate** (not IAM) | Cloud Run is **public at the IAM layer by design** so a judge can click the console — the only binding on `fleet-wedge` is `allUsers → roles/run.invoker`. The 401 is application-level: every mutating route is refused without a bearer token by `_require_token()` in `cloud/service.py`, probed 28 Aug. `demo_seed_enabled: false` in production. **Honest limit: one shared token, not per-agent identity, and not IAM.** | ✅ verified, app-level |
 | **Gemini 3.5 via ADK** | `google.adk.runners.Runner` drives an `LlmAgent` (`gemini-3.5-flash-lite`) that *explains* a hold and never decides one. Record `H-a6151a95ac` carries `agent_explanation.invoked: true` | ✅ live |
 
-**Known posture, stated rather than waited for.** `HOLD_API_TOKEN` is a **plaintext environment
-variable** on the Cloud Run service; `secretmanager.googleapis.com` is enabled on the project and
-unused, so anyone with `run.services.get` on `hack-fleet` can read the token. The service runs as
+**Known posture, stated rather than waited for.** `HOLD_API_TOKEN` is mounted from **Secret
+Manager** (`hold-api-token:latest`, secret created 2026-08-30T14:47:08Z) on the live revision
+`fleet-wedge-00014-q2g` — read with `gcloud run services describe fleet-wedge` on 2026-08-31, not
+asserted. It is never in the repository and never a plaintext revision env var, so
+`run.services.get` no longer discloses it. **This paragraph claimed the opposite until 31 Aug**,
+describing a revision that had already been replaced; it is corrected here rather than quietly
+swapped. The service runs as
 the **default compute service account** `568004190078-compute@developer.gserviceaccount.com`, which
 holds `roles/editor` — a principal that can delete the Firestore collection this product keeps
 the record in. Both are hackathon-project realities, not design positions.
