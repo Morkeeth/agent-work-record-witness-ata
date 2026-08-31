@@ -96,9 +96,11 @@ scan examines the assistant turns; both numbers travel together because a result
 quoted against the wrong denominator is the thing this product catches — and it found our own defect first. Raw, it said 41.7% of commit claims
 disagreed with the repo. Corrected: 8.1% (19/236). The whole gap was ours. 73 of 103 "wrong"
 claims were real commits in a DIFFERENT repo on the same disk, because an agent's cwd
-is where it was standing, not where it committed. Eleven more were shas inside shell
-commands, six of them our OWN test fixture, found in transcripts about building this
-gate. "42% of agent claims are wrong" was a real number from a real corpus and it was
+is where it was standing, not where it committed. Eleven more were machinery: a sha
+inside a shell command the agent was running, or inside git output it was reading. In
+the hand-labelled sample of 40 extractions, six were deadbee — this repo's OWN test
+fixture — surfacing in transcripts about building this gate; a sample figure, not a
+subset of the eleven. "42% of agent claims are wrong" was a real number from a real corpus and it was
 false by 5x — the corrected figure is 8.1%, 19 of 236. The only reason it did not ship
 is that we wrote the denominator down before we looked. Neither figure is an incidence
 rate and we do not present one: hand labelling put extractor precision at 13 of 40 on
