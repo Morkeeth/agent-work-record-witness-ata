@@ -1,0 +1,59 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Roboto+Mono:wght@400;500&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{
+    background:#f8f9fa;
+    font-family:Roboto,"Helvetica Neue",Arial,sans-serif;
+    color:#202124;
+    display:flex;flex-direction:column;
+    padding:52px 68px;
+    border-top:10px solid #d93025;
+  }
+  .brand{
+    font-size:19px;letter-spacing:.20em;font-weight:500;
+    text-transform:uppercase;color:#5f6368;
+  }
+  .mid{flex:1;display:flex;flex-direction:column;justify-content:center}
+  .eyebrow{
+    font-family:"Roboto Mono",ui-monospace,Menlo,monospace;
+    font-size:17px;color:#5f6368;letter-spacing:.02em;margin-bottom:26px;
+  }
+  .nums{display:flex;align-items:baseline;gap:30px}
+  .old{
+    font-size:96px;font-weight:400;color:#d93025;
+    text-decoration:line-through;text-decoration-thickness:7px;
+  }
+  .arrow{font-size:62px;color:#5f6368;font-weight:300}
+  .new{font-size:172px;font-weight:900;letter-spacing:-.045em;line-height:.9}
+  .said{
+    margin-top:34px;font-size:38px;font-weight:500;line-height:1.24;max-width:16.5em;
+  }
+  .said b{font-weight:700;box-shadow:inset 0 -.42em 0 rgba(217,48,37,.14)}
+  .foot{display:flex;justify-content:space-between;align-items:flex-end}
+  .tag{font-size:31px;font-weight:700}
+  .meta{
+    font-family:"Roboto Mono",ui-monospace,Menlo,monospace;
+    font-size:15px;color:#5f6368;text-align:right;line-height:1.75;
+  }
+</style>
+
+<div class="brand">The Agent Work Record Witness</div>
+
+<div class="mid">
+  <div class="eyebrow">agent commit claims that disagree with the repository &middot; 78,618 real messages</div>
+  <div class="nums">
+    <span class="old">41.7%</span>
+    <span class="arrow">&rarr;</span>
+    <span class="new">8.1%</span>
+  </div>
+  <div class="said">Our first finding was <b>our own defect</b>.</div>
+</div>
+
+<div class="foot">
+  <div class="tag">Run your agents. Check the math.</div>
+  <div class="meta">
+    measured 2026-08-27 &middot; 19 of 236<br>
+    the labelled sample ships with the repo
+  </div>
+</div>
