@@ -1,0 +1,17 @@
+built a thing for the All Things Agentic hackathon that checks whether your coding agents actually did what they said they did.
+
+it turns each sentence in a done-report into a probe and runs it against the repo. "committed as deadbee" becomes git cat-file -t deadbee. nothing reads the reasoning, nothing scores the trace. either the object agrees or it doesnt.
+
+first thing i pointed it at was a month of my own agent output. it said 41.7% of commit claims disagreed with the repo. 103 out of 247.
+
+that number was wrong. 73 of the failures were real commits in a sibling repo on the same disk, because an agent records where it was standing, not where it committed. the real number is 8.1%.
+
+the only reason the wrong one never shipped is that the denominator got written down before anyone looked.
+
+and it refuses to check "all 14 tests pass". says UNVERIFIABLE and holds, because verifying that means running a command lifted out of agent prose. a tool that reports false claims doesnt get to make one about itself.
+
+[OSCAR: your line here. the refusal is the best part and you say it better than i do]
+
+built for #AllThingsAgenticHackathon
+
+github.com/Morkeeth/agent-work-record-witness-ata
