@@ -63,9 +63,37 @@
 
 ---
 
+## Measured at draft seal · 2026-09-01 UTC
+
+Re-derived at the object tonight — not carried from any prior doc.
+
+| Probe | Command | Result |
+|-------|---------|--------|
+| Repo HEAD | `git rev-parse HEAD` on `main` | `4a45551297c6d878257a516c90baf2f2fb103eb2` |
+| Live `/health` | `curl -sS …/health` | `auth_required: true` · `demo_seed_enabled: false` · `store: firestore` · ADK `constructed: true` |
+| Anon mutating routes | `curl -X POST …/{clearance,break-glass,prove}` | **401** each |
+| Read surfaces | `curl …/{health,hold,audit,audit/export}` | **200** each |
+| Audit export population | `curl …/audit/export \| jq '.events \| length'` | **25** events |
+| Hero record `H-a6151a95ac` | same export, filter by id | `gate: BLOCK` · `decision: HOLD` · `open: true` · `pr: 1` · `session: 01Lzbh4XPYTAgCKg1dciFS3Q` · `head_sha: c99589111f82ca4b8a074220cbb5a358b33f5941` · `blocks: 2` · `source: github-action` |
+| PR #1 state | `gh pr view 1 --json state` | **OPEN** |
+| PR #1 `verify-claims` | `gh api …/check-runs --jq …verify-claims` | conclusion **`failure`** (2026-08-29T12:15:18Z) |
+| PR #1 `witness-findings` (P3) | same API, name `witness-findings` | conclusion **`failure`** (2026-08-29T12:15:06Z) |
+| Stranger cold path | `git clone … && env -i PATH="$PATH" HOME="$HOME" ./demo.sh` | **exit 0** · PASS · BLOCK · HOLD |
+| `./film/preflight.sh` | tail | **PREFLIGHT PASS** (11/11) |
+| Eligibility bare clone | `python3 contract/eligibility.py` after cold clone, no pip | **0 of 3**, exit 1 |
+| Eligibility cold + ADK | same after `pip install google-adk`, no GCP creds | **1 of 3** (ADK constructed only), exit 1 |
+
+**Architecture score note:** live service proves Firestore + ADK on `/health`; cold `eligibility.py` without `pip install google-adk` reads **0/3**, not the headline **1/3** — the honest cold clone path is `./demo.sh` (no pip), and eligibility **1/3** only after installing ADK locally.
+
+---
+
 **OSCAR_ONLY:** one cell — *Sealed at*. Put your local time in it and commit. Nothing else here
 needs you before the submit button.
 **Agent-filled 2026-08-29:** placement, primary prediction, confidence, falsifiers, rubric.
 **Agent-updated 2026-08-31:** demo-readiness score and its reason, the video row (twice — the
 second time at 04:50 UTC, correcting *unlisted* to *public* against the rules), and one
 falsifier that was measured and closed overnight.
+**Agent-updated 2026-09-01:** measured-at-draft-seal table (live `/hold/` + PR #1 + stranger path);
+fixture scrub removed "required check" from `./demo.sh` output; draft hash below.
+
+**Draft SHA256:** `3bf619bc0fdbb898635a172fc20faf24e465a863f0038f606e143056a770b9a9`

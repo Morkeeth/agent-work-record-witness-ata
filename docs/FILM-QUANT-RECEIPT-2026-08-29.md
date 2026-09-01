@@ -1,9 +1,9 @@
 # Film quant receipt · ATA · 29 Aug 2026
 
 **Runner:** Cloud Agent (preflight + quant probes)  
-**Repo:** `Morkeeth/agent-work-record-witness-ata` @ `dea2409`  
+**Repo:** `Morkeeth/agent-work-record-witness-ata` @ `4a45551` (night wave branch)  
 **Live URL:** `https://fleet-wedge-33kamss2jq-uc.a.run.app`  
-**Probed at:** 2026-08-29 (UTC)
+**Probed at:** 2026-09-01 (UTC)
 
 ---
 
@@ -101,7 +101,7 @@ PREFLIGHT PASS — safe to run ./film/capture.sh and record.
 ## Not done (Oscar / post-receipt)
 
 - [ ] Screen recording ?4:00
-- [ ] `docs/SEALED-PREDICTION-2026-08-29.md` Oscar timestamp block
+- [x] `docs/SEALED-PREDICTION-2026-08-29.md` measured table + draft SHA256 (Oscar timestamp cell still OSCAR_ONLY)
 - [ ] Devpost submit
 - [ ] Deploy without this receipt
 

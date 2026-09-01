@@ -52,7 +52,7 @@ git checkout -b "$BRANCH" 2>/dev/null || git checkout "$BRANCH"
 mkdir -p docs
 echo "HOLD false-done demo branch $(date -u +%Y-%m-%dT%H:%MZ)" >> docs/HOLD-DEMO-PR-MARKER.md
 git add docs/HOLD-DEMO-PR-MARKER.md
-git commit -m "demo: agent false-done PR marker for HOLD required check" || true
+git commit -m "demo: agent false-done PR marker for verify-claims clearance" || true
 git push -u origin HEAD
 gh pr create \
   --title "HOLD demo: agent false-done (deadbee)" \

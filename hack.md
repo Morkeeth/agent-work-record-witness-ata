@@ -2,7 +2,7 @@
 doc: hack
 project: The Agent Work Record Witness
 phase: SHIP
-last-touched: 2026-08-29
+last-touched: 2026-09-01
 canonical: true
 event: All Things Agentic · Devpost · Mon 31 Aug 2026 17:00 PDT
 supersedes: docs/THIRTY-DAY-PLAN.md (immune-system era — history only)
@@ -270,7 +270,9 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🎯 NOW
 
-**RUN COMPLETE 29 Aug.** P1+P2+P3 live · preflight PASS. Oscar: **film** → `SEALED-PREDICTION` → Devpost.
+**Night wave 2026-09-01.** Sealed-prediction draft filled + hashed · stranger path re-verified ·
+fixture/demo scrubbed for "required check" · P3 `witness-findings` confirmed on PR #1 at object.
+Oscar: **film** (if re-record needed) → Oscar timestamp in SEALED-PREDICTION → Devpost.
 
 ---
 
@@ -291,3 +293,4 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 - 2026-08-29 · Full 48h review; pre-submit plan replaces post-only hack.md.
 - 2026-08-29 · Probed: preflight PASS · eligibility 3/3 · branch unprotected · P1+P2 coded.
 - 2026-08-29 · Handbook pass: HANDBOOK-PASS, SEALED-PREDICTION template, PHASE-TRACKER refresh, STRANGER-PASS, voiceover/preflight sync.
+- 2026-09-01 · Night wave: `docs/SEALED-PREDICTION-2026-08-29.md` measured table + draft SHA256; `docs/STRANGER-PASS-2026-08-29.md` re-verified from cold clone; fixture `agent-false-done-PR-BODY.md` + `tests/test_demo.sh` scrub "required check" from demo output; README stranger one-liner at top; preflight PASS (`./film/preflight.sh`).

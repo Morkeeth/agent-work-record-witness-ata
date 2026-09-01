@@ -24,7 +24,14 @@ gate says UNVERIFIABLE and holds. A checker that only ever says no is not a chec
 that says yes when it does not know is worse.
 
 Built for **All Things Agentic**, Fortified Enterprise Fleet track.
-Live: https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/
+
+**Stranger path (one command, no keys, no network):**
+
+```bash
+git clone https://github.com/Morkeeth/agent-work-record-witness-ata && cd agent-work-record-witness-ata && ./demo.sh
+```
+
+Live console: https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?tab=queue
 
 Gemini 3.5 via Vertex AI and **Gemma 4 31B** both explain a hold; deterministic probes decide it. Gemma is the self-hostable path: point `GEMMA_BASE_URL` at your own vLLM and no claim text leaves your network.
 
