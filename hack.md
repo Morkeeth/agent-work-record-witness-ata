@@ -270,7 +270,8 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🎯 NOW
 
-**RUN COMPLETE 29 Aug.** P1+P2+P3 live · preflight PASS. Oscar: **film** → `SEALED-PREDICTION` → Devpost.
+**Night wave 2026-09-02.** Sealed prediction live-measurements filled · stranger path re-verified ·
+preflight PASS · P3 documented in `gate/README.md`. Oscar: film is done; Devpost already submitted.
 
 ---
 
@@ -291,3 +292,4 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 - 2026-08-29 · Full 48h review; pre-submit plan replaces post-only hack.md.
 - 2026-08-29 · Probed: preflight PASS · eligibility 3/3 · branch unprotected · P1+P2 coded.
 - 2026-08-29 · Handbook pass: HANDBOOK-PASS, SEALED-PREDICTION template, PHASE-TRACKER refresh, STRANGER-PASS, voiceover/preflight sync.
+- 2026-09-02 · Night wave: `./film/preflight.sh` PASS (11/11) · `./demo.sh` + `test_demo.sh` 11/11 · live `/hold/` hero `H-a6151a95ac` BLOCK at object · PR #1 `verify-claims`+`witness-findings` failure · `SEALED-PREDICTION` live table + SHA-256 · `STRANGER-PASS` refreshed · `gate/README.md` P3 receipt · scrubbed `PITCH-WHEN-YOU-ARE-BACK` + `outcome-gate.yml` comment ("required check").

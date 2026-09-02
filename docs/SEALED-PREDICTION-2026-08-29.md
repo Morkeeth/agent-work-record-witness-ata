@@ -51,7 +51,29 @@
 |-----------|--------|------------------|-----|
 | Innovation & utility | 40% | 7/10 | four verdicts, the session join, and a corpus self-audit that found our own defect first; the niche is real and adoption is zero |
 | Architecture | 30% | 8/10 | probe local, verdict-only over the network, diagram exported and read, eligibility exercised rather than imported (3 of 3 with ADC exit 0, 1 of 3 cold exit 1, both re-measured 2026-08-31) |
-| Demo readiness | 30% | 8/10 | was 7 — raised one point: `./demo.sh` exits 0 from a cold clone, all four §5 links returned 200, all five mutating routes 401 anon, and the 3:27.6 film has been transcribed end to end and checked against the never-say list for the first time |
+| Demo readiness | 30% | 8/10 | `./demo.sh` exit 0 (re-probed 2026-09-02); `tests/test_demo.sh` 11/11; preflight 11/11; live `/hold/` + PR #1 checks at object (see below) |
+
+---
+
+## Live measurements (probed 2026-09-02 UTC)
+
+**Commands run on this pass** — numbers re-derived at the object, not carried from docs.
+
+| Probe | Command | Measured |
+|-------|---------|----------|
+| Cold demo | `env -i PATH="$PATH" HOME="$HOME" ./demo.sh` | exit **0** |
+| Demo receipt | `./tests/test_demo.sh` | **11/11** ok |
+| Preflight | `./film/preflight.sh` | **11/11** ok · PREFLIGHT PASS |
+| Live health | `curl -sS …/health` | `auth_required=true` · `demo_seed_enabled=false` · `store=firestore` · `product=THE AGENT WORK RECORD WITNESS` |
+| Hero record | `curl -sS …/audit/export` → `H-a6151a95ac` | **present** · `gate=BLOCK` · `head_sha=c99589111f82ca4b8a074220cbb5a358b33f5941` · `agent_explanation` populated |
+| Export size | same | **25** events · **22** BLOCK · **0** CLEAR |
+| PR #1 state | GitHub API `pulls/1` | **open** · title *HOLD demo: agent false-done (deadbee)* |
+| PR #1 checks | `commits/c995891…/check-runs` | `verify-claims` → **failure** · `witness-findings` → **failure** (`**BLOCK** — 2 BLOCK · 0 UNVERIFIABLE · 0 PASS`) |
+| Eligibility cold | `python3 contract/eligibility.py` (after `pip install -r requirements.txt`) | **1 of 3** MET (ADK `LlmAgent` only) · exit **1** |
+| Anon mutating routes | `./tests/test_auth_gate.sh` | **5/5** → 401 |
+
+**Film spine (repo, not live):** `film/voiceover.txt` 8 lines = `film/subtitles.srt` 8 cues · no
+"required check" in either · corpus **78,618** · **41.7** raw · **8.1** corrected on `/hold/`.
 
 ---
 
@@ -69,3 +91,7 @@ needs you before the submit button.
 **Agent-updated 2026-08-31:** demo-readiness score and its reason, the video row (twice — the
 second time at 04:50 UTC, correcting *unlisted* to *public* against the rules), and one
 falsifier that was measured and closed overnight.
+**Agent-updated 2026-09-02:** live-measurements table from `/hold/` + PR #1 + cold path re-run;
+demo-readiness reason refreshed at object.
+
+**Draft SHA-256:** `e87f137c05bb3f98e141f653b533f15111a62aa35c6850ddca4b0d8e126da7ea`

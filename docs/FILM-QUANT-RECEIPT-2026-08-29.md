@@ -1,9 +1,9 @@
-# Film quant receipt · ATA · 29 Aug 2026
+# Film quant receipt · ATA · 2 Sep 2026
 
 **Runner:** Cloud Agent (preflight + quant probes)  
-**Repo:** `Morkeeth/agent-work-record-witness-ata` @ `dea2409`  
+**Repo:** `Morkeeth/agent-work-record-witness-ata` @ night-wave branch  
 **Live URL:** `https://fleet-wedge-33kamss2jq-uc.a.run.app`  
-**Probed at:** 2026-08-29 (UTC)
+**Probed at:** 2026-09-02 (UTC)
 
 ---
 
@@ -107,4 +107,4 @@ PREFLIGHT PASS — safe to run ./film/capture.sh and record.
 
 ---
 
-*Live revision `fleet-wedge-00012-5w6` · re-probed 2026-08-29 (UTC)*
+*Live revision probed 2026-09-02 (UTC) · preflight PASS · voiceover/subtitles 8=8 · no drift*

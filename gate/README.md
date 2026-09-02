@@ -33,6 +33,28 @@ have shipped.** The gate's test suite is a logged case series a competitor canno
 It becomes **one downstream feature** — once a claim passes the gate, propagate what worked. The gate
 is the painkiller that gets the product bought; propagation is the expansion that makes it sticky.
 
+## P3 · Check run summary (`gate/check_run_summary.py`)
+
+Wired in `action.yml` step `summary` (runs `always()` after the probe). When
+`GITHUB_TOKEN`, `REPO`, and `HEAD_SHA` are set, posts a **`witness-findings`** check
+with a markdown table of BLOCK / UNVERIFIABLE / PASS rows. Emits `::error` /
+`::warning` annotations for the PR Checks tab.
+
+**Verify locally:**
+
+```bash
+PYTHONPATH=. python3 tests/test_check_run_summary.py
+```
+
+**Verify on PR #1 at the object:**
+
+```bash
+gh api repos/Morkeeth/agent-work-record-witness-ata/commits/$(gh pr view 1 --json headRefOid -q .headRefOid)/check-runs \
+  --jq '.check_runs[] | select(.name=="witness-findings") | {name, conclusion, summary: .output.summary}'
+```
+
+Expected: `conclusion=failure`, summary contains `**BLOCK** — 2 BLOCK`.
+
 ## The four probe types (extensible — each new failure mode is a new probe)
 `probe_repo` (claimed SHA/path exists) · `probe_power` (a rate quoted as a result survives its own n) ·
 `probe_exercise` (a service is called, not imported) · `probe_right_object` (checked against the
