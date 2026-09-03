@@ -10,7 +10,7 @@
 |----|---------|------|-------|
 | P1 | Gemini + ADK | explain on HOLD clearance | ⛔ needs **D1 deploy** |
 | P2 | GitHub Action | session · actor · head_sha in JSON | ⛔ needs **D2 re-run PR** |
-| P3 | GitHub Checks | `gate/check_run_summary.py` — summary + annotations + `witness-findings` check | ✅ coded · push + PR sync |
+| P3 | GitHub Checks | `gate/check_run_summary.py` — summary + annotations + `witness-findings` check | ✅ live on PR #1 (`verify-claims` + `witness-findings` both failure) |
 
 ---
 

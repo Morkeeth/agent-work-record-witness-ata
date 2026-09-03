@@ -39,9 +39,30 @@
 > A judge never clicks the live URL · a field full of GEAP-native fleet managers with richer
 > Memory/Registry stories · another entry ships the same claim-vs-repo wedge with real adoption
 > numbers · the console link puts a judge in a loop and they leave (measured and closed
-> 2026-08-31 — see `docs/SHIP-VERIFICATION-2026-08-31.md` §A1; the link is now `?tab=queue`)
+> 2026-08-31 — latch deployed; link is `?record=H-a6151a95ac`, re-probed 2026-09-03)
 > · a judge reads "1 of 3" cold eligibility as a broken submission rather than as the designed
 > honest result.
+
+---
+
+## Live measurements (re-derived 2026-09-03 · night wave)
+
+Probed at the object — not quoted from earlier docs.
+
+| Probe | Command | Measured |
+|-------|---------|----------|
+| Live `/health` | `curl -sS https://fleet-wedge-33kamss2jq-uc.a.run.app/health` | `auth_required: true` · `demo_seed_enabled: false` · `store: firestore` · `product: THE AGENT WORK RECORD WITNESS` |
+| Hero record | `curl -sS …/audit/export \| jq … H-a6151a95ac` | present · `gate: BLOCK` · `session: 01Lzbh4XPYTAgCKg1dciFS3Q` · `head_sha: c99589111f82` |
+| Clear count | `curl -sS …/audit` | `pct_cleared_without_hold: 0.0` · 49 total events |
+| Export count | `curl -sS …/audit/export` | 25 events · `clear: 0` |
+| Queue position | `curl -sS …/queue` | 20 holds · `H-a6151a95ac` at **position 14** (not first row — `?record=` deep link is honest) |
+| PR #1 checks | `gh pr view 1 --json statusCheckRollup` | OPEN · `verify-claims` **failure** · `witness-findings` **failure** · head `c99589111f82…` |
+| Stranger path | `env -i PATH="$PATH" HOME="$HOME" ./demo.sh` | exit **0** |
+| Stranger test | `tests/test_demo.sh` | **PASS** (11 assertions) |
+| Preflight | `./film/preflight.sh` | **11/11 PASS** |
+| Eligibility cold | `CLOUDSDK_CONFIG=/nonexistent GOOGLE_APPLICATION_CREDENTIALS= python3 contract/eligibility.py` (after `pip install -r requirements.txt`) | **1 OF 3 MET**, exit **1** (ADK constructed; Gemini + Firestore not reachable without credentials) |
+
+Deployed HTML contains `recordOpened` latch — `?record=H-a6151a95ac` is the judge deep link.
 
 ---
 
@@ -66,6 +87,12 @@
 **OSCAR_ONLY:** one cell — *Sealed at*. Put your local time in it and commit. Nothing else here
 needs you before the submit button.
 **Agent-filled 2026-08-29:** placement, primary prediction, confidence, falsifiers, rubric.
-**Agent-updated 2026-08-31:** demo-readiness score and its reason, the video row (twice — the
-second time at 04:50 UTC, correcting *unlisted* to *public* against the rules), and one
-falsifier that was measured and closed overnight.
+**Agent-updated 2026-09-03:** live measurement table (night wave) · falsifier link corrected to `?record=` · draft hash below.
+
+---
+
+**Draft integrity (SHA-256 of this file excluding this footer block):**
+
+```
+PLACEHOLDER
+```

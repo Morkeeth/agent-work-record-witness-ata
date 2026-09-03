@@ -254,8 +254,9 @@ Every tab renders the underlying API response in place, so there is nothing to c
    repository. Corrected: 8.1%. The gap was our own probe, not the agents.
 
 2. **The record** — one real agent pull request that went through the gate
-   `https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?tab=queue`
-   Click the first card in the queue — `H-a6151a95ac`. It failed on purpose and is held. Nothing has ever cleared. The Audit tab reads
+   `https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?record=H-a6151a95ac`
+   Opens the queue with record `H-a6151a95ac` already selected — PR #1, red `verify-claims`
+   and `witness-findings`, session trace attached. It failed on purpose and is held. Nothing has ever cleared. The Audit tab reads
    **0% CLEAR**, which is the honest state, not a broken demo.
 
 3. **Where it runs on Google** — every service on the request path, with the probe that shows it
@@ -279,18 +280,10 @@ _Raw endpoints, if you prefer them: `/health`, `/audit`, `/audit/export`, `/poli
 
 **— end of the §5 paste. Everything below is an operator note, not for Devpost. —**
 
-**Why link 2 is `?tab=queue` and not the older `?record=H-a6151a95ac` deep link.**
-On the deployed revision `?record=` puts the console in an unbounded loop: `loadQueue()`
-re-reads `?record` on every call, calls `openClearance()`, which calls `tab("queue")`,
-which calls `loadQueue()` again. Measured 2026-08-31 with headless Chromium:
-**41 `GET /queue` in 10.5s against the live service** (network-bound) and **8,352 in 10.5s
-against a local copy of the same file**, and a click on "Google stack" left `tab-queue`
-visible 4.5s later — the reader cannot leave the queue. `?tab=queue` measured **1
-`GET /queue`**, the `H-a6151a95ac` card is the first row, one click opens the record with
-its session trace, and every tab still works. The one-line latch that fixes `?record=` is on
-branch `nightrun/l1-shipprep` in `surface/hold/index.html`; it only reaches judges after a
-redeploy, which is why the link was changed instead. **Deploying is optional; changing the
-link is not.**
+**Link 2 uses `?record=H-a6151a95ac`.** A latch in `surface/hold/index.html` (`recordOpened`)
+opens that hold once and stops — measured live 2026-09-03: `recordOpened` is present in the
+deployed HTML and `H-a6151a95ac` is **not** the first queue row (position 14 of 20 as of this
+probe), so "click the first card" was wrong. The `?record=` deep link is the honest judge path.
 
 # 6 · Built with (Devpost "Built with" field)
 `google-cloud-run` · `firestore` · `vertex-ai` · `gemini-3.5-flash-lite` · `google-adk` ·

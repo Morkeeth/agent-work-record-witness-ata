@@ -2,6 +2,11 @@
 
 **Run your agents. Check the math.**
 
+```bash
+git clone https://github.com/Morkeeth/agent-work-record-witness-ata && cd agent-work-record-witness-ata && ./demo.sh
+# live record (no login): https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?record=H-a6151a95ac
+```
+
 Software just changed hands. Most of the code written this year is written by agents, and the
 constraint moved with it. Writing is cheap now, and **knowing what was actually done is the
 expensive part.** Every company can tell you how many agent seats it bought and how many tokens
@@ -61,8 +66,8 @@ cd agent-work-record-witness-ata
 ./demo.sh                    # full walkthrough · exits 0
 ./demo.sh --film             # compact — same verdicts, for screen recording
 curl -sS https://fleet-wedge-33kamss2jq-uc.a.run.app/health | head
-# open hold console → the queue, then click the first card (H-a6151a95ac):
-# https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?tab=queue
+# open the hero record directly (no login):
+# https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?record=H-a6151a95ac
 # PR checks: https://github.com/Morkeeth/agent-work-record-witness-ata/pull/1/checks
 ```
 
@@ -288,6 +293,10 @@ jobs:
 | `WITNESS_POLICY_URL` | repo **variable** | the gateway that records decisions |
 | `WITNESS_API_TOKEN` | repo **secret** | writes are gated; without it the check still probes, nothing accumulates |
 | label `agent` | on the PR | scopes the gate to agent-authored work only |
+
+The composite action also posts a **`witness-findings`** check run with annotations
+(`gate/check_run_summary.py` · tested by `PYTHONPATH=. python3 tests/test_check_run_summary.py`).
+On this repo's PR #1 both `verify-claims` and `witness-findings` conclude **failure** by design.
 
 **Then make it binding, in this order.** Run in `report-only` for a week and watch the queue.
 Only when you are ready, require `verify-claims` in branch protection. **Until you require it,

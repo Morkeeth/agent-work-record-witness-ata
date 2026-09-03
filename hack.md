@@ -270,7 +270,11 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🎯 NOW
 
-**RUN COMPLETE 29 Aug.** P1+P2+P3 live · preflight PASS. Oscar: **film** → `SEALED-PREDICTION` → Devpost.
+**Night wave · slice 1:** sealed prediction filled with live probes · stranger path re-verified ·
+judge deep link corrected (`?record=` — hero is queue position 14, not first card) · embarrassment
+scrub (`required check` fixture leak · PITCH film spine · outcome-gate comment).
+
+**Oscar only:** film capture · Devpost submit · sealed prediction timestamp if not already stamped.
 
 ---
 
@@ -291,3 +295,4 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 - 2026-08-29 · Full 48h review; pre-submit plan replaces post-only hack.md.
 - 2026-08-29 · Probed: preflight PASS · eligibility 3/3 · branch unprotected · P1+P2 coded.
 - 2026-08-29 · Handbook pass: HANDBOOK-PASS, SEALED-PREDICTION template, PHASE-TRACKER refresh, STRANGER-PASS, voiceover/preflight sync.
+- 2026-09-03 · Night wave: `git pull` + `./film/preflight.sh` PASS (11/11). Live probes: `/health` ok · `H-a6151a95ac` in export · queue pos 14/20 · PR #1 `verify-claims`+`witness-findings` failure · `env -i ./demo.sh` exit 0 · `tests/test_demo.sh` PASS. Sealed prediction draft filled + sha256 `cd74ecf9…`. Fixed judge path (`?record=` not first card) · scrubbed `required check` from fixture/demo leak · P3 documented on README + PARTNER-REMAINING.
