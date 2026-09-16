@@ -53,13 +53,21 @@ before pip sees **0 of 3** and may call the submission broken. README now names 
 `witness-findings` conclusion=`failure` on PR #1. Local test green. README had **zero**
 mentions of P3 / `check_run_summary` / `witness-findings`. Documented this run.
 
-## What would still embarrass us on camera tomorrow
+## Browser verification · live console · 2026-09-16
 
-1. Oscar says "required check" (film spine was wrong until this scrub)
-2. Judge opens PR #1 body and reads the old fixture comment
-3. Judge runs eligibility bare and gets 0/3 while Devpost paste says 1/3
-4. Deployed console without `judgeSafeText` still risks audit fallback text
+Opened `https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?tab=queue` in a real browser.
+
+| Surface | "required check" visible? | Notes |
+|---------|---------------------------|-------|
+| Queue cards | **No** | Cards show assertions (`committed as deadbee`), not `report_preview` |
+| Detail `H-a6151a95ac` | **No** | Gemini explain + probe table; session `01Lzbh4XPYTAgCKg1dciFS3Q`; sha `c99589111f82` |
+| Install tab | **Yes, scrub line** | *"do not call it a required check while protection is off"* — intentional |
+| `GET /health` | n/a | `auth_required: true` · `demo_seed_enabled: false` · `store: firestore` · ADK constructed |
+
+Artifacts: `/opt/cursor/artifacts/screenshots/01-hold-queue.webp` … `05-health.json.webp`.
+
+**Still embarrassing after redeploy of UI scrub:** PR #1 GitHub body (agents cannot edit via `gh` write). Firestore bytes unchanged.
 
 ---
 
-_Commands: curl live `/queue` `/health` · `gh pr view 1` · eligibility two ways · `rg` judge surfaces._
+_Commands: curl live `/queue` `/health` · `gh pr view 1` · eligibility two ways · `rg` judge surfaces · browser open of `/hold/?tab=queue`._
