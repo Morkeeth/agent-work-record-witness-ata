@@ -69,3 +69,52 @@ needs you before the submit button.
 **Agent-updated 2026-08-31:** demo-readiness score and its reason, the video row (twice — the
 second time at 04:50 UTC, correcting *unlisted* to *public* against the rules), and one
 falsifier that was measured and closed overnight.
+
+## Re-measured at objects · 2026-09-16 (night wave · do not treat as re-seal)
+
+Oscar's **Sealed at** cell above stays. Numbers below were read tonight from the live
+service and PR #1 — not carried from an earlier note.
+
+| Object | Measured |
+|--------|----------|
+| `GET /health` | ok=True · product='THE AGENT WORK RECORD WITNESS' · auth_required=True · demo_seed_enabled=False · store=firestore · ADK constructed=True · ever_invoked=True |
+| `GET /queue` | count=20 · hero `H-a6151a95ac` gate=BLOCK decision=HOLD pr=1 head_sha=`c99589111f82…` session=`01Lzbh4XPYTAgCKg1dciFS3Q` agent_invoked=True traceable=True |
+| Hero embarrassment | Firestore `report_preview` still contains **"required check"** on **4/20** holds — UI scrub shipped in `surface/hold/index.html`, Cloud Run deploy pending |
+| PR #1 | state=OPEN · verify-claims=FAILURE · witness-findings=FAILURE |
+| Eligibility (ADK installed, no ADC) | 1 OF 3 MET — exercised on the path a judge runs. · exit 1 |
+| Mutating routes anon | `/clearance` `/break-glass` `/prove` → 401 · `/demo/seed-hold` → 403 |
+| `./demo.sh` cold | exit 0 — see `docs/STRANGER-PASS-2026-09-16.md` |
+| Film md5 (object) | `demo/demo-final-v2.mp4` md5 `d327a995166b63ad3a64f248d5104397` · duration 228.35s |
+
+**Commands:**
+
+```
+curl -sS "$(cat .cloud_run_url)/health"
+curl -sS "$(cat .cloud_run_url)/queue"
+gh pr view 1 --repo Morkeeth/agent-work-record-witness-ata --json state,statusCheckRollup
+python3 contract/eligibility.py
+env -i PATH="$PATH" HOME="$HOME" ./demo.sh
+./film/preflight.sh
+md5sum demo/demo-final-v2.mp4
+```
+
+
+## Draft hash
+
+`sha256:775e836a214a48631819f623c41959e7803a577d4a202c3a4de39ae0d643de80`
+
+SHA-256 of the sealed body: bytes from the start of this file through the end of the
+Scoring rubric section (everything **before** `## After results`). Re-derive:
+
+```bash
+python3 - <<'PY'
+from pathlib import Path
+import hashlib
+doc = Path('docs/SEALED-PREDICTION-2026-08-29.md').read_text()
+# Drop night-wave appendix if present, then take pre-After-results body:
+if '## Re-measured at objects' in doc:
+    doc = doc.split('## Re-measured at objects')[0]
+body = doc.split('## After results')[0]
+print(hashlib.sha256(body.encode()).hexdigest())
+PY
+```

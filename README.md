@@ -53,7 +53,21 @@ compliance, data sovereignty, or security policies."*
 which is the product; the gate above it is only the intake. Transcripto sits outside the boundary
 because it is roadmap and needs a corpus a judge cannot verify.*
 
-### Judge path (60 seconds)
+### Judge path (one command)
+
+```bash
+git clone https://github.com/Morkeeth/agent-work-record-witness-ata
+cd agent-work-record-witness-ata
+./demo.sh                    # exit 0 · PASS / BLOCK / HOLD · no account · no network
+# live URL row (read-only):
+#   console  https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?tab=queue
+#   health   https://fleet-wedge-33kamss2jq-uc.a.run.app/health
+#   PR #1    https://github.com/Morkeeth/agent-work-record-witness-ata/pull/1/checks
+```
+
+Receipt from the latest stranger run: [`docs/STRANGER-PASS-2026-09-16.md`](docs/STRANGER-PASS-2026-09-16.md).
+
+### Judge path (60 seconds, expanded)
 
 ```bash
 git clone https://github.com/Morkeeth/agent-work-record-witness-ata
@@ -335,11 +349,20 @@ reports in other people's tools.
 | **Google Cloud** | Firestore + Cloud Run | live `/health`, `/audit/export` |
 
 ```bash
-python3 contract/eligibility.py          # 3 of 3 with GCP, 1 of 3 cold. Both correct.
+python3 contract/eligibility.py
+# With ADC / Vertex on a Firestore project: 3 OF 3 MET, exit 0.
+# After `pip install -r requirements.txt`, no GCP creds: 1 OF 3 MET (ADK only), exit 1.
+# Bare clone, no pip: 0 OF 3 MET, exit 1. Both cold results are honest; quote the path you ran.
 ./tests/test_auth_gate.sh                # every mutating route rejects anonymous
 PYTHONPATH=. python3 tests/test_record.py
+PYTHONPATH=. python3 tests/test_check_run_summary.py   # P3 witness-findings builder
 curl -sS https://fleet-wedge-33kamss2jq-uc.a.run.app/health
 ```
+
+**P3 · check run summary.** The composite action (`action.yml`) runs
+`gate/check_run_summary.py` after the probe: job summary, annotations, and a
+`witness-findings` Checks API run. PR #1 shows both `verify-claims` and
+`witness-findings` red by design. Local: `PYTHONPATH=. python3 tests/test_check_run_summary.py`.
 
 **Do not read a `/health` 200 as 3 of 3.** It evidences Firestore and the agent. It says nothing
 about Gemini.

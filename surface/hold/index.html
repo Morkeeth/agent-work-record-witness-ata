@@ -668,7 +668,7 @@ function renderStrip(holds) {
       <div class="v">HOLD · <span class="id">${esc(h.id)}</span></div>
       <div class="who">${esc(h.repo || "no repo recorded")} · ${esc(h.actor || "no actor recorded")}
         · ${n} claim${n === 1 ? "" : "s"} probed</div>
-      <div class="a">${esc(block.assertion || h.report_preview || h.id)}</div>
+      <div class="a">${esc(block.assertion || judgeSafeText(h.report_preview) || h.id)}</div>
       <div class="p">${esc(block.probe || "")} → ${esc(block.evidence || "")}</div>
     </div>`;
   }).join("");
@@ -779,6 +779,23 @@ function esc(s) {
     .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
 
+// Judge-facing scrub: stored report_preview from older PR bodies still contains the
+// banned phrase "required check" (branch protection is off). Strip those lines and
+// leading markdown comments so the live console cannot contradict the Install tab.
+function judgeSafeText(s) {
+  return String(s == null ? "" : s)
+    .split(/\r?\n/)
+    .filter(line => {
+      const t = line.trim();
+      if (!t) return false;
+      if (/required check/i.test(t)) return false;
+      if (t.startsWith("#")) return false;
+      return true;
+    })
+    .join(" ")
+    .trim();
+}
+
 async function loadQueue() {
   try {
     const data = await jfetch("/queue");
@@ -810,7 +827,7 @@ async function loadAudit() {
     const events = (data.events || []).slice(0, 40);
     body.innerHTML = events.map(e => {
       const claim = (e.blocks && e.blocks[0] && e.blocks[0].assertion)
-        || e.reason || e.report_preview || e.vc || "";
+        || e.reason || judgeSafeText(e.report_preview) || e.vc || "";
       const clickable = e.kind === "clearance" && e.id ? "clickable" : "";
       return `<tr class="${clickable}" data-id="${esc(e.id || "")}" data-kind="${esc(e.kind || "")}">
         <td>${esc(e.stored_at || "")}</td>

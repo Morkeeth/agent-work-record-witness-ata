@@ -30,12 +30,15 @@ _Film checklist: [`docs/ATA-FILM-AND-SHIP.md`](docs/ATA-FILM-AND-SHIP.md) · **O
 | Anon `POST /prove` | **401** (was 201 before the 2026-08-27 redeploy — re-probe it) |
 | `POST /demo/seed-hold` | **403** (film uses a real agent PR) |
 | `python3 contract/eligibility.py` **with ADC** | **3 OF 3 MET**, exit 0 |
-| `python3 contract/eligibility.py` **cold, no GCP creds** | **1 OF 3 MET** (ADK only), **exit 1** — by design |
+| `python3 contract/eligibility.py` **after `pip install -r requirements.txt`, no GCP creds** | **1 OF 3 MET** (ADK only), **exit 1** — by design |
+| `python3 contract/eligibility.py` **bare clone, no pip** | **0 OF 3 MET**, **exit 1** — also honest; name the path |
 
-**Both eligibility rows are true and a judge may see either one.** Do not paste "3 of 3" anywhere
-without the cold number beside it: a judge who clones this repo and runs the script with no
-credentials gets 1 of 3 and a non-zero exit. That is the designed honest result. Claiming 3 of 3
+**Both credentialed and cold rows are true and a judge may see either cold shape.** Do not paste
+"3 of 3" anywhere without a cold number beside it, and do not paste "1 of 3 cold" without saying
+whether `requirements.txt` was installed. A judge who clones and runs with no packages gets
+**0 of 3**. A judge who installs requirements and strips ADC gets **1 of 3**. Claiming 3 of 3
 unqualified is the exact composition error this product exists to catch.
+
 
 Cold start: first `/health` may hang once — retry.
 

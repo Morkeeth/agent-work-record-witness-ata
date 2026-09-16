@@ -20,6 +20,21 @@ grep -q "8.1" "$FILM_DIR/voiceover.txt" || red "voiceover missing 8.1"
 grep -q "41.7" "$ROOT/docs/SUBMISSION.md" || red "SUBMISSION.md missing 41.7"
 grep -q "8.1" "$ROOT/docs/SUBMISSION.md" || red "SUBMISSION.md missing 8.1"
 
+# Ban on camera (EYES B6): "required check" while branch protection is off.
+# Affirmative uses only — "do not call it a required check" is the scrub line and allowed.
+if grep -nE 'required check' "$FILM_DIR/voiceover.txt" "$FILM_DIR/subtitles.srt" 2>/dev/null \
+  | grep -viE 'do not call it a required check|never say.*required check|not call it a required check' \
+  | grep -q .; then
+  red "film voiceover/subtitles still say 'required check' (branch unprotected)"
+else
+  grn "film scripts ban 'required check'"
+fi
+if ! grep -q 'judgeSafeText' "$ROOT/surface/hold/index.html"; then
+  red "hold console missing judgeSafeText scrub for stored report_preview"
+else
+  grn "hold console carries judgeSafeText scrub"
+fi
+
 # The console is an on-camera surface too. Preflight used to check the voiceover and
 # SUBMISSION.md but never the page a judge actually opens, so the page could drift off
 # the numbers while every check stayed green. Assert the evidence at the object.

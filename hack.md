@@ -75,7 +75,7 @@ Full record: `~/CODE/fleet-ops/retros/QWEN-LOSS-RETRO-2026-08-30.md` (corrected)
 
 | Phase | Gate | Status |
 |-------|------|--------|
-| 5 · Exhibit | `./demo.sh` one-click | ✅ [`STRANGER-PASS`](docs/STRANGER-PASS-2026-08-29.md) |
+| 5 · Exhibit | `./demo.sh` one-click | ✅ [`STRANGER-PASS`](docs/STRANGER-PASS-2026-09-16.md) (refreshed 16 Sep) |
 | 6 · Freeze | Oscar degraded + film | ⛔ `./film/preflight.sh` → [`OSCAR-FILM-CHECKLIST`](docs/OSCAR-FILM-CHECKLIST.md) |
 | 7 · Submit | Devpost + **sealed prediction** | ⛔ [`SEALED-PREDICTION`](docs/SEALED-PREDICTION-2026-08-29.md) |
 
@@ -174,7 +174,8 @@ Use that spine in README top, Devpost ¶1, film 0:00, `/hold/` header — **one 
 
 #### E · Defer past Mon (panel agreement)
 
-- P3 check summary · P4 Cloud Trace · org-lift n=2 · live corpus run on film
+- ~~P3 check summary~~ · **wired** in `action.yml` · proven on PR #1 `witness-findings` · documented README 16 Sep
+- P4 Cloud Trace · org-lift n=2 · live corpus run on film
 - Leading with vendor names (Zenity/Qodo/Langfuse) in first 30s
 - Enabling branch protection *unless* you want "required" language in v2
 
@@ -270,7 +271,16 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🎯 NOW
 
-**RUN COMPLETE 29 Aug.** P1+P2+P3 live · preflight PASS. Oscar: **film** → `SEALED-PREDICTION` → Devpost.
+**NIGHT WAVE 16 Sep · slice 1 DONE (commands below).** Embarrassment scrub + sealed re-measure
++ stranger receipt + P3 docs. Oscar morning: redeploy `/hold/` HTML · film · (optional) edit PR #1 body.
+
+**Done-when — RAN:**
+1. [x] `rg -n 'required check' fixtures/agent-false-done-PR-BODY.md docs/PITCH-WHEN-YOU-ARE-BACK.md` → scrubbed (affirmative gone)
+2. [x] `./film/preflight.sh` → **PREFLIGHT PASS** (2026-09-16)
+3. [x] `env -i PATH="$PATH" HOME="$HOME" ./demo.sh` → exit 0 · `docs/STRANGER-PASS-2026-09-16.md`
+4. [x] Sealed footer `sha256:775e836a214a48631819f623c41959e7803a577d4a202c3a4de39ae0d643de80` · `python3 scripts/fill_sealed_prediction.py` HASH_VERIFIED
+
+**Not this slice / not Oscar's click:** Devpost submit · `./film/capture.sh` · branch protection · judge share · Cloud Run deploy (no gcloud here).
 
 ---
 
@@ -288,6 +298,13 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🪵 LOG
 
+- 2026-09-16 · Night wave: embarrassment hunt at live `/queue` — 4/20 holds still store
+  "required check" in `report_preview` (hero included). Scrubbed fixture + Oscar film spine +
+  workflow comment; shipped `judgeSafeText` in `surface/hold/index.html` (deploy pending).
+  Sealed prediction re-measured from `/health` `/queue` PR #1 + draft `sha256` footer.
+  Stranger cold `./demo.sh` exit 0 · `docs/STRANGER-PASS-2026-09-16.md`. Eligibility re-derived:
+  bare 0/3 · pip+no-ADC 1/3. P3 documented on README (already on `action.yml` / PR #1).
+  Preflight PASS on this branch. Did **not**: capture.sh · Devpost · branch protection · judge share.
 - 2026-08-29 · Full 48h review; pre-submit plan replaces post-only hack.md.
 - 2026-08-29 · Probed: preflight PASS · eligibility 3/3 · branch unprotected · P1+P2 coded.
 - 2026-08-29 · Handbook pass: HANDBOOK-PASS, SEALED-PREDICTION template, PHASE-TRACKER refresh, STRANGER-PASS, voiceover/preflight sync.
