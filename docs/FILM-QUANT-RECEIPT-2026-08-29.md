@@ -61,6 +61,9 @@ PREFLIGHT PASS — safe to run ./film/capture.sh and record.
    Fixed in `surface/hold/index.html` (needs Oscar redeploy to reach live).
 4. **Queue sort buried session joins.** Client-side sort floats `session+traceable` (esp.
    `01…` Claude-shaped sessions) to the top — also needs redeploy.
+   **Verified locally 2026-09-16** (serve `surface/hold` + `?api=$LIVE`): first card becomes
+   `H-a6151a95ac`; deep link sets `selectedId` and shows session. Live unreployed console still
+   shows hero at index 13.
 
 ---
 

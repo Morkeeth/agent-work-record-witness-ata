@@ -30,7 +30,7 @@ _Film checklist: [`docs/ATA-FILM-AND-SHIP.md`](docs/ATA-FILM-AND-SHIP.md) · **O
 | Anon `POST /prove` | **401** (was 201 before the 2026-08-27 redeploy — re-probe it) |
 | `POST /demo/seed-hold` | **403** (film uses a real agent PR) |
 | `python3 contract/eligibility.py` **with ADC** | **3 OF 3 MET**, exit 0 |
-| `python3 contract/eligibility.py` **cold, no GCP creds** | **1 OF 3 MET** (ADK only), **exit 1** — by design |
+| `python3 contract/eligibility.py` **cold, no GCP creds** | **1 OF 3 MET** (ADK only), **exit 1** — by design. Needs `pip install -r requirements.txt` (or `google-adk`) so ADK can construct. **Bare clone, no pip: 0 OF 3**, exit 1 — also by design; `./demo.sh` needs neither. |
 
 **Both eligibility rows are true and a judge may see either one.** Do not paste "3 of 3" anywhere
 without the cold number beside it: a judge who clones this repo and runs the script with no

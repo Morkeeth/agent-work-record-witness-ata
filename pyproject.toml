@@ -32,8 +32,8 @@ witness = "gate.outcome_gate:main"
 witness-corpus = "gate.corpus_scan:main"
 
 [project.urls]
-Homepage = "https://github.com/Morkeeth/hack-fleet-ata"
-Source = "https://github.com/Morkeeth/hack-fleet-ata"
+Homepage = "https://github.com/Morkeeth/agent-work-record-witness-ata"
+Source = "https://github.com/Morkeeth/agent-work-record-witness-ata"
 
 [tool.setuptools]
 packages = ["gate"]

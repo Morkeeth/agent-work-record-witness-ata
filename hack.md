@@ -2,7 +2,7 @@
 doc: hack
 project: The Agent Work Record Witness
 phase: SHIP
-last-touched: 2026-08-29
+last-touched: 2026-09-16
 canonical: true
 event: All Things Agentic · Devpost · Mon 31 Aug 2026 17:00 PDT
 supersedes: docs/THIRTY-DAY-PLAN.md (immune-system era — history only)
