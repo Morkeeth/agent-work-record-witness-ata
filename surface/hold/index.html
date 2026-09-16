@@ -783,13 +783,15 @@ function esc(s) {
 // banned phrase "required check" (branch protection is off). Strip those lines and
 // leading markdown comments so the live console cannot contradict the Install tab.
 function judgeSafeText(s) {
+  // Only drop markdown *comments* (# …) and any line carrying the banned phrase.
+  // Keep ## headings and body — empty result is fine; callers fall back to assertion/id.
   return String(s == null ? "" : s)
     .split(/\r?\n/)
     .filter(line => {
       const t = line.trim();
       if (!t) return false;
       if (/required check/i.test(t)) return false;
-      if (t.startsWith("#")) return false;
+      if (/^#[^#]/.test(t) || t === "#") return false;
       return true;
     })
     .join(" ")

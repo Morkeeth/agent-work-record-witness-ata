@@ -77,10 +77,11 @@ can answer "what actually happened before this claim was written."
 | Google Agent Framework | `cloud/agent.py` `build_agent()` → ADK `LlmAgent` | MET 2 |
 | Google Cloud infrastructure | Firestore default store · Cloud Run `fleet-wedge` | MET 3 · `.cloud_run_url` |
 
-**Eligibility honesty, re-run 2026-08-27:** `contract/eligibility.py` prints **3 OF 3 MET** and
-exits **0** with ADC on the `hack-fleet` project. The same script with no credentials prints
-**1 OF 3 MET** (ADK only) and exits **1**. Both were run today; neither is quoted from a note.
-Say the cold number on camera.
+**Eligibility honesty, re-run 2026-09-16:** `contract/eligibility.py` prints **3 OF 3 MET** and
+exits **0** with ADC on a Firestore + Vertex project. After `pip install -r requirements.txt`
+with no GCP credentials it prints **1 OF 3 MET** (ADK only) and exits **1**. A bare clone with
+no packages prints **0 OF 3 MET** and exits **1**. Name the path on camera — "1 of 3 cold"
+without "after requirements.txt" is under-specified.
 
 **Smoke note:** use `GET /health` or `GET /`. GFE returns HTML 404 for `/healthz`. The video
 must show the `*.run.app` URL.
@@ -167,7 +168,7 @@ survival on the queue · GEAP Memory Bank · cross-harness ingestion beyond Clau
 ## Run
 
 ```bash
-python3 contract/eligibility.py         # 3 of 3 with GCP, 1 of 3 cold (exit 1)
+python3 contract/eligibility.py         # 3/3 ADC · 1/3 after pip, no ADC · 0/3 bare
 ./tests/test_auth_gate.sh               # every mutating route rejects anon · LOCALLY
 curl -sS "$(cat .cloud_run_url)/health"
 ```
