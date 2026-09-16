@@ -2,6 +2,21 @@
 
 **Run it:** `python3 -m gate.tonight_cases` → exits 1, blocks 3 of 4 real claims.
 
+## P3 · check run summary (on the Action path)
+
+`gate/check_run_summary.py` is invoked from `action.yml` step `summary` (`if: always()`), after
+the gate writes findings. It emits the job summary, annotations, and optional Checks API check
+`witness-findings`.
+
+```bash
+PYTHONPATH=. python3 tests/test_check_run_summary.py
+# expect: all green
+```
+
+Probed on PR #1 (2026-09-16): `witness-findings` check exists with conclusion `FAILURE`
+alongside `verify-claims` — red by design on the deadbee body.
+
+
 ## Why this is the company, not a feature
 
 Observability scores the **trace** — what the agent did. This gates the **claim** — whether what it

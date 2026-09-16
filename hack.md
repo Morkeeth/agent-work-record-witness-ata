@@ -156,14 +156,24 @@ Use that spine in README top, Devpost ¶1, film 0:00, `/hold/` header — **one 
 - [ ] **B3** Corpus 41.7→8.1 = **mid-beat** (credibility), not finale
 - [ ] **B4** Say both eligibility numbers: 3/3 (ADC) · 1/3 (cold)
 - [ ] **B5** Optional 15s: `/health` JSON + "Gemini explains; Python decides" if P1 deployed
-- [ ] **B6** Ban on camera: Seed · "required check" · unqualified "3 of 3"
+- [x] **B6** Ban on camera: Seed · "required check" · unqualified "3 of 3"
+      *(voiceover/SRT re-checked 2026-09-16: no "required check"; both eligibility numbers spoken)*
+
+#### B′ · Film-morning truth (2026-09-16 night wave) — **riskiest slice first**
+
+- [x] **B′1** Re-measure live `/queue`: hero not first card — fix judge links to `?record=`
+- [x] **B′2** Fill sealed prediction measured table from live + PR #1 · hash draft
+- [x] **B′3** Refresh STRANGER-PASS with this run's `./demo.sh` + `test_demo.sh`
+- [x] **B′4** Queue sort + deep-link highlight in console (redeploy = Oscar)
+- [x] **B′5** P3 receipt: Action-wired + `tests/test_check_run_summary.py` green
 
 #### C · Devpost one paste source (~45m)
 
 - [ ] **C1** Paste **only** from SUBMISSION-PACK §1 — do not mix SUBMISSION §8 fields
 - [ ] **C2** Moat sentence in "What it does" ¶1 (already in PACK — verify before submit)
 - [ ] **C3** Partner block in "How we built it" from `docs/PARTNER-INTEGRATION-DEEP-DIVE-2026-08-29.md` §8
-- [ ] **C4** Attach architecture PNG — ✅ `docs/architecture.png` exported
+- [x] **C4** Attach architecture PNG — ✅ `docs/architecture.png` exported
+- [x] **C5** PACK §5 testing link 2 → `?record=H-a6151a95ac` (2026-09-16)
 
 #### D · Product surface (after A+B, if time)
 
@@ -174,9 +184,10 @@ Use that spine in README top, Devpost ¶1, film 0:00, `/hold/` header — **one 
 
 #### E · Defer past Mon (panel agreement)
 
-- P3 check summary · P4 Cloud Trace · org-lift n=2 · live corpus run on film
+- P4 Cloud Trace · org-lift n=2 · live corpus run on film
 - Leading with vendor names (Zenity/Qodo/Langfuse) in first 30s
 - Enabling branch protection *unless* you want "required" language in v2
+- ~~P3 check summary~~ — **wired 2026-09-16** (`action.yml` + test green; live on PR #1)
 
 ### Panel · top 3 if we only do three things
 
@@ -270,7 +281,15 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🎯 NOW
 
-**RUN COMPLETE 29 Aug.** P1+P2+P3 live · preflight PASS. Oscar: **film** → `SEALED-PREDICTION` → Devpost.
+**NIGHT WAVE 2026-09-16 · film morning.** One slice: make Oscar's click path true at the object.
+
+- [x] Measure live `/hold/` + PR #1 · fill sealed prediction measured table · hash footer
+      (`sha256` of body above Draft hash = `231a7ea24dc797bf09bc850ef9b5f6d5880f489e489143fecf2e504b03bcc0fc`)
+- [x] Stranger cold path re-run · `docs/STRANGER-PASS-2026-08-29.md` refreshed with THIS run
+- [x] Embarrassment: "first card = H-a6151a95ac" was **false** (hero index 13) — deep link restored
+- [x] Film spine copy: voiceover/SRT clean of "required check"; PITCH/RULING scrubbed
+- [x] P3 on Action path documented · `tests/test_check_run_summary.py` all green
+- [ ] Oscar: redeploy so queue-sort + deep-link highlight reach live · then film
 
 ---
 
@@ -288,6 +307,13 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🪵 LOG
 
+- 2026-09-16 · Night wave film-morning. Preflight PASS. Live `/queue` count=20, first card
+  `H-56f6e3a047`, hero `H-a6151a95ac` at index 13 — README/PACK "first card" claim falsified at
+  object. Restored `?record=H-a6151a95ac` (latch live; Playwright: session opens, no loop).
+  Client sort + openClearance highlight in `surface/hold/index.html` (needs redeploy). Sealed
+  prediction measured table filled + body hash. Stranger pass re-run (`demo.sh` exit 0,
+  `test_demo.sh` PASS). P3 test green. Scrubbed "required check" in PITCH-WHEN-YOU-ARE-BACK +
+  THE-PITCH-RULING. Added `scripts/film_morning_probe.py`.
 - 2026-08-29 · Full 48h review; pre-submit plan replaces post-only hack.md.
 - 2026-08-29 · Probed: preflight PASS · eligibility 3/3 · branch unprotected · P1+P2 coded.
 - 2026-08-29 · Handbook pass: HANDBOOK-PASS, SEALED-PREDICTION template, PHASE-TRACKER refresh, STRANGER-PASS, voiceover/preflight sync.

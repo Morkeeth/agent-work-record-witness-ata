@@ -1,9 +1,12 @@
-# Film quant receipt · ATA · 29 Aug 2026
+# Film quant receipt · ATA · 16 Sep 2026 (film morning re-probe)
 
-**Runner:** Cloud Agent (preflight + quant probes)  
-**Repo:** `Morkeeth/agent-work-record-witness-ata` @ `dea2409`  
+**Runner:** Cloud Agent (preflight + quant + Playwright)  
+**Repo:** `Morkeeth/agent-work-record-witness-ata` @ branch `cursor/night-wave-film-morning-e7e3`  
 **Live URL:** `https://fleet-wedge-33kamss2jq-uc.a.run.app`  
-**Probed at:** 2026-08-29 (UTC)
+**Probed at:** 2026-09-16 (UTC)
+
+Supersedes the 2026-08-29 receipt for any number that drifted. Numbers below were re-derived
+at the object tonight — not carried forward.
 
 ---
 
@@ -11,72 +14,22 @@
 
 | Metric | Result |
 |--------|--------|
-| Preflight checks | **11 ok / 11 total** |
-| `./demo.sh --film` exit code | **0** |
-| Voiceover / film beat count | **8** (8 spoken lines = 8 subtitle cues) |
-| Hero record `H-a6151a95ac` in `/audit/export` | **yes** |
-| Live `/health` eligibility fields | `auth_required` · `demo_seed_enabled` · `store` |
-| Live `/hold/` Google Material theme | **yes** (`--primary: #1a73e8` · `--sans: "Google Sans"` · `--shadow-1`) |
+| Preflight | **PASS** (`./film/preflight.sh` ? `PREFLIGHT PASS`) |
+| `./demo.sh` cold exit | **0** |
+| Voiceover / subtitle beats | **8 = 8** |
+| "required check" in voiceover/SRT | **absent** (`rg` clean) |
+| Eligibility language | says **both** 3/3 (ADC) and 1/3 (cold) — not unqualified |
+| Hero in `/audit/export` | **yes** |
+| Hero in `/queue` | **yes · index 13** (first card is `H-56f6e3a047`) |
+| Deep link `?record=H-a6151a95ac` | **works** (Playwright · session visible · no tab loop) |
+| Live `/hold/` theme | `--primary: #1a73e8` · `--sans: "Roboto"` (not Google Sans) |
+| PR #1 | OPEN · `verify-claims=FAILURE` · `witness-findings=FAILURE` |
 
-**Verdict:** PREFLIGHT PASS — safe for Oscar to roll `./film/capture.sh`.
-
----
-
-## Preflight checks (named)
-
-| # | Check | Result |
-|---|-------|--------|
-| 1 | Canonical numbers in voiceover + `docs/SUBMISSION.md` (78,618 · 41.7 · 8.1) | **PASS** |
-| 2 | `/hold/` console on-camera surface (41.7 ? 8.1 · `H-a6151a95ac` · finding + stack tabs) | **PASS** |
-| 3 | Voiceover lines vs subtitle blocks (8 = 8) | **PASS** |
-| 4 | `./demo.sh` cold, no network | **PASS** |
-| 5 | `demo.sh` exit 0 | **PASS** |
-| 6 | `/health` live payload | **PASS** |
-| 7 | Record row `H-a6151a95ac` probe | **PASS** |
-| 8 | Record `H-a6151a95ac` present in export | **PASS** |
-| 9 | PR #1 verify-claims red-by-design probe | **PASS** |
-| 10 | PR #1 open | **PASS** |
-| 11 | `verify-claims` conclusion = `failure` (asserted at object) | **PASS** |
-
-**Note (non-blocking):** `.hold_api_token` missing locally — create before live break-glass on camera.
+**Verdict:** PREFLIGHT PASS. Judge/film path must use `?record=H-a6151a95ac`, not "first card".
 
 ---
 
-## `./demo.sh --film`
-
-| Field | Value |
-|-------|-------|
-| Exit code | **0** |
-| Beat count | **8** (voiceover `film/voiceover.txt` · preflight 8 lines = 8 SRT cues) |
-| Verdicts shown | PASS (0) · BLOCK (1) · HOLD (2) |
-
----
-
-## Hero record · `/audit/export`
-
-| Field | Value |
-|-------|-------|
-| Record ID | `H-a6151a95ac` |
-| Present in export | **yes** |
-| Session | `01Lzbh4XPYTAgCKg1dciFS3Q` |
-
----
-
-## Live `/health` · eligibility fields
-
-Probe: `GET https://fleet-wedge-33kamss2jq-uc.a.run.app/health`
-
-| Field | Value | Eligibility meaning |
-|-------|-------|---------------------|
-| `auth_required` | `true` | Writes gated · anon probe closed |
-| `demo_seed_enabled` | `false` | No demo seed on live surface |
-| `store` | `firestore` | GCP Firestore default store |
-
-Additional payload (informational): `product` = THE AGENT WORK RECORD WITNESS · `ok` = true · ADK agent constructed.
-
----
-
-## Preflight log (verbatim)
+## Preflight log (verbatim · this run)
 
 ```
 ok: checking canonical numbers in voiceover + SUBMISSION.md
@@ -98,13 +51,38 @@ PREFLIGHT PASS — safe to run ./film/capture.sh and record.
 
 ---
 
-## Not done (Oscar / post-receipt)
+## Drift found tonight (embarrassing · fixed in docs, UI sort pending redeploy)
 
-- [ ] Screen recording ?4:00
-- [ ] `docs/SEALED-PREDICTION-2026-08-29.md` Oscar timestamp block
-- [ ] Devpost submit
-- [ ] Deploy without this receipt
+1. **README / PACK said "click the first card (H-a6151a95ac)".** Live `/queue` first card is
+   `H-56f6e3a047` (corpus-scan, `session=null`). Hero at index 13. Fixed: deep link restored.
+2. **FILM-QUANT-RECEIPT-2026-08-29 claimed `--sans: "Google Sans"`.** Live HTML (byte-identical
+   to `surface/hold/index.html`) uses `"Roboto"`. Corrected in this receipt.
+3. **`openClearance` re-called `tab("queue")` ? `loadQueue`**, wiping `.mark.on` on deep link.
+   Fixed in `surface/hold/index.html` (needs Oscar redeploy to reach live).
+4. **Queue sort buried session joins.** Client-side sort floats `session+traceable` (esp.
+   `01…` Claude-shaped sessions) to the top — also needs redeploy.
 
 ---
 
-*Live revision `fleet-wedge-00012-5w6` · re-probed 2026-08-29 (UTC)*
+## Hero record · live
+
+| Field | Value |
+|-------|-------|
+| Record ID | `H-a6151a95ac` |
+| Session | `01Lzbh4XPYTAgCKg1dciFS3Q` |
+| head_sha | `c99589111f82ca4b8a074220cbb5a358b33f5941` |
+| gate / decision | BLOCK / HOLD |
+| agent_explanation.invoked | true · `gemini-3.5-flash-lite` |
+| pct_cleared_without_hold | 0.0 |
+
+---
+
+## Oscar / post-receipt
+
+- [ ] Redeploy Cloud Run so queue sort + deep-link highlight ship to live HTML
+- [ ] Screen recording ?4:00 — open `?record=H-a6151a95ac`, never say "required check"
+- [ ] Do **not** click the first card on an unreployed console
+
+---
+
+*Live HTML md5 `ca7f2c0dfbbfd2792b052ca7559b8d24` · matched repo file before this branch's UI edits.*

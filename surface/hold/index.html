@@ -634,9 +634,21 @@ function prLinks(h) {
 }
 
 function openClearance(h) {
-  tab("queue");
+  // Show the queue pane without calling tab("queue") → loadQueue again.
+  // That re-fetch wiped .mark.on and left the deep-linked detail selected
+  // with no highlighted card (measured 2026-09-16 against live ?record=).
+  document.querySelectorAll("nav button").forEach(b =>
+    b.classList.toggle("on", b.dataset.tab === "queue"));
+  ["finding","stack","queue","install","policy","audit","registry"].forEach(t => {
+    document.getElementById("tab-" + t).classList.toggle("hidden", t !== "queue");
+  });
+  showErr("");
   selected = h;
   showDetail(h);
+  document.querySelectorAll("#strip .mark").forEach(x =>
+    x.classList.toggle("on", x.dataset.id === h.id));
+  const on = document.querySelector("#strip .mark.on");
+  if (on) on.scrollIntoView({ behavior: "smooth", block: "nearest" });
   document.getElementById("detail").scrollIntoView({ behavior: "smooth", block: "nearest" });
 }
 
@@ -779,10 +791,31 @@ function esc(s) {
     .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
 
+function holdSortKey(h) {
+  // Product-honest order: a held claim that opens back to a session is the
+  // product. Newest-first API order buried the film hero under 13 corpus-scan
+  // rows with no session (measured live 2026-09-16: first card H-56f6e3a047,
+  // H-a6151a95ac at index 13). Prefer real session-shaped joins, then newer.
+  const hasJoin = (h.session && h.traceable) ? 0 : 1;
+  const sess = String(h.session || "");
+  const shape = sess.startsWith("01") ? 0 : 1;
+  const t = h.stored_at || "";
+  return [hasJoin, shape, t];
+}
+
 async function loadQueue() {
   try {
     const data = await jfetch("/queue");
-    queueHolds = data.holds || [];
+    queueHolds = (data.holds || []).slice().sort((a, b) => {
+      const ka = holdSortKey(a), kb = holdSortKey(b);
+      // hasJoin, shape ascending; stored_at descending (newer first among peers)
+      for (let i = 0; i < 2; i++) {
+        if (ka[i] !== kb[i]) return ka[i] - kb[i];
+      }
+      if (ka[2] < kb[2]) return 1;
+      if (ka[2] > kb[2]) return -1;
+      return 0;
+    });
     renderStrip(queueHolds);
     const want = params.get("record");
     if (want && !recordOpened) {

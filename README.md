@@ -58,13 +58,18 @@ because it is roadmap and needs a corpus a judge cannot verify.*
 ```bash
 git clone https://github.com/Morkeeth/agent-work-record-witness-ata
 cd agent-work-record-witness-ata
-./demo.sh                    # full walkthrough · exits 0
+./demo.sh                    # full walkthrough · exits 0 · no account · no network
 ./demo.sh --film             # compact — same verdicts, for screen recording
 curl -sS https://fleet-wedge-33kamss2jq-uc.a.run.app/health | head
-# open hold console → the queue, then click the first card (H-a6151a95ac):
-# https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?tab=queue
+# open the film hero record (deep link — do NOT click "first card"):
+# https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?record=H-a6151a95ac
 # PR checks: https://github.com/Morkeeth/agent-work-record-witness-ata/pull/1/checks
 ```
+
+**Why not "first card".** Measured 2026-09-16 against live `/queue`: 20 open holds, first
+card is `H-56f6e3a047` (corpus-scan, no session). Film hero `H-a6151a95ac` is at index 13.
+`?record=H-a6151a95ac` opens it with session `01Lzbh4XPYTAgCKg1dciFS3Q` and does not loop
+(latch is on the live HTML). Clicking the first card is the wrong object.
 
 **One warning before you click, so nothing on this path surprises you.** On that card, *"open the
 run that produced this claim"* leaves the console for `claude.ai` and asks you to sign in — and the

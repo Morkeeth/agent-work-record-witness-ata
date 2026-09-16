@@ -10,7 +10,7 @@
 |----|---------|------|-------|
 | P1 | Gemini + ADK | explain on HOLD clearance | ⛔ needs **D1 deploy** |
 | P2 | GitHub Action | session · actor · head_sha in JSON | ⛔ needs **D2 re-run PR** |
-| P3 | GitHub Checks | `gate/check_run_summary.py` — summary + annotations + `witness-findings` check | ✅ coded · push + PR sync |
+| P3 | GitHub Checks | `gate/check_run_summary.py` — summary + annotations + `witness-findings` check | ✅ on Action path (`action.yml` step `summary`) · `PYTHONPATH=. python3 tests/test_check_run_summary.py` → all green · PR #1 shows `witness-findings=FAILURE` (2026-09-16) |
 
 ---
 

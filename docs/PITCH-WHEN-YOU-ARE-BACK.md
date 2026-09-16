@@ -28,7 +28,7 @@
 **Open these two tabs:**
 
 - https://github.com/Morkeeth/agent-work-record-witness-ata/pull/1 (red check = success)
-- https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/ (row `H-a6151a95ac`)
+- https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?record=H-a6151a95ac
 
 ---
 
@@ -38,7 +38,7 @@
 |---|---|
 | 0:00 | Problem — seats ≠ practice; agents claim work you can't verify |
 | 0:30 | `./demo.sh` — stranger catches false claim, no account |
-| 1:30 | PR #1 — agent label → required check fails on deadbee |
+| 1:30 | PR #1 — agent label → verify-claims fails on deadbee |
 | 2:30 | `/hold/` — open the hold; click through to session |
 | 3:15 | GCP — `/health` · say full product name twice |
 | 3:45 | Honest close — corpus is opt-in; record fills from your PRs |

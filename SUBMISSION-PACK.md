@@ -254,9 +254,11 @@ Every tab renders the underlying API response in place, so there is nothing to c
    repository. Corrected: 8.1%. The gap was our own probe, not the agents.
 
 2. **The record** — one real agent pull request that went through the gate
-   `https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?tab=queue`
-   Click the first card in the queue — `H-a6151a95ac`. It failed on purpose and is held. Nothing has ever cleared. The Audit tab reads
-   **0% CLEAR**, which is the honest state, not a broken demo.
+   `https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?record=H-a6151a95ac`
+   Opens record `H-a6151a95ac` with session `01Lzbh4XPYTAgCKg1dciFS3Q`. It failed on purpose and
+   is held. Nothing has ever cleared. The Audit tab reads **0% CLEAR**, which is the honest
+   state, not a broken demo. **Do not click the first card in `?tab=queue`** — measured
+   2026-09-16 the first card is a corpus-scan hold with no session; the film hero is at index 13.
 
 3. **Where it runs on Google** — every service on the request path, with the probe that shows it
    `https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/#stack`
@@ -279,18 +281,15 @@ _Raw endpoints, if you prefer them: `/health`, `/audit`, `/audit/export`, `/poli
 
 **— end of the §5 paste. Everything below is an operator note, not for Devpost. —**
 
-**Why link 2 is `?tab=queue` and not the older `?record=H-a6151a95ac` deep link.**
-On the deployed revision `?record=` puts the console in an unbounded loop: `loadQueue()`
-re-reads `?record` on every call, calls `openClearance()`, which calls `tab("queue")`,
-which calls `loadQueue()` again. Measured 2026-08-31 with headless Chromium:
-**41 `GET /queue` in 10.5s against the live service** (network-bound) and **8,352 in 10.5s
-against a local copy of the same file**, and a click on "Google stack" left `tab-queue`
-visible 4.5s later — the reader cannot leave the queue. `?tab=queue` measured **1
-`GET /queue`**, the `H-a6151a95ac` card is the first row, one click opens the record with
-its session trace, and every tab still works. The one-line latch that fixes `?record=` is on
-branch `nightrun/l1-shipprep` in `surface/hold/index.html`; it only reaches judges after a
-redeploy, which is why the link was changed instead. **Deploying is optional; changing the
-link is not.**
+**Why link 2 is `?record=H-a6151a95ac` again (updated 2026-09-16).**
+On 2026-08-31 the live console looped on `?record=` (unbounded `loadQueue` → `openClearance` →
+`tab("queue")`). The latch that breaks that loop is now on the **live** HTML (byte-identical to
+`surface/hold/index.html`, md5 `ca7f2c0dfbbfd2792b052ca7559b8d24`). Playwright against live
+2026-09-16: `?record=H-a6151a95ac` opens the hero with session + deadbee evidence, then a click
+on "Google stack" leaves `tab-stack` visible — no loop. The `?tab=queue` "first card" workaround
+is now **false**: live `/queue` returns 20 holds, first card `H-56f6e3a047` (no session), hero at
+index 13. Deep-link the id. A client-side sort that floats session joins to the top is in this
+repo and reaches judges only after Oscar redeploys.
 
 # 6 · Built with (Devpost "Built with" field)
 `google-cloud-run` · `firestore` · `vertex-ai` · `gemini-3.5-flash-lite` · `google-adk` ·
