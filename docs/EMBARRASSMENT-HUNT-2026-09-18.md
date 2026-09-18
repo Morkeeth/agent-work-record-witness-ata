@@ -18,6 +18,7 @@ grep -Rni 'required check' film/voiceover.txt film/subtitles.srt film/voiceover-
 | `./demo.sh` stdout | `env -i PATH="$PATH" HOME="$HOME" ./demo.sh \| grep -ni 'required check'` | **HIT** before fix — fixture comment truncated into the report preview |
 | Live export hero | `curl -sS …/audit/export` → `H-a6151a95ac.report_preview` | **HIT** — stored preview still starts with the old fixture comment |
 | PR #1 body | `gh pr view 1 --json body -q .body` | **HIT** — same fixture text live on GitHub |
+| `/hold/` detail UI (browser) | open card `H-a6151a95ac` | **no** literal `required check` in rendered detail (Gemini explain + evidence table); contamination is in export/PR body, not the painted card |
 | `tests/test_demo.sh` | patterns `'As a required PR check'` / `'As an required'` | **FALSE GREEN** — PASS while demo stdout contained `required check` |
 | `/hold/` Install tab | curl HTML | advisory only: *"do not call it a required check"* (allowed) |
 | Film voiceover/SRT | grep | clean (0 hits) |
