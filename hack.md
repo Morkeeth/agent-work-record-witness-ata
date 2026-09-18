@@ -2,7 +2,7 @@
 doc: hack
 project: The Agent Work Record Witness
 phase: SHIP
-last-touched: 2026-08-29
+last-touched: 2026-09-18
 canonical: true
 event: All Things Agentic · Devpost · Mon 31 Aug 2026 17:00 PDT
 supersedes: docs/THIRTY-DAY-PLAN.md (immune-system era — history only)
@@ -220,6 +220,7 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 | **Live UI schism** | `/hold/` says HOLD + required check | **closed 29 Aug** — EYES A3 + D3 |
 | **voiceover MP3** | script only | **Buildable** — Kokoro if kvenv exists |
 | **Repo share judges** | not confirmed | **Oscar** — testing@ + cloudhackathons@ |
+| **Live report_preview / PR #1 body** | still say `required check` (measured 18 Sep) | **Oscar** — edit PR body + re-clearance; `./tests/test_live_preview_scrub.sh` watches RED → green |
 
 ### Judging map (Fortified Enterprise Fleet)
 
@@ -270,7 +271,14 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🎯 NOW
 
-**RUN COMPLETE 29 Aug.** P1+P2+P3 live · preflight PASS. Oscar: **film** → `SEALED-PREDICTION` → Devpost.
+**NIGHT WAVE · 18 Sep 2026.** One slice: **embarrassment scrub + sealed measurements + stranger re-probe.**
+
+Riskiest first (done-when = RUN):
+
+1. Open live `/hold/` + `/audit/export` + PR #1 — not docs — for sealed numbers.
+2. Grep judge-facing **objects** (demo stdout, PR body, export preview), not film titles.
+3. Fix false-green `test_demo.sh` control; scrub fixture; refresh STRANGER-PASS + FILM-QUANT; P3 receipt at Checks API object.
+4. Do **not** Devpost / capture.sh / branch protection / share judges.
 
 ---
 
@@ -288,6 +296,7 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🪵 LOG
 
+- 2026-09-18 · Night wave: measured live `/health`+`/hold/`+export (25 events, hero BLOCK/HOLD open) · PR #1 verify-claims+witness-findings both failure · sealed prediction night-wave table + sha256 `775e836a…` · stranger `./demo.sh` EXIT 0 + `tests/test_demo.sh` PASS · preflight PASS · **found** false-green scrub in `test_demo.sh` (patterns missed fixture `required check` printed in demo) · scrubbed fixture + docs · live PR body + Firestore preview still contaminated (Oscar) · cold eligibility this VM **0/3** exit 1 (no ADK) · P3 receipt at Checks API object · docs: EMBARRASSMENT-HUNT, STRANGER-PASS-2026-09-18, FILM-QUANT-2026-09-18, P3-CHECK-SUMMARY-RECEIPT.
 - 2026-08-29 · Full 48h review; pre-submit plan replaces post-only hack.md.
 - 2026-08-29 · Probed: preflight PASS · eligibility 3/3 · branch unprotected · P1+P2 coded.
 - 2026-08-29 · Handbook pass: HANDBOOK-PASS, SEALED-PREDICTION template, PHASE-TRACKER refresh, STRANGER-PASS, voiceover/preflight sync.

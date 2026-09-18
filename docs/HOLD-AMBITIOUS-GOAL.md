@@ -15,12 +15,12 @@ Ship **outcome clearance for agentic production** — a Gateway enterprises woul
 
 | # | Requirement | Evidence |
 |---|-------------|----------|
-| 1 | HOLD console + Gateway live on Cloud Run | `/hold/`, `/health` product=HOLD, auth_required |
+| 1 | HOLD console + Gateway live on Cloud Run | `/hold/`, `/health` product=THE AGENT WORK RECORD WITNESS, auth_required |
 | 2 | Writes locked; Seed off for film | `/config` demo_seed_enabled=false; anon POST /clearance → 401 |
-| 3 | Real agent-PR path (no Seed) | `agent` label + `fixtures/agent-false-done-PR-BODY.md` → required check red |
+| 3 | Real agent-PR path (no Seed) | `agent` label + `fixtures/agent-false-done-PR-BODY.md` → verify-claims red |
 | 4 | Break-glass + audit export | Console + `/audit/export` |
 | 5 | Registry footnote honest | `/prove` + UNMEASURED on n=2 |
-| 6 | Eligibility 3/3 | `python3 contract/eligibility.py` |
+| 6 | Eligibility both numbers | `python3 contract/eligibility.py` — 3/3 with ADC · 1/3 cold (say both) |
 | 7 | Devpost pack under HOLD | `SUBMISSION-PACK.md` + film sheet |
 | 8 | origin shows HOLD (not old Hack Fleet README) | `git push` of this tree |
 

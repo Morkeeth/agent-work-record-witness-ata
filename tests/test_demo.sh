@@ -20,8 +20,15 @@ chk 'GATE: HOLD'   'a test claim HOLDS, never guessed'
 chk 'finding UNVERIFIABLE' 'UNVERIFIABLE finding maps to HOLD gate'
 chk 'NOT a commit in this repo' 'the SHA probe output is shown, not summarised'
 chk 'NO SUCH PATH in the repo'  'the path probe output is shown, not summarised'
-nochk 'As a required PR check' 'does not say required check (branch protection off)'
-nochk 'As an required' 'does not say required check'
+# Substring match — the prior patterns ('As a required PR check' / 'As an required')
+# returned green while demo.sh printed fixture line "prove HOLD as a required check".
+# A control that cannot go red is not a control (hack.md week lesson).
+if printf '%s' "$OUT" | grep -qi 'required check'; then
+  echo "  FAIL  does not say required check (branch protection off)"
+  fail=1
+else
+  echo "  ok    does not say required check (branch protection off)"
+fi
 nochk '\.trace/trace\.db'  'reads no transcript database'
 nochk 'Traceback'          'no traceback'
 

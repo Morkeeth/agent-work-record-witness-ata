@@ -58,13 +58,16 @@ because it is roadmap and needs a corpus a judge cannot verify.*
 ```bash
 git clone https://github.com/Morkeeth/agent-work-record-witness-ata
 cd agent-work-record-witness-ata
-./demo.sh                    # full walkthrough · exits 0
-./demo.sh --film             # compact — same verdicts, for screen recording
-curl -sS https://fleet-wedge-33kamss2jq-uc.a.run.app/health | head
-# open hold console → the queue, then click the first card (H-a6151a95ac):
+./demo.sh                    # full walkthrough · exits 0 · no account · no network
+# live URL row (queue → card H-a6151a95ac):
 # https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?tab=queue
-# PR checks: https://github.com/Morkeeth/agent-work-record-witness-ata/pull/1/checks
+# PR checks (verify-claims + witness-findings / P3): 
+# https://github.com/Morkeeth/agent-work-record-witness-ata/pull/1/checks
+curl -sS https://fleet-wedge-33kamss2jq-uc.a.run.app/health | head
+./demo.sh --film             # compact — same verdicts, for screen recording
 ```
+
+Cold-clone receipt: [`docs/STRANGER-PASS-2026-09-18.md`](docs/STRANGER-PASS-2026-09-18.md).
 
 **One warning before you click, so nothing on this path surprises you.** On that card, *"open the
 run that produced this claim"* leaves the console for `claude.ai` and asks you to sign in — and the
