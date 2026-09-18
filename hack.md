@@ -299,8 +299,10 @@ PR #1 · `sha256` footer · `./demo.sh` + `tests/test_demo.sh` green with real b
   `required check` from fixture while `test_demo.sh` grepped the wrong strings (control
   green on a leak); fixture + Install tab + judge docs scrubbed; control now greps the
   bigram. Eligibility tonight: 0/3 bare · 1/3 after `pip install -r requirements.txt`,
-  exit 1 both. Preflight PASS at start. **Did not:** Devpost submit · `./film/capture.sh` ·
-  branch protection · share repo · Cloud Run redeploy.
+  exit 1 both — README/PACK updated to say which cold arm. Preflight PASS. **Still red
+  at live objects Oscar must touch:** Cloud Run `/hold/` Install tab still prints the
+  bigram (md5 ≠ local); PR #1 body still has the fixture comment (gh write blocked).
+  **Did not:** Devpost submit · `./film/capture.sh` · branch protection · share repo.
 - 2026-08-29 · Full 48h review; pre-submit plan replaces post-only hack.md.
 - 2026-08-29 · Probed: preflight PASS · eligibility 3/3 · branch unprotected · P1+P2 coded.
 - 2026-08-29 · Handbook pass: HANDBOOK-PASS, SEALED-PREDICTION template, PHASE-TRACKER refresh, STRANGER-PASS, voiceover/preflight sync.

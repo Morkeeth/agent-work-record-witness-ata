@@ -25,6 +25,13 @@ chk 'NO SUCH PATH in the repo'  'the path probe output is shown, not summarised'
 # fixtures/agent-false-done-PR-BODY.md printed "as a required check" in ./demo.sh.
 nochk 'required check' 'does not say required check (branch protection off)'
 nochk 'Required check' 'does not say Required check'
+# Pin the fixture itself — the leak lived in a comment that outcome_gate echoes.
+if grep -q 'required check\|Required check' fixtures/agent-false-done-PR-BODY.md; then
+  echo "  FAIL  fixture agent-false-done-PR-BODY.md contains required-check bigram"
+  fail=1
+else
+  echo "  ok    fixture has no required-check bigram"
+fi
 nochk '\.trace/trace\.db'  'reads no transcript database'
 nochk 'Traceback'          'no traceback'
 

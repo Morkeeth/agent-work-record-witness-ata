@@ -43,9 +43,13 @@ curl -sS -o /dev/null -w "%{http_code}\n" https://fleet-wedge-33kamss2jq-uc.a.ru
 curl -sS -o /dev/null -w "%{http_code}\n" https://fleet-wedge-33kamss2jq-uc.a.run.app/health
 ```
 
-**Receipt (verbatim grades):**
+**Receipt (verbatim grades) · branch `cursor/night-wave-sealed-stranger-ed7f` @ `3cc6228`:**
 
 ```
+HEAD=3cc6228
+demo_exit=0
+NO LEAK  (rg 'required check|Required check' on ./demo.sh stdout)
+
 test_demo.sh
   ok    demo.sh exits 0
   ok    an honest report PASSES  (the check can say yes)
@@ -61,13 +65,24 @@ test_demo.sh
   PASS
 ```
 
+**Cold clone command that produced it:**
+
+```bash
+git clone --branch cursor/night-wave-sealed-stranger-ed7f --single-branch \
+  https://github.com/Morkeeth/agent-work-record-witness-ata
+cd agent-work-record-witness-ata
+env -i PATH="$PATH" HOME="$HOME" ./demo.sh
+env -i PATH="$PATH" HOME="$HOME" bash tests/test_demo.sh
+```
+
 **Live HTTP (same session):** `/hold/?tab=queue` → **200** · `/health` → **200**
 
 **Control fix shipped with this pass:** `tests/test_demo.sh` previously grepped only
 `As a required PR check` / `As an required`, so a fixture comment containing
 `as a required check` kept the control green while `./demo.sh` printed the banned
-bigram. The control now greps the bigram itself; the fixture was scrubbed; demo
-stdout on this run has **no** match for `required check`.
+bigram. Proven on main @ `4a45551` before this branch: demo stdout matched
+`required check` and `test_demo.sh` still printed PASS. The control now greps the
+bigram itself; the fixture was scrubbed; demo stdout on `3cc6228` has **no** match.
 
 ## Not claimed
 

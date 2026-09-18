@@ -341,7 +341,11 @@ reports in other people's tools.
 | **Google Cloud** | Firestore + Cloud Run | live `/health`, `/audit/export` |
 
 ```bash
-python3 contract/eligibility.py          # 3 of 3 with GCP, 1 of 3 cold. Both correct.
+python3 contract/eligibility.py
+# 3 of 3 with GCP+ADC (exit 0).
+# 1 of 3 after `pip install -r requirements.txt` with no ADC (ADK only, exit 1).
+# 0 of 3 on bare python3 with no google-adk package (exit 1).
+# All three are correct; do not paste "1 of 3 cold" without saying which arm.
 ./tests/test_auth_gate.sh                # every mutating route rejects anonymous
 PYTHONPATH=. python3 tests/test_record.py
 curl -sS https://fleet-wedge-33kamss2jq-uc.a.run.app/health
