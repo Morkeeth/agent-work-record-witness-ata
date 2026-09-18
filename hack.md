@@ -270,7 +270,12 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🎯 NOW
 
-**RUN COMPLETE 29 Aug.** P1+P2+P3 live · preflight PASS. Oscar: **film** → `SEALED-PREDICTION` → Devpost.
+**Night wave · slice 1 (risk-first):** sealed prediction object appendix + embarrassment scrub
+of the stranger-demo `required check` leak (fixture + broken `test_demo.sh` control).
+
+Done-when (must be RUN): `docs/SEALED-PREDICTION-2026-08-29.md` filled from live `/hold/` +
+PR #1 · `sha256` footer · `./demo.sh` + `tests/test_demo.sh` green with real bigram control ·
+`docs/STRANGER-PASS-2026-09-18.md` receipt from this branch.
 
 ---
 
@@ -288,6 +293,14 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🪵 LOG
 
+- 2026-09-18 · Night wave: sealed prediction object appendix from live `/queue` + PR #1;
+  stranger one-command README + `STRANGER-PASS-2026-09-18`; P3 receipt (already on
+  `action.yml`, check-run `99099248806`); embarrassment — `./demo.sh` printed
+  `required check` from fixture while `test_demo.sh` grepped the wrong strings (control
+  green on a leak); fixture + Install tab + judge docs scrubbed; control now greps the
+  bigram. Eligibility tonight: 0/3 bare · 1/3 after `pip install -r requirements.txt`,
+  exit 1 both. Preflight PASS at start. **Did not:** Devpost submit · `./film/capture.sh` ·
+  branch protection · share repo · Cloud Run redeploy.
 - 2026-08-29 · Full 48h review; pre-submit plan replaces post-only hack.md.
 - 2026-08-29 · Probed: preflight PASS · eligibility 3/3 · branch unprotected · P1+P2 coded.
 - 2026-08-29 · Handbook pass: HANDBOOK-PASS, SEALED-PREDICTION template, PHASE-TRACKER refresh, STRANGER-PASS, voiceover/preflight sync.

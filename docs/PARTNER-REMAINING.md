@@ -8,9 +8,9 @@
 
 | ID | Partner | What | Live? |
 |----|---------|------|-------|
-| P1 | Gemini + ADK | explain on HOLD clearance | ⛔ needs **D1 deploy** |
-| P2 | GitHub Action | session · actor · head_sha in JSON | ⛔ needs **D2 re-run PR** |
-| P3 | GitHub Checks | `gate/check_run_summary.py` — summary + annotations + `witness-findings` check | ✅ coded · push + PR sync |
+| P1 | Gemini + ADK | explain on HOLD clearance | ✅ live on `H-a6151a95ac` (`agent_explanation.model=gemini-3.5-flash-lite`, re-probed 2026-09-18) |
+| P2 | GitHub Action | session · actor · head_sha in JSON | ✅ live on `H-a6151a95ac` (`session` + `head_sha` present) |
+| P3 | GitHub Checks | `gate/check_run_summary.py` — summary + annotations + `witness-findings` check | ✅ **live on PR #1** · check-run `99099248806` · see [`P3-CHECK-SUMMARY-RECEIPT-2026-09-18.md`](P3-CHECK-SUMMARY-RECEIPT-2026-09-18.md) |
 
 ---
 
@@ -57,6 +57,6 @@
 
 ## Next agent slice
 
-1. Push P3 · re-sync PR #1 to see `witness-findings` check + annotations  
-2. Oscar: D1 deploy  
+1. ~~Push P3 · re-sync PR #1 to see `witness-findings`~~ **done** — check-run `99099248806` live
+2. Oscar: redeploy `/hold/` if Install-tab scrub must reach judges (repo file fixed 2026-09-18)
 3. P4 only if calendar allows

@@ -1,4 +1,4 @@
-# Film quant receipt · ATA · 29 Aug 2026
+# Film quant receipt ï¿½ ATA ï¿½ 29 Aug 2026
 
 **Runner:** Cloud Agent (preflight + quant probes)  
 **Repo:** `Morkeeth/agent-work-record-witness-ata` @ `dea2409`  
@@ -15,10 +15,10 @@
 | `./demo.sh --film` exit code | **0** |
 | Voiceover / film beat count | **8** (8 spoken lines = 8 subtitle cues) |
 | Hero record `H-a6151a95ac` in `/audit/export` | **yes** |
-| Live `/health` eligibility fields | `auth_required` · `demo_seed_enabled` · `store` |
-| Live `/hold/` Google Material theme | **yes** (`--primary: #1a73e8` · `--sans: "Google Sans"` · `--shadow-1`) |
+| Live `/health` eligibility fields | `auth_required` ï¿½ `demo_seed_enabled` ï¿½ `store` |
+| Live `/hold/` Google Material theme | **yes** (`--primary: #1a73e8` ï¿½ `--sans: "Google Sans"` ï¿½ `--shadow-1`) |
 
-**Verdict:** PREFLIGHT PASS — safe for Oscar to roll `./film/capture.sh`.
+**Verdict:** PREFLIGHT PASS ï¿½ safe for Oscar to roll `./film/capture.sh`.
 
 ---
 
@@ -26,8 +26,8 @@
 
 | # | Check | Result |
 |---|-------|--------|
-| 1 | Canonical numbers in voiceover + `docs/SUBMISSION.md` (78,618 · 41.7 · 8.1) | **PASS** |
-| 2 | `/hold/` console on-camera surface (41.7 ? 8.1 · `H-a6151a95ac` · finding + stack tabs) | **PASS** |
+| 1 | Canonical numbers in voiceover + `docs/SUBMISSION.md` (78,618 ï¿½ 41.7 ï¿½ 8.1) | **PASS** |
+| 2 | `/hold/` console on-camera surface (41.7 ? 8.1 ï¿½ `H-a6151a95ac` ï¿½ finding + stack tabs) | **PASS** |
 | 3 | Voiceover lines vs subtitle blocks (8 = 8) | **PASS** |
 | 4 | `./demo.sh` cold, no network | **PASS** |
 | 5 | `demo.sh` exit 0 | **PASS** |
@@ -38,7 +38,7 @@
 | 10 | PR #1 open | **PASS** |
 | 11 | `verify-claims` conclusion = `failure` (asserted at object) | **PASS** |
 
-**Note (non-blocking):** `.hold_api_token` missing locally — create before live break-glass on camera.
+**Note (non-blocking):** `.hold_api_token` missing locally ï¿½ create before live break-glass on camera.
 
 ---
 
@@ -47,12 +47,12 @@
 | Field | Value |
 |-------|-------|
 | Exit code | **0** |
-| Beat count | **8** (voiceover `film/voiceover.txt` · preflight 8 lines = 8 SRT cues) |
-| Verdicts shown | PASS (0) · BLOCK (1) · HOLD (2) |
+| Beat count | **8** (voiceover `film/voiceover.txt` ï¿½ preflight 8 lines = 8 SRT cues) |
+| Verdicts shown | PASS (0) ï¿½ BLOCK (1) ï¿½ HOLD (2) |
 
 ---
 
-## Hero record · `/audit/export`
+## Hero record ï¿½ `/audit/export`
 
 | Field | Value |
 |-------|-------|
@@ -62,17 +62,17 @@
 
 ---
 
-## Live `/health` · eligibility fields
+## Live `/health` ï¿½ eligibility fields
 
 Probe: `GET https://fleet-wedge-33kamss2jq-uc.a.run.app/health`
 
 | Field | Value | Eligibility meaning |
 |-------|-------|---------------------|
-| `auth_required` | `true` | Writes gated · anon probe closed |
+| `auth_required` | `true` | Writes gated ï¿½ anon probe closed |
 | `demo_seed_enabled` | `false` | No demo seed on live surface |
 | `store` | `firestore` | GCP Firestore default store |
 
-Additional payload (informational): `product` = THE AGENT WORK RECORD WITNESS · `ok` = true · ADK agent constructed.
+Additional payload (informational): `product` = THE AGENT WORK RECORD WITNESS ï¿½ `ok` = true ï¿½ ADK agent constructed.
 
 ---
 
@@ -88,12 +88,12 @@ ok: /health live payload
   health fields match
 ok: record row H-a6151a95ac
 ok: record H-a6151a95ac present
-  note: .hold_api_token missing — create before live break-glass on camera (read probe passed without it)
+  note: .hold_api_token missing ï¿½ create before live break-glass on camera (read probe passed without it)
 ok: PR #1 verify-claims red-by-design
 ok: PR #1 open
 ok: verify-claims conclusion=failure (red by design, asserted at the object)
 
-PREFLIGHT PASS — safe to run ./film/capture.sh and record.
+PREFLIGHT PASS ï¿½ safe to run ./film/capture.sh and record.
 ```
 
 ---
@@ -107,4 +107,32 @@ PREFLIGHT PASS — safe to run ./film/capture.sh and record.
 
 ---
 
-*Live revision `fleet-wedge-00012-5w6` · re-probed 2026-08-29 (UTC)*
+*Live revision `fleet-wedge-00012-5w6` ï¿½ re-probed 2026-08-29 (UTC)*
+
+---
+
+---
+
+## Night-wave re-probe Â· 2026-09-18
+
+Command: `./film/preflight.sh` after fixture/Install-tab scrub (no voiceover/subtitle text change).
+
+```
+ok: checking canonical numbers in voiceover + SUBMISSION.md
+ok: hold console carries 41.7 -> 8.1, H-a6151a95ac, finding + stack screens
+ok: 8 spoken lines match 8 subtitle blocks
+ok: ./demo.sh (cold, no network)
+ok: demo.sh exit 0
+ok: /health live payload
+  health fields match
+ok: record row H-a6151a95ac
+ok: record H-a6151a95ac present
+ok: PR #1 verify-claims red-by-design
+ok: PR #1 open
+ok: verify-claims conclusion=failure (red by design, asserted at the object)
+
+PREFLIGHT PASS â€” safe to run ./film/capture.sh and record.
+```
+
+Film bytes re-measured: `demo/demo-final-v2.mp4` duration `228.349870` s Â· md5 `d327a995166b63ad3a64f248d5104397`.
+Voiceover/subtitles: no `required check` bigram (`rg` on `film/voiceover.txt` + `film/subtitles.srt`).

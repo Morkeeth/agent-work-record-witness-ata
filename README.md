@@ -53,17 +53,23 @@ compliance, data sovereignty, or security policies."*
 which is the product; the gate above it is only the intake. Transcripto sits outside the boundary
 because it is roadmap and needs a corpus a judge cannot verify.*
 
-### Judge path (60 seconds)
+### Judge path (one command)
 
 ```bash
-git clone https://github.com/Morkeeth/agent-work-record-witness-ata
-cd agent-work-record-witness-ata
-./demo.sh                    # full walkthrough · exits 0
+git clone https://github.com/Morkeeth/agent-work-record-witness-ata && cd agent-work-record-witness-ata && ./demo.sh
+```
+
+Exit 0 · no account · no network · no API key. Then the live row:
+
+| What | URL |
+|------|-----|
+| Hold console (queue) | https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?tab=queue |
+| Hero record | click card `H-a6151a95ac` (first in queue) |
+| PR #1 red-by-design | https://github.com/Morkeeth/agent-work-record-witness-ata/pull/1/checks |
+| Health | `curl -sS https://fleet-wedge-33kamss2jq-uc.a.run.app/health` |
+
+```bash
 ./demo.sh --film             # compact — same verdicts, for screen recording
-curl -sS https://fleet-wedge-33kamss2jq-uc.a.run.app/health | head
-# open hold console → the queue, then click the first card (H-a6151a95ac):
-# https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?tab=queue
-# PR checks: https://github.com/Morkeeth/agent-work-record-witness-ata/pull/1/checks
 ```
 
 **One warning before you click, so nothing on this path surprises you.** On that card, *"open the
@@ -291,7 +297,7 @@ jobs:
 
 **Then make it binding, in this order.** Run in `report-only` for a week and watch the queue.
 Only when you are ready, require `verify-claims` in branch protection. **Until you require it,
-it is advisory, and this repo will not call it a required check.**
+it is advisory, and this repo will not call it required while protection is off.**
 
 **Traceability.** Put the session reference in the PR body and a hold opens back to the run that
 produced it. Leave it out and the record says **untraceable**, honestly. **No identifier is ever
@@ -364,7 +370,7 @@ Every mutating route returns 401 to an anonymous caller.
 - **`clear: 0` in production.** Nothing has ever passed the live gate — the real row is a HOLD.
 - **Installs by anyone who is not the author: zero.** Northwind proved the chain, not adoption.
 - **Branch protection off** — check is advisory until you require `verify-claims`; this repo will
-  not call it a required check while protection is off.
+  not call it required while protection is off.
 - **One shared bearer token**, not per-agent identity.
 - **Audit reads the whole collection per request** — about 57 Firestore document reads per
   request. Free at this traffic, a bill and a latency problem at any real one. Measured with

@@ -1,5 +1,5 @@
 # Agent-memory exam — report-only until instruction rot is ruled clean.
-name: helicon-report (ADVISORY — cannot fail, do not use as a required check)
+name: helicon-report (ADVISORY — cannot fail, do not bind in branch protection)
 
 on:
   push:

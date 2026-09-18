@@ -20,8 +20,11 @@ chk 'GATE: HOLD'   'a test claim HOLDS, never guessed'
 chk 'finding UNVERIFIABLE' 'UNVERIFIABLE finding maps to HOLD gate'
 chk 'NOT a commit in this repo' 'the SHA probe output is shown, not summarised'
 chk 'NO SUCH PATH in the repo'  'the path probe output is shown, not summarised'
-nochk 'As a required PR check' 'does not say required check (branch protection off)'
-nochk 'As an required' 'does not say required check'
+# Real control: the banned bigram itself. The old pair only watched
+# "As a required PR check" / "As an required" and stayed green while
+# fixtures/agent-false-done-PR-BODY.md printed "as a required check" in ./demo.sh.
+nochk 'required check' 'does not say required check (branch protection off)'
+nochk 'Required check' 'does not say Required check'
 nochk '\.trace/trace\.db'  'reads no transcript database'
 nochk 'Traceback'          'no traceback'
 
