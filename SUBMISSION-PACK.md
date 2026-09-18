@@ -208,8 +208,8 @@ session that produced it. The red check is the second beat, not the first.
 
 **Say the product name in full at least twice.** Never "HOLD" as the product.
 
-**Do not:** the Seed button · `/healthz` · org lift at n=2 · the words "required check" while
-requiredness is unresolved · Witness / Claims Inbox / hack-fleet-ata as names · the CLI as the product.
+**Do not:** the Seed button · `/healthz` · org lift at n=2 · calling `verify-claims` "required"
+while requiredness is unresolved · Witness / Claims Inbox / hack-fleet-ata as names · the CLI as the product.
 
 Pre-roll: `docs/ATA-FILM-AND-SHIP.md` §2.
 

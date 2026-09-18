@@ -80,9 +80,18 @@ env -i PATH="$PATH" HOME="$HOME" bash tests/test_demo.sh
 **Control fix shipped with this pass:** `tests/test_demo.sh` previously grepped only
 `As a required PR check` / `As an required`, so a fixture comment containing
 `as a required check` kept the control green while `./demo.sh` printed the banned
-bigram. Proven on main @ `4a45551` before this branch: demo stdout matched
-`required check` and `test_demo.sh` still printed PASS. The control now greps the
-bigram itself; the fixture was scrubbed; demo stdout on `3cc6228` has **no** match.
+bigram. **Re-proven tonight on `main` @ `4a45551`:**
+
+```
+main_HEAD=4a45551
+demo stdout line 30: # Used to prove HOLD as a required check withou...
+old control 'As a required PR check' → green
+old control 'As an required'         → green
+bigram 'required check'              → WOULD_FAIL
+```
+
+The control now greps the bigram itself; the fixture was scrubbed; demo stdout on
+`3cc6228` has **no** match. Fixture file is also pinned by `test_demo.sh`.
 
 ## Not claimed
 

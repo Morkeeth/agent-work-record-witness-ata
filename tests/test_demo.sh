@@ -35,4 +35,7 @@ fi
 nochk '\.trace/trace\.db'  'reads no transcript database'
 nochk 'Traceback'          'no traceback'
 
+# Durable surface control (must have been watched RED on main@4a45551).
+if ./scripts/embarrassment-grep.sh; then echo "  ok    embarrassment-grep surfaces clean"; else echo "  FAIL  embarrassment-grep"; fail=1; fi
+
 [ $fail = 0 ] && { echo "  PASS"; exit 0; } || { echo "  FAILED"; exit 1; }

@@ -270,12 +270,9 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🎯 NOW
 
-**Night wave · slice 1 (risk-first):** sealed prediction object appendix + embarrassment scrub
-of the stranger-demo `required check` leak (fixture + broken `test_demo.sh` control).
-
-Done-when (must be RUN): `docs/SEALED-PREDICTION-2026-08-29.md` filled from live `/hold/` +
-PR #1 · `sha256` footer · `./demo.sh` + `tests/test_demo.sh` green with real bigram control ·
-`docs/STRANGER-PASS-2026-09-18.md` receipt from this branch.
+**Night wave · slice 1 DONE (done-whens RUN).** Next agent slice if Oscar is still asleep:
+durable embarrassment-grep is green; remaining red objects are Oscar-only (live `/hold/`
+redeploy · PR #1 body edit · film record · Devpost).
 
 ---
 

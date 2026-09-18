@@ -197,7 +197,7 @@ Align with **`SUBMISSION-PACK.md` §2** (record-first close). Corpus beat is mid
 | 0:00 | Board question + promise | seats/spend visible; claims are not |
 | 0:30 | **The record** | `/hold/` — held claim → session join; moat line at click |
 | 1:10 | `./demo.sh` | stranger, no account, no network |
-| 1:35 | PR #1 | `verify-claims` red on `deadbee` — **not** "required check" (branch unprotected) |
+| 1:35 | PR #1 | `verify-claims` red on `deadbee` — advisory only (branch unprotected) |
 | 2:15 | Four verdicts + refusal | terminal; never runs a command from a report |
 | 2:40 | GCP + honesty | `/health` · eligibility 3/3 **and** cold 1/3 · row `H-a6151a95ac` · `clear: 0` |
 | 3:15 | Close | install path; *Gemini explains; Python decides* if P1 deployed |

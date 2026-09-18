@@ -41,7 +41,7 @@
 
 ## Never on Devpost or film
 
-- "Required check" while branch protection off
+- Calling `verify-claims` "required" while branch protection is off
 - "HOLD" as the product name (queue name only)
 - Unqualified "3 of 3" eligibility
 - GEAP Memory Bank / Registry as shipped
