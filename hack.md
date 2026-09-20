@@ -167,14 +167,14 @@ Use that spine in README top, Devpost ¶1, film 0:00, `/hold/` header — **one 
 
 #### D · Product surface (after A+B, if time)
 
-- [x] **D1** Redeploy Cloud Run — P1+P2 live · live revision `fleet-wedge-00011-p5b` (re-probed 30 Aug; `00010-xww` was superseded during the 29 Aug cutover)
+- [x] **D1** Redeploy Cloud Run — P1+P2 live · live `/hold/` Stack tab claims `fleet-wedge-00014-q2g` (re-probed 20 Sep; earlier board rows cited `00011-p5b` / `00010-xww`)
 - [x] **D2** Re-trigger outcome-gate on PR #1 — run `33250194854` · `witness-findings` check posted
 - [x] **D3** `/hold/` detail panel renders `agent_explanation` + `head_sha`
 - [x] **D4** README judge path at top
 
 #### E · Defer past Mon (panel agreement)
 
-- P3 check summary · P4 Cloud Trace · org-lift n=2 · live corpus run on film
+- P4 Cloud Trace · org-lift n=2 · live corpus run on film
 - Leading with vendor names (Zenity/Qodo/Langfuse) in first 30s
 - Enabling branch protection *unless* you want "required" language in v2
 
@@ -270,7 +270,10 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🎯 NOW
 
-**RUN COMPLETE 29 Aug.** P1+P2+P3 live · preflight PASS. Oscar: **film** → `SEALED-PREDICTION` → Devpost.
+**NIGHT WAVE 20 Sep 2026.** Sealed prediction re-measured at live `/hold/` + PR #1 · stranger
+cold path re-verified · film/` scrub clean · P3 receipt on main path · embarrassment scrub
+(required-check / IAM-gated / bare eligibility 0/3). Oscar outward acts unchanged: film
+re-cut for "append only" · Devpost · share repo — **do not** agent-submit.
 
 ---
 
@@ -288,6 +291,11 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🪵 LOG
 
+- 2026-09-20 · Night wave: filled `SEALED-PREDICTION` measured table from live `/hold/` + PR #1;
+  refreshed `STRANGER-PASS` from GitHub cold clone; `FILM-QUANT-RECEIPT` + `EVAL-NIGHT-RECEIPT` +
+  `P3-CHECK-SUMMARY-RECEIPT`; scrubbed affirmative "required check" on workflow comment, pitch
+  docs, fixture fed to `./demo.sh`; strengthened `tests/test_demo.sh`; fixed IAM-gated wording in
+  partner deep-dive; bare eligibility measured **0/3**; preflight PASS; eval NULL still beats B.
 - 2026-08-29 · Full 48h review; pre-submit plan replaces post-only hack.md.
 - 2026-08-29 · Probed: preflight PASS · eligibility 3/3 · branch unprotected · P1+P2 coded.
 - 2026-08-29 · Handbook pass: HANDBOOK-PASS, SEALED-PREDICTION template, PHASE-TRACKER refresh, STRANGER-PASS, voiceover/preflight sync.

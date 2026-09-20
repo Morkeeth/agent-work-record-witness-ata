@@ -53,17 +53,24 @@ compliance, data sovereignty, or security policies."*
 which is the product; the gate above it is only the intake. Transcripto sits outside the boundary
 because it is roadmap and needs a corpus a judge cannot verify.*
 
-### Judge path (60 seconds)
+### Judge path (60 seconds · one command)
 
 ```bash
 git clone https://github.com/Morkeeth/agent-work-record-witness-ata
 cd agent-work-record-witness-ata
-./demo.sh                    # full walkthrough · exits 0
+./demo.sh                    # full walkthrough · exits 0 · no account · no network
+```
+
+That is the whole stranger path. Receipt from the latest cold re-probe:
+[`docs/STRANGER-PASS-2026-08-29.md`](docs/STRANGER-PASS-2026-08-29.md).
+
+```bash
 ./demo.sh --film             # compact — same verdicts, for screen recording
 curl -sS https://fleet-wedge-33kamss2jq-uc.a.run.app/health | head
 # open hold console → the queue, then click the first card (H-a6151a95ac):
 # https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?tab=queue
-# PR checks: https://github.com/Morkeeth/agent-work-record-witness-ata/pull/1/checks
+# PR checks (verify-claims + witness-findings, both red by design):
+# https://github.com/Morkeeth/agent-work-record-witness-ata/pull/1/checks
 ```
 
 **One warning before you click, so nothing on this path surprises you.** On that card, *"open the
@@ -291,7 +298,9 @@ jobs:
 
 **Then make it binding, in this order.** Run in `report-only` for a week and watch the queue.
 Only when you are ready, require `verify-claims` in branch protection. **Until you require it,
-it is advisory, and this repo will not call it a required check.**
+it is advisory, and this repo will not call it a required check.** The composite action also
+posts a second check, `witness-findings`, with a markdown table of each probe (P3 —
+`gate/check_run_summary.py`; see [`docs/P3-CHECK-SUMMARY-RECEIPT-2026-09-20.md`](docs/P3-CHECK-SUMMARY-RECEIPT-2026-09-20.md)).
 
 **Traceability.** Put the session reference in the PR body and a hold opens back to the run that
 produced it. Leave it out and the record says **untraceable**, honestly. **No identifier is ever
