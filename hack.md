@@ -295,7 +295,8 @@ re-cut for "append only" · Devpost · share repo — **do not** agent-submit.
   refreshed `STRANGER-PASS` from GitHub cold clone; `FILM-QUANT-RECEIPT` + `EVAL-NIGHT-RECEIPT` +
   `P3-CHECK-SUMMARY-RECEIPT`; scrubbed affirmative "required check" on workflow comment, pitch
   docs, fixture fed to `./demo.sh`; strengthened `tests/test_demo.sh`; fixed IAM-gated wording in
-  partner deep-dive; bare eligibility measured **0/3**; preflight PASS; eval NULL still beats B.
+  partner deep-dive; bare eligibility measured **0/3**; preflight asserts `witness-findings`
+  FAILURE; eval NULL still beats B; shipped film "append only" noted (Oscar re-cut).
 - 2026-08-29 · Full 48h review; pre-submit plan replaces post-only hack.md.
 - 2026-08-29 · Probed: preflight PASS · eligibility 3/3 · branch unprotected · P1+P2 coded.
 - 2026-08-29 · Handbook pass: HANDBOOK-PASS, SEALED-PREDICTION template, PHASE-TRACKER refresh, STRANGER-PASS, voiceover/preflight sync.
