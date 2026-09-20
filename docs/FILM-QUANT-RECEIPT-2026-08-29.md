@@ -50,11 +50,13 @@ ok: record H-a6151a95ac present
 ok: PR #1 verify-claims red-by-design
 ok: PR #1 open
 ok: verify-claims conclusion=failure (red by design, asserted at the object)
+ok: witness-findings conclusion=failure (P3 summary on main path)
+  note: demo/demo-final-v2.srt still says 'append only' — Oscar re-cut before film; not a preflight fail
 
 PREFLIGHT PASS — safe to run ./film/capture.sh and record.
 ```
 
-Command: `./film/preflight.sh` · exit 0.
+Command: `./film/preflight.sh` · exit 0. P3 `witness-findings` is now asserted at the object in preflight (same fail-closed pattern as `verify-claims`).
 
 ---
 
