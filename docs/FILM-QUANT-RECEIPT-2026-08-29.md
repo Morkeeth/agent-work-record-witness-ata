@@ -1,9 +1,9 @@
-# Film quant receipt · ATA · 29 Aug 2026
+# Film quant receipt · ATA · refreshed 20 Sep 2026 (orig. 29 Aug)
 
-**Runner:** Cloud Agent (preflight + quant probes)  
-**Repo:** `Morkeeth/agent-work-record-witness-ata` @ `dea2409`  
+**Runner:** Cloud Agent night wave  
+**Repo:** `Morkeeth/agent-work-record-witness-ata`  
 **Live URL:** `https://fleet-wedge-33kamss2jq-uc.a.run.app`  
-**Probed at:** 2026-08-29 (UTC)
+**Probed at:** 2026-09-20T00:06–00:10Z
 
 ---
 
@@ -11,72 +11,30 @@
 
 | Metric | Result |
 |--------|--------|
-| Preflight checks | **11 ok / 11 total** |
-| `./demo.sh --film` exit code | **0** |
-| Voiceover / film beat count | **8** (8 spoken lines = 8 subtitle cues) |
+| Preflight checks | **11 ok / 11 total** · `PREFLIGHT PASS` |
+| `./demo.sh` cold exit | **0** |
+| `film/` voiceover ? subtitles | **8 = 8** · no `required check` |
 | Hero record `H-a6151a95ac` in `/audit/export` | **yes** |
-| Live `/health` eligibility fields | `auth_required` · `demo_seed_enabled` · `store` |
-| Live `/hold/` Google Material theme | **yes** (`--primary: #1a73e8` · `--sans: "Google Sans"` · `--shadow-1`) |
+| PR #1 | OPEN · `verify-claims` FAILURE · `witness-findings` FAILURE |
+| Shipped film length (object) | `demo/demo-final-v2.mp4` **228.35 s = 3:48.3** · md5 `d327a995166b63ad3a64f248d5104397` |
 
-**Verdict:** PREFLIGHT PASS — safe for Oscar to roll `./film/capture.sh`.
-
----
-
-## Preflight checks (named)
-
-| # | Check | Result |
-|---|-------|--------|
-| 1 | Canonical numbers in voiceover + `docs/SUBMISSION.md` (78,618 · 41.7 · 8.1) | **PASS** |
-| 2 | `/hold/` console on-camera surface (41.7 ? 8.1 · `H-a6151a95ac` · finding + stack tabs) | **PASS** |
-| 3 | Voiceover lines vs subtitle blocks (8 = 8) | **PASS** |
-| 4 | `./demo.sh` cold, no network | **PASS** |
-| 5 | `demo.sh` exit 0 | **PASS** |
-| 6 | `/health` live payload | **PASS** |
-| 7 | Record row `H-a6151a95ac` probe | **PASS** |
-| 8 | Record `H-a6151a95ac` present in export | **PASS** |
-| 9 | PR #1 verify-claims red-by-design probe | **PASS** |
-| 10 | PR #1 open | **PASS** |
-| 11 | `verify-claims` conclusion = `failure` (asserted at object) | **PASS** |
-
-**Note (non-blocking):** `.hold_api_token` missing locally — create before live break-glass on camera.
+**Verdict:** PREFLIGHT PASS — safe for Oscar to roll `./film/capture.sh` (agents: do **not** run capture).
 
 ---
 
-## `./demo.sh --film`
+## Film spine scrub (EYES B)
 
-| Field | Value |
-|-------|-------|
-| Exit code | **0** |
-| Beat count | **8** (voiceover `film/voiceover.txt` · preflight 8 lines = 8 SRT cues) |
-| Verdicts shown | PASS (0) · BLOCK (1) · HOLD (2) |
+| Surface | `required check` | Notes |
+|---------|------------------|-------|
+| `film/voiceover.txt` | clean | says `verify-claims` + both eligibility numbers |
+| `film/subtitles.srt` | clean | 8 cues match 8 VO lines |
+| `demo/voiceover.txt` / `demo/demo-final-v2.srt` | clean of required-check | **still says "append only" twice** (lines 131, 187 in SRT) — known; needs Oscar re-cut, not an agent edit of the MP4 |
 
----
-
-## Hero record · `/audit/export`
-
-| Field | Value |
-|-------|-------|
-| Record ID | `H-a6151a95ac` |
-| Present in export | **yes** |
-| Session | `01Lzbh4XPYTAgCKg1dciFS3Q` |
+Preflight watches `film/`, not the shipped `demo/` cut. Drift called here so it cannot hide behind a green preflight.
 
 ---
 
-## Live `/health` · eligibility fields
-
-Probe: `GET https://fleet-wedge-33kamss2jq-uc.a.run.app/health`
-
-| Field | Value | Eligibility meaning |
-|-------|-------|---------------------|
-| `auth_required` | `true` | Writes gated · anon probe closed |
-| `demo_seed_enabled` | `false` | No demo seed on live surface |
-| `store` | `firestore` | GCP Firestore default store |
-
-Additional payload (informational): `product` = THE AGENT WORK RECORD WITNESS · `ok` = true · ADK agent constructed.
-
----
-
-## Preflight log (verbatim)
+## Preflight log (verbatim · this run)
 
 ```
 ok: checking canonical numbers in voiceover + SUBMISSION.md
@@ -96,15 +54,27 @@ ok: verify-claims conclusion=failure (red by design, asserted at the object)
 PREFLIGHT PASS — safe to run ./film/capture.sh and record.
 ```
 
----
-
-## Not done (Oscar / post-receipt)
-
-- [ ] Screen recording ?4:00
-- [ ] `docs/SEALED-PREDICTION-2026-08-29.md` Oscar timestamp block
-- [ ] Devpost submit
-- [ ] Deploy without this receipt
+Command: `./film/preflight.sh` · exit 0.
 
 ---
 
-*Live revision `fleet-wedge-00012-5w6` · re-probed 2026-08-29 (UTC)*
+## Live `/health` (this run)
+
+| Field | Value |
+|-------|-------|
+| `auth_required` | `true` |
+| `demo_seed_enabled` | `false` |
+| `store` | `firestore` |
+| ADK constructed | `true` |
+| product | THE AGENT WORK RECORD WITNESS |
+
+---
+
+## Not done (Oscar)
+
+- [ ] Re-cut shipped film to remove "append only" (record is a keyed store)
+- [ ] Devpost submit / share with judges — Oscar only
+
+---
+
+*Stack tab on live `/hold/` claims revision `fleet-wedge-00014-q2g` · gcloud describe not available on this runner.*
