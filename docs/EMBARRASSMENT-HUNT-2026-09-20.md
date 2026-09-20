@@ -15,6 +15,8 @@ object, not by reading the pitch.
 | 8 | `demo/demo-final-v2.srt` | Says “append only” twice; product truth is keyed store | **Oscar re-cut** — agent must not rewrite the MP4 |
 | 9 | `eval/run_eval.py` | Always-silent NULL beats headline arm on accuracy (67.5% vs 45.0%) | Disclosed in sealed prediction + `EVAL-NIGHT-RECEIPT` — do not hide |
 | 10 | Bare `contract/eligibility.py` | **0 of 3** without ADK; older copy said cold is 1/3 without saying the ADK precondition | Documented in PACK + sealed falsifiers |
+| 11 | PR #1 commit history | First commit message still reads `…HOLD required check` | Historical; rewriting needs force-push — **Oscar only**. Script message fixed for future demos |
+| 12 | Live `/hold/` vs `surface/hold/index.html` | Byte-identical (md5 `ca7f2c0d…`) this run | Not a defect — proves console source is what is deployed |
 
 ## Grep still allowed (meta / ban lists)
 

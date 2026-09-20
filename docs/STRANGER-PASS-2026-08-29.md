@@ -64,7 +64,17 @@ Exit stays 0; the phrase is theater. Fixed on this branch in
 `fixtures/agent-false-done-PR-BODY.md` + `tests/test_demo.sh` now bans any `required check`
 substring. Until this branch lands on `main`, a stranger on GitHub `main` still sees the leak.
 
-### B · This working tree (post-scrub) · command run at 12:13Z
+### B · Cold clone of this branch (post-push) · 2026-09-20T12:16Z
+
+```bash
+git clone --depth 1 -b cursor/night-wave-sealed-stranger-d503 \
+  https://github.com/Morkeeth/agent-work-record-witness-ata.git /tmp/stranger-branch
+cd /tmp/stranger-branch
+env -i PATH="$PATH" HOME="$HOME" ./demo.sh
+# DEMO_EXIT:0 · rg -i 'required check' → no matches (BRANCH_CLONE_CLEAN)
+```
+
+### C · This working tree (post-scrub) · command run at 12:13Z
 
 ```bash
 env -i PATH="$PATH" HOME="$HOME" ./demo.sh
