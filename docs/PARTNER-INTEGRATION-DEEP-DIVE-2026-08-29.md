@@ -29,7 +29,7 @@ Not legal advice. Not a commitment to build everything here before Devpost.
 | **ADK** | `build_agent()` on `/health`; **`POST /agent/run`** with Runner + tool calls | Call **`run_agent()` after HOLD** with findings as context; store receipt on record | `type(LlmAgent)` on `/health` = "agent ran" |
 | **Cloud Run** | `fleet-wedge` live · `/health` · auth on mutating routes | Same service; show `*.run.app` on film | Multi-service mesh |
 | **Firestore** | The record · `H-a6151a95ac` from real Action · keyed store, not append-only | Index by `session`, `repo`, `source` for console browse | "Real-time analytics" |
-| **GitHub Actions** | Composite action · PR #1 posts `/clearance` | **Checks API** annotations · pass `session` + `actor` in JSON body | "Required check" (branch unprotected) |
+| **GitHub Actions** | Composite action · PR #1 posts `/clearance` | **Checks API** annotations · pass `session` + `actor` in JSON body | Calling it "required" while unprotected (theater) |
 | **GEAP Sessions** | `session` field on record (foreign key) | **VertexAiSessionService** — resume ADK run with same session id | "Memory Bank" without retrieval |
 | **GEAP Memory Bank** | Not wired | Write clearance summary artifact; read on repeat query | Retrieval loop that does not exist |
 | **Cloud Trace / OTel** | Not wired | Span per `/clearance` · `trace_id` on Firestore row | "Full observability platform" |

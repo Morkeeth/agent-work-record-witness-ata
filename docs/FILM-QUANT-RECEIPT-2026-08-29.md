@@ -1,9 +1,9 @@
-# Film quant receipt · ATA · refreshed 20 Sep 2026 (orig. 29 Aug)
+# Film quant receipt · ATA · refreshed 20 Sep 2026 12:13Z (orig. 29 Aug)
 
-**Runner:** Cloud Agent night wave  
+**Runner:** Cloud Agent night wave (`cursor/night-wave-sealed-stranger-d503`)  
 **Repo:** `Morkeeth/agent-work-record-witness-ata`  
 **Live URL:** `https://fleet-wedge-33kamss2jq-uc.a.run.app`  
-**Probed at:** 2026-09-20T00:06–00:10Z
+**Probed at:** 2026-09-20T12:13Z
 
 ---
 
@@ -11,10 +11,10 @@
 
 | Metric | Result |
 |--------|--------|
-| Preflight checks | **11 ok / 11 total** · `PREFLIGHT PASS` |
+| Preflight | **PREFLIGHT PASS** (incl. P3 `witness-findings` assert) |
 | `./demo.sh` cold exit | **0** |
-| `film/` voiceover ? subtitles | **8 = 8** · no `required check` |
-| Hero record `H-a6151a95ac` in `/audit/export` | **yes** |
+| `film/` voiceover ? subtitles | **8 = 8** · no `required check` · content match OK |
+| Hero record `H-a6151a95ac` in `/audit/export` | **yes** · open true · BLOCK |
 | PR #1 | OPEN · `verify-claims` FAILURE · `witness-findings` FAILURE |
 | Shipped film length (object) | `demo/demo-final-v2.mp4` **228.35 s = 3:48.3** · md5 `d327a995166b63ad3a64f248d5104397` |
 
@@ -27,7 +27,7 @@
 | Surface | `required check` | Notes |
 |---------|------------------|-------|
 | `film/voiceover.txt` | clean | says `verify-claims` + both eligibility numbers |
-| `film/subtitles.srt` | clean | 8 cues match 8 VO lines |
+| `film/subtitles.srt` | clean | 8 cues match 8 VO lines (re-checked 12:13Z) |
 | `demo/voiceover.txt` / `demo/demo-final-v2.srt` | clean of required-check | **still says "append only" twice** (lines 131, 187 in SRT) — known; needs Oscar re-cut, not an agent edit of the MP4 |
 
 Preflight watches `film/`, not the shipped `demo/` cut. Drift called here so it cannot hide behind a green preflight.
@@ -35,6 +35,8 @@ Preflight watches `film/`, not the shipped `demo/` cut. Drift called here so it 
 ---
 
 ## Preflight log (verbatim · this run)
+
+Command: `./film/preflight.sh` · exit 0.
 
 ```
 ok: checking canonical numbers in voiceover + SUBMISSION.md
@@ -55,8 +57,6 @@ ok: witness-findings conclusion=failure (P3 summary on main path)
 
 PREFLIGHT PASS — safe to run ./film/capture.sh and record.
 ```
-
-Command: `./film/preflight.sh` · exit 0. P3 `witness-findings` is now asserted at the object in preflight (same fail-closed pattern as `verify-claims`).
 
 ---
 

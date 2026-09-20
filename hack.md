@@ -238,7 +238,7 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 - [ ] **0. Film** — `./film/preflight.sh` → record ≤4:00 (SUBMISSION §7 or SUBMISSION-PACK §2)
 - [ ] **0b. Devpost submit** — paste from SUBMISSION-PACK §1 · attach `architecture.png`
 - [ ] **0c. Share repo** — `testing@devpost.com` + `cloudhackathons@google.com`
-- [ ] **0d. Film language** — never "required check" (branch unprotected) · cold eligibility 1/3
+- [ ] **0d. Film language** — never "required check" (branch unprotected) · say both cold figures: **0/3 bare** · **1/3 with ADK, no ADC** · **3/3 with ADC**
 
 ### Agents can build (Sat–Sun)
 
@@ -252,7 +252,7 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 - [x] **P1 · ADK explain on HOLD** — Gemini narrates BLOCK findings; probe still decides (~4h) **best ROI**
 - [x] **P2 · Action posts session/actor/sha** — richer join metadata on clearance JSON (~1h)
-- [x] **P3 · Check run summary** — `gate/check_run_summary.py` · needs push + PR sync to see on GitHub
+- [x] **P3 · Check run summary** — `gate/check_run_summary.py` on composite action path · PR #1 shows `witness-findings` FAILURE · preflight asserts it · receipt `docs/P3-CHECK-SUMMARY-RECEIPT-2026-09-20.md`
 - [ ] **P4 · Cloud Trace on /clearance** — trace_id on record (~4–6h, only if film time safe)
 
 ### Optional (only if film done early)
@@ -268,12 +268,21 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ---
 
+## ✅ NIGHT WAVE PLAN (20 Sep · risk-first)
+
+1. **Sealed prediction at the live object** — fill measured table from `/hold/` + PR #1; hash footer; never carry prior numbers. *(done · corrected `/audit` vs export)*
+2. **Stranger cold path** — clone → `./demo.sh` → live URL; receipt from this run; ban `required check` in demo stdout.
+3. **Film spine scrub** — `film/` VO/SRT match; note shipped `demo/` “append only” for Oscar.
+4. **P3 on main path** — receipt + preflight assert `witness-findings` FAILURE.
+5. **Embarrassment hunt** — judge-facing greps; IAM label; eligibility bare 0/3; eval NULL arm.
+
+---
+
 ## 🎯 NOW
 
-**NIGHT WAVE 20 Sep 2026.** Sealed prediction re-measured at live `/hold/` + PR #1 · stranger
-cold path re-verified · film/` scrub clean · P3 receipt on main path · embarrassment scrub
-(required-check / IAM-gated / bare eligibility 0/3). Oscar outward acts unchanged: film
-re-cut for "append only" · Devpost · share repo — **do not** agent-submit.
+**ONE SLICE:** Oscar re-cuts shipped film (`demo/demo-final-v2.*`) to remove **"append only"**
+(record is a keyed store) — preflight PASSes and notes the defect; agents must not run
+`./film/capture.sh`. Outward acts (Devpost · share repo · seal button) stay Oscar-only.
 
 ---
 
@@ -291,12 +300,13 @@ re-cut for "append only" · Devpost · share repo — **do not** agent-submit.
 
 ## 🪵 LOG
 
-- 2026-09-20 · Night wave: filled `SEALED-PREDICTION` measured table from live `/hold/` + PR #1;
-  refreshed `STRANGER-PASS` from GitHub cold clone; `FILM-QUANT-RECEIPT` + `EVAL-NIGHT-RECEIPT` +
-  `P3-CHECK-SUMMARY-RECEIPT`; scrubbed affirmative "required check" on workflow comment, pitch
-  docs, fixture fed to `./demo.sh`; strengthened `tests/test_demo.sh`; fixed IAM-gated wording in
-  partner deep-dive; bare eligibility measured **0/3**; preflight asserts `witness-findings`
-  FAILURE; eval NULL still beats B; shipped film "append only" noted (Oscar re-cut).
+- 2026-09-20T12:13Z · Night wave pass 2 (`cursor/night-wave-sealed-stranger-d503`): re-measured
+  live `/hold/` + PR #1 at the object; corrected prior draft’s `/audit` vs `/audit/export` mix-up;
+  stamped sealed draft hash `63c34e30…` (prior left PENDING); stranger path found fixture leaking
+  `required check` on cold `main` — scrubbed + test ban; P3 preflight assert; embarrassment hunt
+  doc; partner IAM wording; eval NULL still beats B; preflight PASS.
+- 2026-09-20 · Night wave pass 1: filled `SEALED-PREDICTION` measured table; refreshed
+  `STRANGER-PASS`; receipts; scrubbed affirmative "required check"; bare eligibility **0/3**.
 - 2026-08-29 · Full 48h review; pre-submit plan replaces post-only hack.md.
 - 2026-08-29 · Probed: preflight PASS · eligibility 3/3 · branch unprotected · P1+P2 coded.
 - 2026-08-29 · Handbook pass: HANDBOOK-PASS, SEALED-PREDICTION template, PHASE-TRACKER refresh, STRANGER-PASS, voiceover/preflight sync.

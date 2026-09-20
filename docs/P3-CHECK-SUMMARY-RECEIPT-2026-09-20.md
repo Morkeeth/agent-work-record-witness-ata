@@ -29,4 +29,5 @@ readable without opening the workflow log.
 
 ---
 
-_Night wave 2026-09-20 · no code change required; was already on the action path; this receipt closes the "wire + document" slice._
+_Night wave 2026-09-20 · already on the action path; receipt + preflight assert close the slice._
+_Re-verified 2026-09-20T12:13Z: unit all green · PR #1 `witness-findings` FAILURE · Checks API title/summary unchanged._

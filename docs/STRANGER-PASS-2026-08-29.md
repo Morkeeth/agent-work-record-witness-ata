@@ -1,4 +1,4 @@
-# Stranger pass · refreshed 20 Sep 2026 (originally 29 Aug)
+# Stranger pass · refreshed 20 Sep 2026 12:13Z (originally 29 Aug)
 
 **Handbook Phase 5:** a stranger attacks the core claim in one click — no wallet, no install, no keys.
 
@@ -33,9 +33,9 @@ PR checks (red by design): https://github.com/Morkeeth/agent-work-record-witness
 
 ---
 
-## Probed this run · 2026-09-20T00:06–00:10Z
+## Probed this run · 2026-09-20T12:13Z
 
-**Cold GitHub clone** (not the author working tree):
+### A · Cold GitHub clone of `main` (before this branch merges)
 
 ```bash
 git clone --depth 1 https://github.com/Morkeeth/agent-work-record-witness-ata.git /tmp/stranger-gh
@@ -44,7 +44,7 @@ env -i PATH="$PATH" HOME="$HOME" ./demo.sh
 # DEMO_EXIT:0
 ```
 
-Excerpt (verbatim from this run):
+Verdicts (verbatim):
 
 ```
   GATE: PASS — every claim confirmed against the repo.
@@ -55,13 +55,21 @@ Excerpt (verbatim from this run):
 
   Honest report PASSED (0). False report BLOCKED (1). Test claim HELD (2).
 
-  Finding-level verdicts: PASS · BLOCK · UNVERIFIABLE.
-  Gate-level outcomes:    PASS · BLOCK · HOLD (HOLD means UNVERIFIABLE, nothing BLOCKed).
-
   no network · no API key · no account · no pip install
 ```
 
-**Grader on this tree:**
+**Embarrassment found at the object:** that cold `main` clone still prints the fixture comment
+`# Used to prove HOLD as a required check without…` inside the GATE: BLOCK report preview.
+Exit stays 0; the phrase is theater. Fixed on this branch in
+`fixtures/agent-false-done-PR-BODY.md` + `tests/test_demo.sh` now bans any `required check`
+substring. Until this branch lands on `main`, a stranger on GitHub `main` still sees the leak.
+
+### B · This working tree (post-scrub) · command run at 12:13Z
+
+```bash
+env -i PATH="$PATH" HOME="$HOME" ./demo.sh
+# exit 0 · rg -i 'required check' on stdout → no matches
+```
 
 ```
 $ tests/test_demo.sh
@@ -80,14 +88,15 @@ test_demo.sh
   PASS
 ```
 
-**Live URL row (same minute):**
+### Live URL row (same minute)
 
 | Probe | Result |
 |-------|--------|
 | `GET /health` | 200 · auth_required true · demo_seed false · firestore · ADK constructed |
-| `GET /hold/?tab=queue` | 200 |
+| `GET /hold/?tab=queue` | 200 · brand THE AGENT WORK RECORD WITNESS |
 | `GET /queue` | count **20** |
-| Hero `H-a6151a95ac` in `/audit/export` | present · BLOCK · pr 1 · head_sha `c9958911…` |
+| `GET /audit` | open **21** · closed **3** · pct_cleared_without_hold **0.0** |
+| Hero `H-a6151a95ac` in `/audit/export` | present · BLOCK · pr 1 · head_sha `c9958911…` · open true |
 | PR #1 checks | `verify-claims` fail · `witness-findings` fail |
 
 ---
@@ -101,9 +110,9 @@ test_demo.sh
 ## Oscar addendum (optional)
 
 - [ ] Run on a machine that is not the author dev box
-- [ ] Screenshot or log paste below
+- [ ] After merge: re-clone `main` and confirm `required check` is gone from demo stdout
 
 ---
 
 _Log: agent run 2026-08-29 · handbook Phase 5 closure for cold clone path._
-_Re-probed 2026-09-20 night wave · GitHub cold clone + live URL row + strengthened `required check` ban in `tests/test_demo.sh`._
+_Re-probed 2026-09-20T12:13Z · cold main still leaked fixture wording · working-tree scrub verified · live URL row re-measured._
