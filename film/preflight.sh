@@ -124,10 +124,25 @@ if [ "$PR_OK" -eq 1 ]; then
       else
         red "verify-claims conclusion='${_concl:-<none>}' — expected failure. Demo story broken."
       fi
+      # P3: witness-findings is the Checks API summary posted by gate/check_run_summary.py.
+      # Assert it the same way — a missing check must not read as green.
+      _wf="$(gh api "repos/$PR_REPO/commits/$_sha/check-runs" \
+        --jq '.check_runs[] | select(.name=="witness-findings") | .conclusion' 2>/dev/null | head -1)"
+      if [ "$_wf" = "failure" ]; then
+        grn "witness-findings conclusion=failure (P3 summary on main path)"
+      else
+        red "witness-findings conclusion='${_wf:-<none>}' — expected failure (P3 missing or green)"
+      fi
     fi
   else
     grn "gh not installed — confirm verify-claims FAILURE manually on GitHub"
   fi
+fi
+
+# Non-blocking: shipped demo film still says "append only" (keyed store is the truth).
+# Preflight watches film/ spine; this note keeps the known defect from hiding behind PASS.
+if [ -f "$ROOT/demo/demo-final-v2.srt" ] && grep -qi 'append only' "$ROOT/demo/demo-final-v2.srt"; then
+  echo "  note: demo/demo-final-v2.srt still says 'append only' — Oscar re-cut before film; not a preflight fail" >&2
 fi
 
 if [ "$FAIL" -ne 0 ]; then
