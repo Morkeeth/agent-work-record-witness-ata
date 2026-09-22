@@ -213,7 +213,7 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 | **Non-author installs** | zero | No — roadmap; say honestly |
 | **Nothing cleared** | `clear: 0` | No — HOLD row is the demo |
 | **Branch protection** | not enabled | Optional — don't say "required" on film |
-| **Eligibility cold** | 1/3 without ADC | Say **both** 3/3 (ADC) and 1/3 (cold) on film |
+| **Eligibility cold** | 0/3 pip-free · 1/3 ADK · 3/3 ADC (ADC unmeasured on 22 Sep night VM) | Say **all three** on film / pack |
 | **witness-corpus stranger** | needs `pip install .` | **Buildable** — README one-liner + smoke |
 | **SUBMISSION-PACK stale** | PNG + agent_invoked wording | **Buildable** — slice C4 + A4 |
 | **Doc schism** | SUBMISSION/USER-JOURNEY vs PACK | **closed 29 Aug** — EYES A scrub |
@@ -270,10 +270,8 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🎯 NOW
 
-**NIGHT WAVE 22 Sep · slice 1 (only):** seal the measured evidence — fill
-`docs/SEALED-PREDICTION-2026-08-29.md` from live `/hold/` + PR #1, hash the draft,
-re-verify stranger `./demo.sh`, scrub remaining `"required check"` / eligibility
-theater, wire-proof P3. **Oscar still owns film capture + Devpost.**
+**NIGHT WAVE 22 Sep · slice 1 DONE (preflight PASS · tests green · branch pushed).**
+Oscar still owns: film capture · live Firestore hero rewrite · Devpost · ADC 3/3 probe.
 
 ---
 
