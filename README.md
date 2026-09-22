@@ -26,6 +26,12 @@ that says yes when it does not know is worse.
 Built for **All Things Agentic**, Fortified Enterprise Fleet track.
 Live: https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/
 
+```bash
+git clone https://github.com/Morkeeth/agent-work-record-witness-ata && cd agent-work-record-witness-ata && ./demo.sh
+# then open → https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?tab=queue
+# PR #1 red-by-design → https://github.com/Morkeeth/agent-work-record-witness-ata/pull/1/checks
+```
+
 Gemini 3.5 via Vertex AI and **Gemma 4 31B** both explain a hold; deterministic probes decide it. Gemma is the self-hostable path: point `GEMMA_BASE_URL` at your own vLLM and no claim text leaves your network.
 
 ### The track brief, in the track's own words
@@ -335,9 +341,12 @@ reports in other people's tools.
 | **Google Cloud** | Firestore + Cloud Run | live `/health`, `/audit/export` |
 
 ```bash
-python3 contract/eligibility.py          # 3 of 3 with GCP, 1 of 3 cold. Both correct.
+python3 contract/eligibility.py
+# 3 of 3 with ADC · 1 of 3 with ADK installed and no GCP · 0 of 3 on a pip-free cold clone.
+# Exit 0 only when n==3; otherwise exit 1. Measure with pipefail — a bare `| tee` hides the code.
 ./tests/test_auth_gate.sh                # every mutating route rejects anonymous
 PYTHONPATH=. python3 tests/test_record.py
+PYTHONPATH=. python3 tests/test_check_run_summary.py   # P3 summary builder
 curl -sS https://fleet-wedge-33kamss2jq-uc.a.run.app/health
 ```
 

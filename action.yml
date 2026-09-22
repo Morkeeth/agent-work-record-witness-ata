@@ -58,6 +58,8 @@ runs:
       run: |
         set -uo pipefail
         FINDINGS="${RUNNER_TEMP:-/tmp}/hold-findings.json"
+        # Export for THIS step (GITHUB_ENV only reaches later steps) and for summary.
+        export HOLD_FINDINGS="$FINDINGS"
         echo "HOLD_FINDINGS=$FINDINGS" >> "$GITHUB_ENV"
 
         # The gate exits non-zero when it BLOCKS, which is a verdict, not a crash.
@@ -74,7 +76,8 @@ runs:
           echo "::error title=Witness gate did not run::The gate produced no findings (exit ${gate_rc}). This is a broken install, not a clean PR."
           exit 1
         fi
-        echo "gate=$(python3 -c 'import json,os;print(json.load(open(os.environ["HOLD_FINDINGS"]))["gate"])')" >> "$GITHUB_OUTPUT"
+        # Read the path we just wrote — do not trust GITHUB_ENV inside the same step.
+        echo "gate=$(python3 -c "import json; print(json.load(open('$FINDINGS'))['gate'])")" >> "$GITHUB_OUTPUT"
 
     - id: summary
       shell: bash
@@ -83,6 +86,7 @@ runs:
         GITHUB_TOKEN: ${{ github.token }}
         HEAD_SHA: ${{ inputs.head-sha }}
         REPO: ${{ inputs.repo }}
+        HOLD_FINDINGS: ${{ env.HOLD_FINDINGS }}
       run: python3 "$GITHUB_ACTION_PATH/gate/check_run_summary.py"
 
     - id: record

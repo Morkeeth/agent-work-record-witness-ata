@@ -30,12 +30,15 @@ _Film checklist: [`docs/ATA-FILM-AND-SHIP.md`](docs/ATA-FILM-AND-SHIP.md) · **O
 | Anon `POST /prove` | **401** (was 201 before the 2026-08-27 redeploy — re-probe it) |
 | `POST /demo/seed-hold` | **403** (film uses a real agent PR) |
 | `python3 contract/eligibility.py` **with ADC** | **3 OF 3 MET**, exit 0 |
-| `python3 contract/eligibility.py` **cold, no GCP creds** | **1 OF 3 MET** (ADK only), **exit 1** — by design |
+| `python3 contract/eligibility.py` **ADK installed, no GCP creds** | **1 OF 3 MET** (ADK only), **exit 1** — by design |
+| `python3 contract/eligibility.py` **cold clone, no pip, no GCP** | **0 OF 3 MET**, **exit 1** — ADK is not on the stdlib path; `./demo.sh` still exits 0 |
 
-**Both eligibility rows are true and a judge may see either one.** Do not paste "3 of 3" anywhere
-without the cold number beside it: a judge who clones this repo and runs the script with no
-credentials gets 1 of 3 and a non-zero exit. That is the designed honest result. Claiming 3 of 3
-unqualified is the exact composition error this product exists to catch.
+**Both the ADC and the ADK-without-GCP rows are true and a judge may see either one.**
+A judge who clones this repo and runs eligibility with no packages and no credentials gets
+**0 of 3**, not 1 of 3. The "1 of 3" row assumes `google-adk` is importable (as on the film
+machine and after `pip install -e ".[gateway]"`). Claiming 3 of 3 unqualified is the exact
+composition error this product exists to catch; claiming 1 of 3 for a pip-free clone is the
+same error one layer down.
 
 Cold start: first `/health` may hang once — retry.
 
@@ -124,9 +127,11 @@ Install shape: GitHub Action to Cloud Run policy.
 - Deterministic probes decide CLEAR or HOLD; the model explains and never overrules
 
 python3 contract/eligibility.py calls all three services rather than importing them.
-With ADC on a Firestore + Vertex project it prints 3 OF 3 MET and exits 0. Cold, with no
-credentials, it prints 1 OF 3 MET and exits 1 — deliberately, because import is not call
-and credentials you do not have do not count.
+With ADC on a Firestore + Vertex project it prints 3 OF 3 MET and exits 0. With
+google-adk installed and no credentials, it prints 1 OF 3 MET and exits 1. On a
+pip-free cold clone it prints 0 OF 3 MET and exits 1 — deliberately, because import
+is not call and packages you did not install do not count. ./demo.sh still exits 0
+with no packages: the gate is standard library only.
 
 Integration shape: the GitHub Action runs deterministic probes in the customer's CI —
 no repo read access on our side. Only the verdict and session pointer cross to Cloud Run,
@@ -199,7 +204,7 @@ session that produced it. The red check is the second beat, not the first.
 | 1:10–1:35 | How it fills | the gate: agent PR → probe vs object → HOLD |
 | 1:35–2:15 | **Real PR** | agent label + false-done body → red `verify-claims` + Hold row |
 | 2:15–2:40 | Break-glass + audit | reason → recorded; Export JSON |
-| 2:40–3:05 | GCP | `/health` live (say the `*.run.app` URL) · `eligibility.py` → 3/3, **and say cold is 1/3** |
+| 2:40–3:05 | GCP | `/health` live · eligibility **3/3 with ADC**, **1/3 with ADK no GCP**, **0/3 pip-free cold** |
 | 3:05–3:30 | Honest state | PR #1 red · row `H-a6151a95ac` · still `clear: 0` |
 | 3:30–4:00 | Close | install path + roadmap; the line |
 

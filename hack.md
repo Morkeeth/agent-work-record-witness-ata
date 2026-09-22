@@ -75,7 +75,7 @@ Full record: `~/CODE/fleet-ops/retros/QWEN-LOSS-RETRO-2026-08-30.md` (corrected)
 
 | Phase | Gate | Status |
 |-------|------|--------|
-| 5 · Exhibit | `./demo.sh` one-click | ✅ [`STRANGER-PASS`](docs/STRANGER-PASS-2026-08-29.md) |
+| 5 · Exhibit | `./demo.sh` one-click | ✅ [`STRANGER-PASS`](docs/STRANGER-PASS-2026-09-22.md) (was 08-29) |
 | 6 · Freeze | Oscar degraded + film | ⛔ `./film/preflight.sh` → [`OSCAR-FILM-CHECKLIST`](docs/OSCAR-FILM-CHECKLIST.md) |
 | 7 · Submit | Devpost + **sealed prediction** | ⛔ [`SEALED-PREDICTION`](docs/SEALED-PREDICTION-2026-08-29.md) |
 
@@ -270,7 +270,10 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🎯 NOW
 
-**RUN COMPLETE 29 Aug.** P1+P2+P3 live · preflight PASS. Oscar: **film** → `SEALED-PREDICTION` → Devpost.
+**NIGHT WAVE 22 Sep · slice 1 (only):** seal the measured evidence — fill
+`docs/SEALED-PREDICTION-2026-08-29.md` from live `/hold/` + PR #1, hash the draft,
+re-verify stranger `./demo.sh`, scrub remaining `"required check"` / eligibility
+theater, wire-proof P3. **Oscar still owns film capture + Devpost.**
 
 ---
 
@@ -288,6 +291,13 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🪵 LOG
 
+- 2026-09-22 · Night wave: sealed prediction filled from live `/hold/`+PR #1; stranger
+  pass re-run (`./demo.sh` exit 0); fixture+pitch scrub of `"required check"`;
+  eligibility three-tier (0/3 pip-free · 1/3 ADK · 3/3 ADC) because docs claimed
+  only "1 of 3 cold"; `action.yml` HOLD_FINDINGS same-step bug fixed; P3 receipt
+  against live `witness-findings` check-run `99099248806`. Live hero
+  `report_preview` still carries pre-scrub phrase (Firestore not rewritten).
+  ADC 3/3 unmeasured on this VM. Preflight + tests: see commit receipts.
 - 2026-08-29 · Full 48h review; pre-submit plan replaces post-only hack.md.
 - 2026-08-29 · Probed: preflight PASS · eligibility 3/3 · branch unprotected · P1+P2 coded.
 - 2026-08-29 · Handbook pass: HANDBOOK-PASS, SEALED-PREDICTION template, PHASE-TRACKER refresh, STRANGER-PASS, voiceover/preflight sync.

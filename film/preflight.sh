@@ -19,6 +19,12 @@ grep -q "41.7" "$FILM_DIR/voiceover.txt" || red "voiceover missing 41.7"
 grep -q "8.1" "$FILM_DIR/voiceover.txt" || red "voiceover missing 8.1"
 grep -q "41.7" "$ROOT/docs/SUBMISSION.md" || red "SUBMISSION.md missing 41.7"
 grep -q "8.1" "$ROOT/docs/SUBMISSION.md" || red "SUBMISSION.md missing 8.1"
+# EYES B6 / film never-say: "required check" while branch protection is off.
+if grep -qi 'required check' "$FILM_DIR/voiceover.txt" "$FILM_DIR/subtitles.srt" 2>/dev/null; then
+  red "voiceover/subtitles say 'required check' — branch protection is off"
+else
+  grn "voiceover + subtitles clean of 'required check'"
+fi
 
 # The console is an on-camera surface too. Preflight used to check the voiceover and
 # SUBMISSION.md but never the page a judge actually opens, so the page could drift off
