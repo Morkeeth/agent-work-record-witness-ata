@@ -42,7 +42,7 @@ Rehearsal: `PAUSE_SEC=8 ./film/capture.sh` · `./demo.sh --film` · open hold UR
 | 0:52 | Stranger probe | `./demo.sh --film` |
 | 1:22 | Verdict map | UNVERIFIABLE → HOLD · gate never runs commands from report |
 | 1:42 | Corpus (mid) | 78,618 · 41.7→8.1 · fixture in repo |
-| 2:08 | Cloud proof | `/health` · eligibility **3/3 with ADC** and **1/3 cold** |
+| 2:08 | Cloud proof | `/health` · eligibility **3/3 with ADC** and **1/3 cold** (deps, no GCP). Optional honesty beat if time: bare stock Python is **0/3** — do not collapse into "cold". |
 | 2:32 | Close | *Run your agents. Check the math.* |
 
 Voiceover MP3: `film/voiceover-vo.mp3` · subtitles: `film/subtitles.srt`.
