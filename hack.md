@@ -52,16 +52,16 @@ would settle it is judge feedback from the organisers — an outward act only Os
 **Gate before this event's result table ships** — this checklist now stands on its own merits as
 submission craft, supported by a real tendency, **not** as the explanation of that loss:
 
-- [ ] **Alternative arm named and run** — what a competent person does *without* this project, on identical inputs, identical budget, identical prompt.
+- [x] **Alternative arm named and run** — `PYTHONPATH=. python3 eval/run_eval.py` (2026-09-23): A naive 9/40 · B headline 18/40 · **NULL always-silent 27/40 beats both on accuracy** (metric defect disclosed in eval output).
 - [ ] **Ablation** — our one signature mechanism switched off; its delta is the only number that credits our idea.
-- [ ] **External anchor** — one dataset or benchmark we did not build and cannot tune, or an explicit README line saying there is none.
+- [x] **External anchor** — none exists for this task; README states that explicitly (Honest state). Substitutes: frozen oracle + null arm + labelled sample. Re-run 2026-09-23 matched committed `eval/out/results.json` (NULL 27/40 · B 18/40 · A 9/40).
 - [ ] **Holdout frozen before the first tuning pass.**
-- [ ] **Baseline steelmanned** — run it, read its raw rows, confirm it can actually score before believing our margin.
-- [ ] **Statistic matched to n** — n<100 → CIs + a paired test, never a bare point.
+- [x] **Baseline steelmanned** — Arm A gets the 40-char keyword filter; raw hex-only would be worse; run above confirms A scores, not a strawman that cannot fire.
+- [x] **Statistic matched to n** — n=40 → Wilson CIs + McNemar A vs B in eval output (p=0.0039 this run).
 - [ ] **Scorer symmetrical** — nothing only our system can emit; judge from delivered output for every arm.
 - [ ] **Cost from billing**, with the price card's date stated.
-- [ ] **Offline path with no API key.**
-- [ ] **"Honesty & limitations" section carrying our worst number.**
+- [x] **Offline path with no API key.** — `./demo.sh` cold clone exit 0 (STRANGER-PASS-2026-09-23).
+- [x] **"Honesty & limitations" section carrying our worst number.** — eval NULL beats us; eligibility bare 0/3; clear:0.
 - [ ] **Answer the track brief in the track's own words on the first screen** — that is what the rubric weights, not eval rigor.
 - [ ] **Video verified attached and public on the live entry page, from a logged-out browser** — not in a checklist file, on the page.
 - [ ] **Every artifact claim measured at the submitted commit.** Four retros of that loss failed this row.
@@ -280,6 +280,7 @@ Done-when for this slice (ran):
 - [x] Film scrub — `rg 'required check' film/{voiceover.txt,voiceover-vo.txt,subtitles.srt}` empty; preflight PASS
 - [x] P3 on main path — `action.yml` summary step + `tests/test_check_run_summary.py` all green + PR #1 `witness-findings`
 - [x] Embarrassment fixes — eligibility three-arm honesty; IAM-gated → application-token; "required check" scrub on pitch/workflow/fixture
+- [x] Scrub control — `tests/test_judge_facing_scrub.sh` watched RED then GREEN this run
 
 ---
 
@@ -303,8 +304,9 @@ Done-when for this slice (ran):
   ADC path not run here; deps/no-ADC **1/3 exit 1**; bare **0/3 exit 1** — docs previously
   collapsed the last two (fixed in README + SUBMISSION-PACK). Eval re-run: NULL 67.5% >
   B 45% > A 22.5% on accuracy (disclosed metric defect). Film assets clean of "required check".
-  Sealed prediction appendix + body sha256 `371d44c9…`. No Devpost · no capture.sh · no
-  branch protection · no judge share.
+  Sealed prediction appendix + body sha256 `371d44c9…`. Added `tests/test_judge_facing_scrub.sh`
+  and watched it go RED (injected phrase) then GREEN. Live `/hold/` HTML **byte-identical** to
+  `surface/hold/index.html`. No Devpost · no capture.sh · no branch protection · no judge share.
 - 2026-08-29 · Full 48h review; pre-submit plan replaces post-only hack.md.
 - 2026-08-29 · Probed: preflight PASS · eligibility 3/3 · branch unprotected · P1+P2 coded.
 - 2026-08-29 · Handbook pass: HANDBOOK-PASS, SEALED-PREDICTION template, PHASE-TRACKER refresh, STRANGER-PASS, voiceover/preflight sync.

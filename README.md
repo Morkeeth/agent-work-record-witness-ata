@@ -361,7 +361,7 @@ a decision and never overrules one, and the gate never executes text from a repo
 
 ---
 
-## Honest state, measured 2026-08-29
+## Honest state, measured 2026-08-29 · re-probed 2026-09-23
 
 Written here rather than buried, because a product about false claims does not get to make any.
 
@@ -369,7 +369,16 @@ Written here rather than buried, because a product about false claims does not g
 Record **`H-a6151a95ac`** from a real GitHub Action (`source=github-action`, traceable session).
 The trace join. The Hold queue. Break-glass with a required reason. The audit export. Gemini
 measured. ADK Runner invoked on `POST /agent/run`; P1 adds explain-on-HOLD when deployed.
-Every mutating route returns 401 to an anonymous caller.
+Every mutating route returns 401 to an anonymous caller. P3 `witness-findings` check run is
+posted on PR #1 (also FAILURE). Live `/hold/` HTML is byte-identical to `surface/hold/index.html`
+(md5 `ca7f2c0dfbbf`, probed 2026-09-23).
+
+**Worst number we ship:** on the 40-row labelled eval (`PYTHONPATH=. python3 eval/run_eval.py`,
+re-run 2026-09-23), the trivial **always-silent null scores 27/40 (67.5%)** and beats both our
+headline arm (18/40, 45.0%) and the naive baseline (9/40, 22.5%) on accuracy. That is a defect
+in the pre-registered accuracy metric (27 of 40 rows are non-claims), disclosed in `eval/` rather
+than swapped out. The arms still separate on adjudication (12/13 vs 7/13) and false accusations
+(5.0% vs 45.0%).
 
 **Not real yet:**
 
@@ -389,6 +398,9 @@ Every mutating route returns 401 to an anonymous caller.
   anchor we do not have. The substitutes we do ship are a pre-registered denominator, a frozen
   holdout, a null arm that beats us, and the labelled sample in `fixtures/` so you can disagree
   with our labels rather than take them.
+- **Eligibility has three arms.** 3/3 needs ADC. 1/3 needs `pip install -r requirements.txt` and
+  no GCP. Bare stock Python is **0/3**, exit 1. Collapsing the last two was a doc bug closed
+  2026-09-23.
 
 **Enterprise surfaces, measured:** Gateway, Observability and Identity are partial. Runtime became
 partial today. Registry and Model Armor are absent and stay on the roadmap. Full measurement:
