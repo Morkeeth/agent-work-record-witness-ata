@@ -35,7 +35,7 @@ Not observability. Not code review. Not a claims inbox.
 
 The architecture is the moat, not the model. The probe runs **inside the customer's own checkout**, where the repository already is. Only the verdict and a session pointer cross the network. This product never needs read access to your code, which is what makes it installable at a bank.
 
-`python3 contract/eligibility.py` calls all three services instead of importing them. With credentials it prints **3 OF 3 MET**, exit 0. On a fresh clone with none it prints **1 OF 3 MET**, exit 1. Deliberately, in public, because import is not call.
+`python3 contract/eligibility.py` calls all three services instead of importing them. With credentials it prints **3 OF 3 MET**, exit 0. With gateway deps installed and no credentials it prints **1 OF 3 MET**, exit 1. On bare stock Python with no gateway packages it prints **0 OF 3 MET**, exit 1. Deliberately, in public, because import is not call.
 
 ## Challenges we ran into
 

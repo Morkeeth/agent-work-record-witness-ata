@@ -2,7 +2,7 @@
 doc: hack
 project: The Agent Work Record Witness
 phase: SHIP
-last-touched: 2026-08-29
+last-touched: 2026-09-23
 canonical: true
 event: All Things Agentic · Devpost · Mon 31 Aug 2026 17:00 PDT
 supersedes: docs/THIRTY-DAY-PLAN.md (immune-system era — history only)
@@ -75,9 +75,9 @@ Full record: `~/CODE/fleet-ops/retros/QWEN-LOSS-RETRO-2026-08-30.md` (corrected)
 
 | Phase | Gate | Status |
 |-------|------|--------|
-| 5 · Exhibit | `./demo.sh` one-click | ✅ [`STRANGER-PASS`](docs/STRANGER-PASS-2026-08-29.md) |
-| 6 · Freeze | Oscar degraded + film | ⛔ `./film/preflight.sh` → [`OSCAR-FILM-CHECKLIST`](docs/OSCAR-FILM-CHECKLIST.md) |
-| 7 · Submit | Devpost + **sealed prediction** | ⛔ [`SEALED-PREDICTION`](docs/SEALED-PREDICTION-2026-08-29.md) |
+| 5 · Exhibit | `./demo.sh` one-click | ✅ [`STRANGER-PASS-2026-09-23`](docs/STRANGER-PASS-2026-09-23.md) (prior: 29 Aug) |
+| 6 · Freeze | Oscar degraded + film | ⛔ `./film/preflight.sh` → [`OSCAR-FILM-CHECKLIST`](docs/OSCAR-FILM-CHECKLIST.md) · quant [`FILM-QUANT-2026-09-23`](docs/FILM-QUANT-RECEIPT-2026-09-23.md) |
+| 7 · Submit | Devpost + **sealed prediction** | ⛔ [`SEALED-PREDICTION`](docs/SEALED-PREDICTION-2026-08-29.md) · appendix+hash 23 Sep · **Oscar submit** |
 
 **#85:** film is the hard-fail artifact. **#72:** seal prediction before button. Full pass: HANDBOOK-PASS.
 
@@ -213,7 +213,7 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 | **Non-author installs** | zero | No — roadmap; say honestly |
 | **Nothing cleared** | `clear: 0` | No — HOLD row is the demo |
 | **Branch protection** | not enabled | Optional — don't say "required" on film |
-| **Eligibility cold** | 1/3 without ADC | Say **both** 3/3 (ADC) and 1/3 (cold) on film |
+| **Eligibility cold** | **two arms:** 1/3 deps+no ADC · 0/3 bare (both exit 1) | Say **all three** on film: 3/3 ADC · 1/3 deps-cold · 0/3 bare |
 | **witness-corpus stranger** | needs `pip install .` | **Buildable** — README one-liner + smoke |
 | **SUBMISSION-PACK stale** | PNG + agent_invoked wording | **Buildable** — slice C4 + A4 |
 | **Doc schism** | SUBMISSION/USER-JOURNEY vs PACK | **closed 29 Aug** — EYES A scrub |
@@ -270,7 +270,16 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🎯 NOW
 
-**RUN COMPLETE 29 Aug.** P1+P2+P3 live · preflight PASS. Oscar: **film** → `SEALED-PREDICTION` → Devpost.
+**NIGHT WAVE 2026-09-23 · slice 1 (only):** seal + stranger + film scrub + P3 receipt +
+embarrassment hunt — measured at objects. Oscar still owns: film capture · Devpost submit ·
+repo share. **Do not** run `./film/capture.sh` · Devpost · branch protection · judge share.
+
+Done-when for this slice (ran):
+- [x] Sealed prediction appendix filled + body hash — `docs/SEALED-PREDICTION-2026-08-29.md`
+- [x] Stranger cold path — `docs/STRANGER-PASS-2026-09-23.md` (clone → `./demo.sh` exit 0)
+- [x] Film scrub — `rg 'required check' film/{voiceover.txt,voiceover-vo.txt,subtitles.srt}` empty; preflight PASS
+- [x] P3 on main path — `action.yml` summary step + `tests/test_check_run_summary.py` all green + PR #1 `witness-findings`
+- [x] Embarrassment fixes — eligibility three-arm honesty; IAM-gated → application-token; "required check" scrub on pitch/workflow/fixture
 
 ---
 
@@ -288,6 +297,14 @@ wrong; merged into SUBMISSION.md Aug 28–29.
 
 ## 🪵 LOG
 
+- 2026-09-23 · Night wave · seal+stranger+scrub+P3+embarrassment. Preflight PASS.
+  Stranger clone `./demo.sh` exit 0 · test_demo PASS. Live hero `H-a6151a95ac` still open HOLD.
+  PR #1 `verify-claims`+`witness-findings` both FAILURE. Eligibility **three arms** measured:
+  ADC path not run here; deps/no-ADC **1/3 exit 1**; bare **0/3 exit 1** — docs previously
+  collapsed the last two (fixed in README + SUBMISSION-PACK). Eval re-run: NULL 67.5% >
+  B 45% > A 22.5% on accuracy (disclosed metric defect). Film assets clean of "required check".
+  Sealed prediction appendix + body sha256 `371d44c9…`. No Devpost · no capture.sh · no
+  branch protection · no judge share.
 - 2026-08-29 · Full 48h review; pre-submit plan replaces post-only hack.md.
 - 2026-08-29 · Probed: preflight PASS · eligibility 3/3 · branch unprotected · P1+P2 coded.
 - 2026-08-29 · Handbook pass: HANDBOOK-PASS, SEALED-PREDICTION template, PHASE-TRACKER refresh, STRANGER-PASS, voiceover/preflight sync.

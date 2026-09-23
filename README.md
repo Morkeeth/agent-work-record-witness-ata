@@ -26,6 +26,12 @@ that says yes when it does not know is worse.
 Built for **All Things Agentic**, Fortified Enterprise Fleet track.
 Live: https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/
 
+```bash
+git clone https://github.com/Morkeeth/agent-work-record-witness-ata
+cd agent-work-record-witness-ata && ./demo.sh   # exit 0 · no account · no network
+# then open → https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?tab=queue
+```
+
 Gemini 3.5 via Vertex AI and **Gemma 4 31B** both explain a hold; deterministic probes decide it. Gemma is the self-hostable path: point `GEMMA_BASE_URL` at your own vLLM and no claim text leaves your network.
 
 ### The track brief, in the track's own words
@@ -335,11 +341,17 @@ reports in other people's tools.
 | **Google Cloud** | Firestore + Cloud Run | live `/health`, `/audit/export` |
 
 ```bash
-python3 contract/eligibility.py          # 3 of 3 with GCP, 1 of 3 cold. Both correct.
+python3 contract/eligibility.py          # 3/3 with ADC · 1/3 with deps+no GCP · 0/3 bare. All exit≠0 except 3/3.
 ./tests/test_auth_gate.sh                # every mutating route rejects anonymous
 PYTHONPATH=. python3 tests/test_record.py
+PYTHONPATH=. python3 tests/test_check_run_summary.py   # P3 witness-findings builder
 curl -sS https://fleet-wedge-33kamss2jq-uc.a.run.app/health
 ```
+
+**Eligibility has three measured arms, not two.** `3 of 3` needs ADC on a Firestore + Vertex
+project. `1 of 3` needs `pip install -r requirements.txt` (ADK constructs) and no GCP creds.
+Bare stock Python with no gateway packages is `0 of 3`, exit 1. Collapsing the last two into
+one "cold" line is the composition error this product exists to catch.
 
 **Do not read a `/health` 200 as 3 of 3.** It evidences Firestore and the agent. It says nothing
 about Gemini.

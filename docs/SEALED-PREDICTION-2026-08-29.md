@@ -69,3 +69,47 @@ needs you before the submit button.
 **Agent-updated 2026-08-31:** demo-readiness score and its reason, the video row (twice — the
 second time at 04:50 UTC, correcting *unlisted* to *public* against the rules), and one
 falsifier that was measured and closed overnight.
+
+---
+
+## Measured appendix · 2026-09-23 night wave (re-derived at objects)
+
+Numbers below were **run**, not carried forward from earlier seals. Commands are the done-when.
+
+| Object | Command | Result |
+|--------|---------|--------|
+| `/health` | `curl -sS $BASE/health` | `ok:true` · `auth_required:true` · `demo_seed_enabled:false` · `store:firestore` · ADK `LlmAgent` constructed |
+| `/hold/` | `curl -sS -o /dev/null -w '%{http_code}' $BASE/hold/` | **200** |
+| `/hold/?tab=queue` | same | **200** |
+| `/audit/export` | `curl -sS $BASE/audit/export` | `exported_at=2026-09-23T00:12:01+00:00` · **25** events · hero `H-a6151a95ac` present |
+| Hero row | python over export JSON | `gate=BLOCK` · `decision=HOLD` · `open=true` · `head_sha=c9958911…` · `session=01Lzbh4XPYTAgCKg1dciFS3Q` · `agent_explanation.invoked=True` · model `gemini-3.5-flash-lite` |
+| Clear-like in export | count over events | **0** |
+| Anon mutating | `POST /clearance` `/break-glass` `/prove` | **401** / **401** / **401** |
+| Seed | `POST /demo/seed-hold` | **403** |
+| PR #1 | `gh pr view 1 --json statusCheckRollup` | `verify-claims=FAILURE` · `witness-findings=FAILURE` · state OPEN · label `agent` |
+| Preflight | `./film/preflight.sh` | **PREFLIGHT PASS** (11 ok) |
+| Stranger demo | cold clone + `env -i … ./demo.sh` | exit **0** · `tests/test_demo.sh` PASS |
+| Eligibility bare | stock python, no pip | **0 OF 3**, exit **1** |
+| Eligibility deps / no ADC | `pip install -r requirements.txt`, empty HOME | **1 OF 3** (ADK), exit **1** |
+| Eval (baseline arm) | `PYTHONPATH=. python3 eval/run_eval.py` | B 18/40 (45%) beats A 9/40 (22.5%); **NULL always-silent 27/40 (67.5%) beats both on accuracy** — metric defect disclosed, not swapped |
+| Film scrub | `rg 'required check' film/voiceover.txt film/voiceover-vo.txt film/subtitles.srt` | **no matches** |
+
+`$BASE` = `https://fleet-wedge-33kamss2jq-uc.a.run.app` (from `.cloud_run_url`).
+
+**Do not submit Devpost from this appendix.** Outward submit is Oscar's click.
+
+---
+
+## Draft hash (content above this line)
+
+```
+sha256:371d44c9d4104a8623096504dedd063bffc0a3901f29d29b438cefb0f8055611
+```
+
+UTF-8 sha256 of every byte **above** the `## Draft hash` heading. Re-derive:
+
+```bash
+python3 -c "from pathlib import Path; import hashlib; t=Path('docs/SEALED-PREDICTION-2026-08-29.md').read_text(); print(hashlib.sha256(t.split('## Draft hash')[0].encode()).hexdigest())"
+```
+
+Do not trust a carried hash — run that command at the object.
