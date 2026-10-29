@@ -1,5 +1,23 @@
 # THE AGENT WORK RECORD WITNESS
 
+## TLDR
+
+Check agent completion claims against the object they describe and retain the verdict.<br>
+For teams reviewing agent work in CI before allowing a merge.<br>
+An uncheckable claim stays unverifiable; the hold and override trail matter as much as a passing probe.
+
+## The problem and approach
+
+An agent finishes, writes a paragraph about what it did, an auto-merge rule reads that paragraph, and nobody keeps a record of whether it was true.
+It turns a sentence like "all 14 tests pass" into a probe, runs it in your own CI checkout, records who claimed what, whether the object agreed and who overrode a hold, and says UNVERIFIABLE instead of guessing.
+Your code never leaves your network; only the verdict and a session pointer do. Built for All Things Agentic, Fortified Enterprise Fleet track. Live: https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/
+
+## Review and pick up the work
+
+[Agent guide](AGENTS.md)
+
+Start with the linked source, setup and evidence. Recorded demos and sample data keep their original scope; use the repository instructions for a fresh run.
+
 **Run your agents. Check the math.**
 
 Software just changed hands. Most of the code written this year is written by agents, and the
@@ -67,11 +85,11 @@ curl -sS https://fleet-wedge-33kamss2jq-uc.a.run.app/health | head
 ```
 
 **One warning before you click, so nothing on this path surprises you.** On that card, *"open the
-run that produced this claim"* leaves the console for `claude.ai` and asks you to sign in — and the
+run that produced this claim"* leaves the console for `claude.ai` and asks you to sign in ;  and the
 transcript is the operator's, not yours, so signing in will not show it to you. That is the join
 pattern rather than a feature we host: the record stores a pointer to the session, and the
-transcript stays with whoever ran the agent. Everything else on the judge path — the queue, the
-claim, the probe, the evidence, the audit export — is open with no token and no account. The
+transcript stays with whoever ran the agent. Everything else on the judge path ;  the queue, the
+claim, the probe, the evidence, the audit export ;  is open with no token and no account. The
 console says the same thing in front of the link.
 
 ---
@@ -110,7 +128,7 @@ Full journey: [`docs/USER-JOURNEY.md`](docs/USER-JOURNEY.md). Four moments, and 
 installs nothing.
 
 **Week zero, before you adopt anything.** Point it at the transcripts your agents have already
-written. You get a number about your own fleet before you have changed a single workflow file —
+written. You get a number about your own fleet before you have changed a single workflow file ; 
 and if that number is boring, you have learned something for free and you stop here. **Value
 first, adoption second.** This is the opening move, not the install.
 
@@ -162,7 +180,7 @@ probes each one against the object:
 
 **Three verdicts, three exit codes: `0` PASS, `1` BLOCK, `2` HOLD.** A check that only ever says
 no is not a check, so the demo shows an honest report going through as well as a false one being
-caught — and the SHA it passes on is generated while you watch, not written into a fixture.
+caught ;  and the SHA it passes on is generated while you watch, not written into a fixture.
 
 `./demo.sh` exits non-zero and says so if any of the three verdicts is not what this README
 claims. It does not pretend to pass.
@@ -174,7 +192,7 @@ claims. It does not pretend to pass.
 **You cannot re-run this one and you should not take it on faith.** It reads a transcript
 database that exists on the author's disk, so what follows is a method you can audit, not a
 result you can reproduce. It is here because the method is the part that transfers. We pointed the gate at **78,618 real agent
-messages, of 144,306 in the corpus** — a month of one fleet's actual output, not a fixture. Both
+messages, of 144,306 in the corpus** ;  a month of one fleet's actual output, not a fixture. Both
 numbers travel together because a result quoted against the wrong denominator is precisely what
 this product exists to catch. The first thing it found was our own defect.
 
@@ -202,21 +220,21 @@ Our run, against `~/.trace/trace.db`:
 ```
 
 **41.7% → 8.1%, and the whole gap was ours.** 73 of 103 "wrong" commit claims were real commits in
-a *different repo on the same disk* — an agent's `cwd` is where it was standing, not where it
+a *different repo on the same disk* ;  an agent's `cwd` is where it was standing, not where it
 committed, and the check was aimed at the wrong object. Eleven more were machinery: a SHA inside a
 command the agent was running, or inside git output it was reading. Six of those, across the
-sample, were **`deadbee` — this repo's own test fixture**, found in transcripts about building this
+sample, were **`deadbee` ;  this repo's own test fixture**, found in transcripts about building this
 gate. The tool for catching false claims about work counted its own test data as agent claims.
 
 **"42% of agent commit claims are wrong" was a real number from a real corpus, and it was false by
-5x — the corrected figure is 8.1%, 19 of 236.** The only reason it did not become a slide is
+5x ;  the corrected figure is 8.1%, 19 of 236.** The only reason it did not become a slide is
 that the denominator was written down *before anyone looked at a claim*:
 [`docs/CORPUS-PREREGISTRATION-2026-08-27.md`](docs/CORPUS-PREREGISTRATION-2026-08-27.md). **That
 document is the method, and the method is the product.**
 
 **Neither number is an incidence rate.** Hand-labelling a random sample of 40 extractions put
 precision on conversational prose at **13/40**; of those 13 real claims, 6 disagreed with the repo.
-**n = 13** — a direction, not a measurement. The sample and its labels ship in
+**n = 13** ;  a direction, not a measurement. The sample and its labels ship in
 `fixtures/corpus-sample-40.json` so you can re-label them and disagree. Full working:
 [`docs/CORPUS-MEASUREMENT-2026-08-27.md`](docs/CORPUS-MEASUREMENT-2026-08-27.md) ·
 [`docs/ENTERPRISE-CASE-2026-08-27.md`](docs/ENTERPRISE-CASE-2026-08-27.md).
@@ -239,7 +257,7 @@ echo "Fixed the race. Committed as deadbee. Wrote docs/auth.md." | witness
 Or with no install at all, from that clone: `python3 -m gate.outcome_gate --json`.
 
 > **On PyPI:** the wheel builds, installs into a clean environment and the `witness` command works
-> from an unrelated repository — all verified. The name `agent-work-record-witness` is unclaimed.
+> from an unrelated repository ;  all verified. The name `agent-work-record-witness` is unclaimed.
 > **It is not published yet**, so this README does not print `pip install <name>`: that line would
 > 404, and writing a command we have not run is the defect this tool exists to catch.
 
@@ -312,11 +330,11 @@ Run against other harnesses' conventions, the extractor returns nothing:
 | Harness | Gate probes claims | Hold opens back to the session |
 |---|---|---|
 | Claude Code | yes | **yes** |
-| OpenAI Codex | yes | no — `Task: task_<id>` is not matched |
-| Cursor | yes | no — `composerId: <uuid>` is not matched |
-| GitHub Copilot | yes | no — emits no session reference at all |
-| Devin | yes | no — `app.devin.ai/sessions/<id>` is not matched |
-| Aider | yes | no — `chat-id: <id>` is not matched |
+| OpenAI Codex | yes | no ;  `Task: task_<id>` is not matched |
+| Cursor | yes | no ;  `composerId: <uuid>` is not matched |
+| GitHub Copilot | yes | no ;  emits no session reference at all |
+| Devin | yes | no ;  `app.devin.ai/sessions/<id>` is not matched |
+| Aider | yes | no ;  `chat-id: <id>` is not matched |
 
 So a Codex or Cursor shop gets the gate and the record, and their rows read **untraceable**. That is
 the honest state, not a limitation we discovered on camera. Adding a harness is one regex and a
@@ -361,12 +379,12 @@ Every mutating route returns 401 to an anonymous caller.
 
 **Not real yet:**
 
-- **`clear: 0` in production.** Nothing has ever passed the live gate — the real row is a HOLD.
+- **`clear: 0` in production.** Nothing has ever passed the live gate ;  the real row is a HOLD.
 - **Installs by anyone who is not the author: zero.** Northwind proved the chain, not adoption.
-- **Branch protection off** — check is advisory until you require `verify-claims`; this repo will
+- **Branch protection off** ;  check is advisory until you require `verify-claims`; this repo will
   not call it a required check while protection is off.
 - **One shared bearer token**, not per-agent identity.
-- **Audit reads the whole collection per request** — about 57 Firestore document reads per
+- **Audit reads the whole collection per request** ;  about 57 Firestore document reads per
   request. Free at this traffic, a bill and a latency problem at any real one. Measured with
   the rest of the cost table in [`docs/COST-2026-08-30.md`](docs/COST-2026-08-30.md).
 - **No OpenTelemetry, no Agent Registry, no Model Armor.** Roadmap, never claimed.
@@ -417,3 +435,7 @@ the only number that matters next.
 ## License
 
 MIT. Full text in [`LICENSE`](LICENSE).
+
+## License and data boundaries
+
+Code terms: [LICENSE](LICENSE). Data, provider responses, media, fonts and other third-party assets may have separate terms. Repository access alone does not grant rights to those materials. 
