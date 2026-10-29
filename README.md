@@ -1,5 +1,12 @@
 # THE AGENT WORK RECORD WITNESS
 
+**The Agent Work Record Witness checks what your coding agents claim they did against the object itself, and holds the merge when it cannot.**
+
+An agent finishes, writes a paragraph about what it did, an auto-merge rule reads that paragraph, and nobody keeps a record of whether it was true.
+For teams running agent fleets in CI who will be asked what fraction of merged code carries a claim nobody checked.
+It turns a sentence like "all 14 tests pass" into a probe, runs it in your own CI checkout, records who claimed what, whether the object agreed and who overrode a hold, and says UNVERIFIABLE instead of guessing.
+Your code never leaves your network; only the verdict and a session pointer do. Built for All Things Agentic, Fortified Enterprise Fleet track. Live: https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/
+
 **Run your agents. Check the math.**
 
 Software just changed hands. Most of the code written this year is written by agents, and the
