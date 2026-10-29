@@ -77,7 +77,7 @@ because it is roadmap and needs a corpus a judge cannot verify.*
 git clone https://github.com/Morkeeth/agent-work-record-witness-ata
 cd agent-work-record-witness-ata
 ./demo.sh                    # full walkthrough · exits 0
-./demo.sh --film             # compact ;  same verdicts, for screen recording
+./demo.sh --film             # compact — same verdicts, for screen recording
 curl -sS https://fleet-wedge-33kamss2jq-uc.a.run.app/health | head
 # open hold console → the queue, then click the first card (H-a6151a95ac):
 # https://fleet-wedge-33kamss2jq-uc.a.run.app/hold/?tab=queue
@@ -212,11 +212,11 @@ Our run, against `~/.trace/trace.db`:
   RAW          247 sha claims ·  103 disagree · 41.7%
   CORRECTED    236 sha claims ·   19 disagree · 8.1%
 
-      11 dropped ;  shell commands, fenced output, and this repo's own test fixtures
-      73 resolved in a SIBLING repo ;  the agent was right, the probe was aimed at the wrong repo
-       5 path claims dropped ;  a code identifier, not a file
-       1 path claims dropped ;  a hostname, not a repository path
-       1 path claims dropped ;  an absolute path outside the repository
+      11 dropped — shell commands, fenced output, and this repo's own test fixtures
+      73 resolved in a SIBLING repo — the agent was right, the probe was aimed at the wrong repo
+       5 path claims dropped — a code identifier, not a file
+       1 path claims dropped — a hostname, not a repository path
+       1 path claims dropped — an absolute path outside the repository
 ```
 
 **41.7% → 8.1%, and the whole gap was ours.** 73 of 103 "wrong" commit claims were real commits in
@@ -266,7 +266,7 @@ Or with no install at all, from that clone: `python3 -m gate.outcome_gate --json
                 probe: git cat-file -t deadbee  ->  NOT a commit in this repo
   BLOCK         wrote docs/auth.md
                 probe: stat docs/auth.md  ->  NO SUCH PATH in the repo
-  GATE: BLOCK ;  2 claim(s) the repo disproves. Do not auto-merge.
+  GATE: BLOCK — 2 claim(s) the repo disproves. Do not auto-merge.
 ```
 
 **Exit code is the verdict, not an error channel:** `0` PASS, `1` BLOCK, `2` HOLD. A crash is a
